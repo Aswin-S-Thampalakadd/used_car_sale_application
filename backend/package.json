@@ -22,6 +22,7 @@
     "pg": "^8.23.0"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "drizzle-kit": "^0.31.10"
   }
 }
