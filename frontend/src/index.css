@@ -1,13 +1,86 @@
-body {
+*{
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  font-family: sans-serif;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+:root {
+  /* ===== Primary Brand Colors ===== */
+  --color-primary: #1e40af;        /* Deep trustworthy blue */
+  --color-primary-dark: #1e3a8a;   /* Hover/darker states */
+  --color-primary-light: #3b82f6;  /* Accents, links */
+  --color-primary-subtle: #dbeafe; /* Backgrounds, tags */
+
+  /* ===== Secondary / Accent ===== */
+  --color-accent: #f59e0b;         /* Amber - CTAs, "Featured" badges */
+  --color-accent-dark: #d97706;
+  --color-accent-light: #fbbf24;
+
+  /* ===== Neutral / Grays ===== */
+  --color-white: #ffffff;
+  --color-gray-50: #f9fafb;        /* Page backgrounds */
+  --color-gray-100: #f3f4f6;       /* Card backgrounds */
+  --color-gray-200: #e5e7eb;       /* Borders, dividers */
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;       /* Placeholder text */
+  --color-gray-500: #6b7280;       /* Secondary text */
+  --color-gray-700: #374151;       /* Body text */
+  --color-gray-900: #111827;       /* Headings */
+  --color-black: #000000;
+
+  /* ===== Semantic / Status ===== */
+  --color-success: #10b981;        /* "Available", "Verified" */
+  --color-success-bg: #d1fae5;
+  --color-warning: #f59e0b;        /* "Low mileage deal" */
+  --color-warning-bg: #fef3c7;
+  --color-danger: #ef4444;         /* "Sold", errors */
+  --color-danger-bg: #fee2e2;
+  --color-info: #0ea5e9;           /* Info badges */
+  --color-info-bg: #e0f2fe;
+
+  /* ===== Text ===== */
+  --text-primary: var(--color-gray-900);
+  --text-secondary: var(--color-gray-500);
+  --text-inverse: var(--color-white);
+  --text-link: var(--color-primary-light);
+
+  /* ===== Backgrounds ===== */
+  --bg-body: var(--color-gray-50);
+  --bg-surface: var(--color-white);
+  --bg-elevated: var(--color-white);
+  --bg-muted: var(--color-gray-100);
+
+  /* ===== Borders ===== */
+  --border-color: var(--color-gray-200);
+  --border-color-strong: var(--color-gray-300);
+
+  /* ===== Shadows ===== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+
+  /* ===== Border Radius ===== */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* ===== Spacing ===== */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* ===== Typography ===== */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: 'Poppins', var(--font-sans);
+
+  /* ===== Transitions ===== */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
 }
