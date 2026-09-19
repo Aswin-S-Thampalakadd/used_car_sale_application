@@ -23,7 +23,7 @@ jobs:
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
-        with: 
+        with:
           node-version: 22
           cache: npm
 
@@ -32,8 +32,3 @@ jobs:
 
       - name: Run unit tests
         run: npm run test:unit
-
-      # Comenting this now, because dont have any unit test now, will add later
-      # - name: Run integration tests
-      #   run: npm run test:integration
-      
