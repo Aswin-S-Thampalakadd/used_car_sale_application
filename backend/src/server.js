@@ -1,9 +1,22 @@
-const express = require("express");
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import carRouter from "./modules/cars/car.routes.js";
+
 const app = express();
 
 const port = process.env.PORT || 5000;
 
-app.get("/", (req, res) => {
+// Middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+dotenv.config();
+
+// Routes configuration
+app.use("/api/v1/cars", carRouter);
+
+app.get("/health", (req, res) => {
   res.send("Nodejs server is running");
 });
 

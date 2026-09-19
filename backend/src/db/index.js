@@ -2,6 +2,8 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import dotenv from "dotenv";
 
+import * as schema from "./schemas/index.js";
+
 dotenv.config();
 
 const { Pool } = pg;
@@ -21,16 +23,6 @@ const pool = new Pool({
     : false,
 });
 
-pool
-  .connect()
-  .then((client) => {
-    console.log("PostgreSQL connected successfully : )");
-
-    client.release();
-  })
-  .catch((err) => {
-    console.error("PostgreSQL connection failed : (");
-    console.error(err);
-  });
-
-export const db = drizzle(pool);
+export const db = drizzle(pool, {
+  schema,
+});

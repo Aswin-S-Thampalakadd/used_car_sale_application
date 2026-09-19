@@ -7,6 +7,8 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
+import { relations } from "drizzle-orm";
+
 import { cars } from "./cars.js";
 
 export const carImages = pgTable("car_images", {
@@ -26,3 +28,10 @@ export const carImages = pgTable("car_images", {
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const carImagesRelations = relations(carImages, ({ one }) => ({
+  car: one(cars, {
+    fields: [carImages.carId],
+    references: [cars.id],
+  }),
+}));

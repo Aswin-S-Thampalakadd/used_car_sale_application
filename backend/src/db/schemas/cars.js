@@ -10,7 +10,11 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
+import { relations } from "drizzle-orm";
+
 import { users } from "./users.js";
+import { carImages } from "./car_images.js";
+import { carFeatureMappings } from "./car_feature_mappings.js";
 
 export const fuelTypeEnum = pgEnum("fuel_type", [
   "petrol",
@@ -93,3 +97,14 @@ export const cars = pgTable("cars", {
 
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const carsRelations = relations(cars, ({ one, many }) => ({
+  dealer: one(users, {
+    fields: [cars.dealerId],
+    references: [users.id],
+  }),
+
+  carImages: many(carImages),
+
+  carFeatureMappings: many(carFeatureMappings),
+}));
