@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "drizzle-kit": "^0.31.10"
+    "drizzle-kit": "^0.31.10",
+    "redis": "^6.2.1"
   }
 }
