@@ -1,5 +1,5 @@
 import redisClient from "../../redis/index.js";
-import { getAllCarsDB } from "./cars.repository.js";
+import { getAllCarsDB, getCarByIdDB } from "./cars.repository.js";
 
 export const getAllCarsService = async (page, limit) => {
   const cacheKey = `cars:page:${page}:limit:${limit}`;
@@ -16,4 +16,9 @@ export const getAllCarsService = async (page, limit) => {
   });
 
   return cars;
+};
+
+export const fetchCarById = async (carId) => {
+  let car = await getCarByIdDB(carId);
+  return car;
 };
