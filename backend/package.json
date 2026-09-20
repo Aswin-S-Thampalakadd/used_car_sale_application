@@ -29,7 +29,9 @@
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "crypto": "^1.0.1",
     "drizzle-kit": "^0.31.10",
+    "jsonwebtoken": "^9.0.3",
     "redis": "^6.2.1"
   }
 }

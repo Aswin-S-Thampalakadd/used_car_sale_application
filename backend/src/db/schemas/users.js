@@ -7,6 +7,8 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { userTypes } from "./users_types.js";
+import { relations } from "drizzle-orm";
+import { refreshTokens } from "./refresh_tokens.js";
 
 export const users = pgTable("users", {
   id: bigint("id", { mode: "number" }).generatedAlwaysAsIdentity().primaryKey(),
@@ -39,3 +41,7 @@ export const users = pgTable("users", {
 
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const usersRelations = relations(users, ({ many }) => ({
+  refreshTokens: many(refreshTokens),
+}));
