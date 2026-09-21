@@ -174,3 +174,66 @@ export const getRecentlyAddedCarsDB = async (limit) => {
 
   return result;
 };
+
+export const createCar = async (data) => {
+  const result = await db.insert(cars).values(data).returning();
+
+  return result[0];
+};
+
+export const findCarById = async (carId) => {
+  const result = await db
+    .select()
+    .from(cars)
+    .where(eq(cars.id, carId))
+    .limit(1);
+
+  return result[0] || null;
+};
+
+export const findDealerCarById = async (carId, dealerId) => {
+  const result = await db
+    .select()
+    .from(cars)
+    .where(and(eq(cars.id, carId), eq(cars.dealerId, dealerId)))
+    .limit(1);
+
+  return result[0] || null;
+};
+
+export const updateCar = async (carId, dealerId, data) => {
+  const result = await db
+    .update(cars)
+    .set({
+      ...data,
+      updatedAt: new Date(),
+    })
+    .where(and(eq(cars.id, carId), eq(cars.dealerId, dealerId)))
+    .returning();
+
+  return result[0] || null;
+};
+
+export const deleteCar = async (carId, dealerId) => {
+  const result = await db
+    .delete(cars)
+    .where(and(eq(cars.id, carId), eq(cars.dealerId, dealerId)))
+    .returning({
+      id: cars.id,
+    });
+
+  return result[0] || null;
+};
+
+export const updateCarStatus = async (carId, dealerId, status) => {
+  const result = await db
+    .update(cars)
+    .set({
+      status,
+      updatedAt: new Date(),
+    })
+    .where(and(eq(cars.id, carId), eq(cars.dealerId, dealerId)))
+    .returning();
+
+  return result[0] || null;
+};

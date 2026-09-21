@@ -1,8 +1,12 @@
 import {
+  addCarService,
+  deleteCarService,
   fetchCarById,
   getAllCarsService,
   getAvailableCarBrandsService,
   getRecentlyAddedCarsService,
+  updateCarService,
+  updateCarStatusService,
 } from "./car.service.js";
 
 export const getAllCars = async (req, res) => {
@@ -114,6 +118,171 @@ export const getRecentlyAddedCars = async (req, res) => {
 
     res.status(500).json({
       message: "Failed to fetch recently added cars",
+    });
+  }
+};
+
+export const addCar = async (req, res) => {
+  try {
+    const dealerId = req.user.userId;
+
+    const {
+      make,
+      model,
+      variant,
+      year,
+      registrationYear,
+      fuelType,
+      transmission,
+      kilometersDriven,
+      price,
+      color,
+      condition,
+      description,
+      registrationNumber,
+      isNegotiable,
+      status,
+    } = req.body;
+
+    if (
+      !make ||
+      !model ||
+      !year ||
+      !fuelType ||
+      !transmission ||
+      kilometersDriven === undefined ||
+      !price
+    ) {
+      return res.status(400).json({
+        message:
+          "Make, model, year, fuel type, transmission, kilometers driven and price are required",
+      });
+    }
+
+    const result = await addCarService(dealerId, {
+      make,
+      model,
+      variant,
+      year,
+      registrationYear,
+      fuelType,
+      transmission,
+      kilometersDriven,
+      price,
+      color,
+      condition,
+      description,
+      registrationNumber,
+      isNegotiable,
+      status,
+    });
+
+    return res.status(201).json(result);
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Failed to add car",
+    });
+  }
+};
+
+export const updateCar = async (req, res) => {
+  try {
+    const dealerId = req.user.userId;
+    const carId = Number(req.params.id);
+
+    if (!carId) {
+      return res.status(400).json({
+        message: "Invalid car ID",
+      });
+    }
+
+    const result = await updateCarService(carId, dealerId, req.body);
+
+    return res.json(result);
+  } catch (error) {
+    console.error(error);
+
+    if (error.message === "CAR_NOT_FOUND") {
+      return res.status(404).json({
+        message: "Car not found",
+      });
+    }
+
+    return res.status(500).json({
+      message: "Failed to update car",
+    });
+  }
+};
+
+export const deleteCar = async (req, res) => {
+  try {
+    const dealerId = req.user.userId;
+    const carId = Number(req.params.id);
+
+    if (!carId) {
+      return res.status(400).json({
+        message: "Invalid car ID",
+      });
+    }
+
+    const result = await deleteCarService(carId, dealerId);
+
+    return res.json(result);
+  } catch (error) {
+    console.error(error);
+
+    if (error.message === "CAR_NOT_FOUND") {
+      return res.status(404).json({
+        message: "Car not found",
+      });
+    }
+
+    return res.status(500).json({
+      message: "Failed to delete car",
+    });
+  }
+};
+
+export const updateCarStatus = async (req, res) => {
+  try {
+    const dealerId = req.user.userId;
+    const carId = Number(req.params.id);
+    const { status } = req.body;
+
+    if (!carId) {
+      return res.status(400).json({
+        message: "Invalid car ID",
+      });
+    }
+
+    if (!status) {
+      return res.status(400).json({
+        message: "Status is required",
+      });
+    }
+
+    const result = await updateCarStatusService(carId, dealerId, status);
+
+    return res.json(result);
+  } catch (error) {
+    console.error(error);
+
+    if (error.message === "CAR_NOT_FOUND") {
+      return res.status(404).json({
+        message: "Car not found",
+      });
+    }
+
+    if (error.message === "INVALID_STATUS") {
+      return res.status(400).json({
+        message: "Invalid car status",
+      });
+    }
+
+    return res.status(500).json({
+      message: "Failed to update car status",
     });
   }
 };
