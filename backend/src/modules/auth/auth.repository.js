@@ -1,8 +1,8 @@
 import { and, eq, gt, isNull } from "drizzle-orm";
-
 import { db } from "../../db/index.js";
 import { users } from "../../db/schemas/users.js";
 import { refreshTokens } from "../../db/schemas/refresh_tokens.js";
+import { dealerProfiles } from "../../db/schemas/dealers.js";
 
 export const findUserByEmail = async (email) => {
   const result = await db
@@ -52,6 +52,41 @@ export const createUser = async ({
       phoneVerified: users.phoneVerified,
       createdAt: users.createdAt,
     });
+
+  return result[0];
+};
+
+export const createDealerProfile = async ({
+  userId,
+  dealershipName,
+  description,
+  logo,
+  address,
+  city,
+  state,
+  country,
+  pincode,
+  latitude,
+  longitude,
+  gstNumber,
+}) => {
+  const result = await db
+    .insert(dealerProfiles)
+    .values({
+      userId,
+      dealershipName,
+      description,
+      logo,
+      address,
+      city,
+      state,
+      country,
+      pincode,
+      latitude,
+      longitude,
+      gstNumber,
+    })
+    .returning();
 
   return result[0];
 };
@@ -106,4 +141,62 @@ export const revokeRefreshToken = async (tokenId) => {
       revokedAt: new Date(),
     })
     .where(eq(refreshTokens.id, tokenId));
+};
+
+export const revokeAllUserRefreshTokens = async (userId) => {
+  await db
+    .update(refreshTokens)
+    .set({
+      revokedAt: new Date(),
+    })
+    .where(
+      and(eq(refreshTokens.userId, userId), isNull(refreshTokens.revokedAt))
+    );
+};
+
+export const deactivateUser = async (userId) => {
+  const result = await db
+    .update(users)
+    .set({
+      isActive: false,
+      updatedAt: new Date(),
+    })
+    .where(eq(users.id, userId))
+    .returning({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      isActive: users.isActive,
+      updatedAt: users.updatedAt,
+    });
+
+  return result[0] || null;
+};
+
+export const activateUser = async (userId) => {
+  const result = await db
+    .update(users)
+    .set({
+      isActive: true,
+      updatedAt: new Date(),
+    })
+    .where(eq(users.id, userId))
+    .returning({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      isActive: users.isActive,
+      updatedAt: users.updatedAt,
+    });
+
+  return result[0] || null;
+};
+
+export const deleteUser = async (userId) => {
+  const result = await db.delete(users).where(eq(users.id, userId)).returning({
+    id: users.id,
+    email: users.email,
+  });
+
+  return result[0] || null;
 };
