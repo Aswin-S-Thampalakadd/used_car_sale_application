@@ -1,6 +1,7 @@
 import { and, asc, desc, eq, gte, ilike, lte } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { cars } from "../../db/schemas/cars.js";
+import { dealerProfiles } from "../../db/schemas/dealers.js";
 
 export const getAllCarsDB = async (page, limit, filters) => {
   const offset = (page - 1) * limit;
@@ -236,4 +237,126 @@ export const updateCarStatus = async (carId, dealerId, status) => {
     .returning();
 
   return result[0] || null;
+};
+
+export const getFeaturedCarsDB = async (limit = 10) => {
+  return await db.query.cars.findMany({
+    where: (cars, { and, eq }) =>
+      and(eq(cars.isFeatured, true), eq(cars.status, "active")),
+    with: {
+      carImages: true,
+      carFeatureMappings: {
+        with: {
+          feature: true,
+        },
+      },
+      dealer: true,
+    },
+    orderBy: [desc(cars.createdAt)],
+    limit,
+  });
+};
+
+export const searchCarsDB = async ({
+  search,
+  make,
+  model,
+  fuelType,
+  transmission,
+  minPrice,
+  maxPrice,
+  minYear,
+  maxYear,
+  minKilometers,
+  maxKilometers,
+  page,
+  limit,
+}) => {
+  const filters = [eq(cars.status, "active")];
+
+  if (search) {
+    filters.push(
+      or(
+        ilike(cars.make, `%${search}%`),
+        ilike(cars.model, `%${search}%`),
+        ilike(cars.variant, `%${search}%`)
+      )
+    );
+  }
+
+  if (make) {
+    filters.push(eq(cars.make, make));
+  }
+
+  if (model) {
+    filters.push(eq(cars.model, model));
+  }
+
+  if (fuelType) {
+    filters.push(eq(cars.fuelType, fuelType));
+  }
+
+  if (transmission) {
+    filters.push(eq(cars.transmission, transmission));
+  }
+
+  if (minPrice) {
+    filters.push(gte(cars.price, minPrice));
+  }
+
+  if (maxPrice) {
+    filters.push(lte(cars.price, maxPrice));
+  }
+
+  if (minYear) {
+    filters.push(gte(cars.year, minYear));
+  }
+
+  if (maxYear) {
+    filters.push(lte(cars.year, maxYear));
+  }
+
+  if (minKilometers) {
+    filters.push(gte(cars.kilometersDriven, minKilometers));
+  }
+
+  if (maxKilometers) {
+    filters.push(lte(cars.kilometersDriven, maxKilometers));
+  }
+
+  return await db.query.cars.findMany({
+    where: and(...filters),
+    with: {
+      carImages: true,
+      carFeatureMappings: {
+        with: {
+          feature: true,
+        },
+      },
+      dealer: true,
+    },
+    orderBy: [desc(cars.createdAt)],
+    limit,
+    offset: (page - 1) * limit,
+  });
+};
+
+export const getLocationRecommendedCarsDB = async ({ city, state, limit }) => {
+  const filters = [eq(cars.status, "active")];
+
+  if (city) {
+    filters.push(eq(dealerProfiles.city, city));
+  }
+
+  if (state) {
+    filters.push(eq(dealerProfiles.state, state));
+  }
+
+  return await db
+    .select()
+    .from(cars)
+    .innerJoin(dealerProfiles, eq(cars.dealerId, dealerProfiles.userId))
+    .where(and(...filters))
+    .orderBy(desc(cars.createdAt))
+    .limit(limit);
 };

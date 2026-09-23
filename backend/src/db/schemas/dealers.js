@@ -8,6 +8,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { users } from "./users.js";
+import { relations } from "drizzle-orm";
 
 export const dealerProfiles = pgTable("dealers", {
   id: bigint("id", { mode: "number" }).generatedAlwaysAsIdentity().primaryKey(),
@@ -45,3 +46,13 @@ export const dealerProfiles = pgTable("dealers", {
 
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const dealerProfilesRelations = relations(
+  dealerProfiles,
+  ({ one, many }) => ({
+    user: one(users, {
+      fields: [dealerProfiles.userId],
+      references: [users.id],
+    }),
+  })
+);

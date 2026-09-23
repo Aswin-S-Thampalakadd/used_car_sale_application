@@ -4,7 +4,10 @@ import {
   fetchCarById,
   getAllCarsService,
   getAvailableCarBrandsService,
+  getFeaturedCarsService,
+  getLocationRecommendedCarsService,
   getRecentlyAddedCarsService,
+  searchCarsService,
   updateCarService,
   updateCarStatusService,
 } from "./car.service.js";
@@ -283,6 +286,106 @@ export const updateCarStatus = async (req, res) => {
 
     return res.status(500).json({
       message: "Failed to update car status",
+    });
+  }
+};
+
+export const getFeaturedCars = async (req, res) => {
+  try {
+    const limit = Math.min(Number(req.query.limit) || 10, 50);
+
+    const cars = await getFeaturedCarsService(limit);
+
+    res.status(200).json({
+      success: true,
+      count: cars.length,
+      cars,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch featured cars",
+    });
+  }
+};
+
+export const searchCars = async (req, res) => {
+  try {
+    const {
+      search,
+      make,
+      model,
+      fuelType,
+      transmission,
+      minPrice,
+      maxPrice,
+      minYear,
+      maxYear,
+      minKilometers,
+      maxKilometers,
+    } = req.query;
+
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.min(Number(req.query.limit) || 10, 50);
+
+    const cars = await searchCarsService({
+      search,
+      make,
+      model,
+      fuelType,
+      transmission,
+      minPrice: minPrice ? Number(minPrice) : undefined,
+      maxPrice: maxPrice ? Number(maxPrice) : undefined,
+      minYear: minYear ? Number(minYear) : undefined,
+      maxYear: maxYear ? Number(maxYear) : undefined,
+      minKilometers: minKilometers ? Number(minKilometers) : undefined,
+      maxKilometers: maxKilometers ? Number(maxKilometers) : undefined,
+      page,
+      limit,
+    });
+
+    res.status(200).json({
+      success: true,
+      page,
+      limit,
+      count: cars.length,
+      cars,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to search cars",
+    });
+  }
+};
+
+export const getLocationRecommendedCars = async (req, res) => {
+  try {
+    const { city, state } = req.query;
+    const limit = Math.min(Number(req.query.limit) || 10, 50);
+
+    if (!city && !state) {
+      return res.status(400).json({
+        success: false,
+        message: "City or state is required",
+      });
+    }
+
+    const cars = await getLocationRecommendedCarsService({
+      city,
+      state,
+      limit,
+    });
+
+    res.status(200).json({
+      success: true,
+      count: cars.length,
+      cars,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch location based cars",
     });
   }
 };

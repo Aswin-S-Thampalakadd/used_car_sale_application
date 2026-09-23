@@ -6,7 +6,10 @@ import {
   getAllCarsDB,
   getAvailableCarBrandsDB,
   getCarByIdDB,
+  getFeaturedCarsDB,
+  getLocationRecommendedCarsDB,
   getRecentlyAddedCarsDB,
+  searchCarsDB,
   updateCar,
   updateCarStatus,
 } from "./cars.repository.js";
@@ -164,4 +167,26 @@ export const updateCarStatusService = async (carId, dealerId, status) => {
     message: "Car status updated successfully",
     car,
   };
+};
+
+export const getFeaturedCarsService = async (limit) => {
+  const cars = await getFeaturedCarsDB(limit);
+
+  return cars;
+};
+
+export const searchCarsService = async (filters) => {
+  return await searchCarsDB(filters);
+};
+
+export const getLocationRecommendedCarsService = async ({
+  city,
+  state,
+  limit,
+}) => {
+  return await getLocationRecommendedCarsDB({
+    city,
+    state,
+    limit,
+  });
 };
