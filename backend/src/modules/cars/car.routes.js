@@ -5,6 +5,7 @@ import {
   getAvailableCarBrands,
   getCarById,
   getFeaturedCars,
+  getLocationRecommendedCars,
   getRecentlyAddedCars,
   searchCars,
 } from "./cars.controller.js";
