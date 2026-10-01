@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gte, ilike, lte } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, lte, or } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { cars } from "../../db/schemas/cars.js";
 import { dealerProfiles } from "../../db/schemas/dealers.js";

@@ -1,0 +1,9 @@
+.signup-page {
+  align-items: flex-start;
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-xl);
+}
+
+.signup-card {
+  max-width: 560px;
+}

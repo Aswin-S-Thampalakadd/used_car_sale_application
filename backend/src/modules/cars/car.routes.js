@@ -8,14 +8,17 @@ import {
   getLocationRecommendedCars,
   getRecentlyAddedCars,
   searchCars,
+  updateCar,
+  deleteCar,
+  updateCarStatus,
 } from "./cars.controller.js";
 import { authenticate } from "../../middlewares/auth.middleware.js";
-import { deleteCar, updateCar, updateCarStatus } from "./cars.repository.js";
+import { authorizeDealer } from "../../middlewares/authorize.middleware.js";
 
 const router = Router();
 
 router.get("/", getAllCars);
-router.post("/", authenticate, addCar);
+router.post("/", authenticate, authorizeDealer, addCar);
 router.get("/featured", getFeaturedCars);
 router.get("/brands", getAvailableCarBrands);
 router.get("/recent", getRecentlyAddedCars);
@@ -23,8 +26,8 @@ router.get("/search", searchCars);
 router.get("/location-recommendations", getLocationRecommendedCars);
 
 router.get("/:id", getCarById);
-router.put("/:id", authenticate, updateCar);
-router.delete("/:id", authenticate, deleteCar);
-router.patch("/:id/status", authenticate, updateCarStatus);
+router.put("/:id", authenticate, authorizeDealer, updateCar);
+router.delete("/:id", authenticate, authorizeDealer, deleteCar);
+router.patch("/:id/status", authenticate, authorizeDealer, updateCarStatus);
 
 export default router;

@@ -1,27 +1,40 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+
+dotenv.config();
+
 import carRouter from "./modules/cars/car.routes.js";
-import authController from "./modules/auth/auth.routes.js";
+import authRouter from "./modules/auth/auth.routes.js";
+import enquiriesRouter from "./modules/enquiries/enquiries.routes.js";
+import favouritesRouter from "./modules/favourites/favourites.routes.js";
+import reviewsRouter from "./modules/reviews/reviews.routes.js";
+import dealersRouter from "./modules/dealers/dealers.routes.js";
+import carImagesRouter from "./modules/car-images/car-images.routes.js";
+import usersRouter from "./modules/users/users.routes.js";
 
 const app = express();
-
 const port = process.env.PORT || 5000;
 
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-dotenv.config();
 
-// Routes configuration
+// Routes
+app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/cars", carRouter);
-app.use("/api/v1/auth", authController);
+app.use("/api/v1/cars", carImagesRouter);   // image sub-routes on /cars/:carId/images
+app.use("/api/v1/enquiries", enquiriesRouter);
+app.use("/api/v1/favourites", favouritesRouter);
+app.use("/api/v1/reviews", reviewsRouter);
+app.use("/api/v1/dealers", dealersRouter);
+app.use("/api/v1/users", usersRouter);
 
 app.get("/health", (req, res) => {
-  res.send("Nodejs server is running");
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
 app.listen(port, () => {
-  console.log(`Server is running at the port ${port}`);
+  console.log(`Server running on port ${port}`);
 });

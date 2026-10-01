@@ -1,4 +1,5 @@
 import { bigint, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
 import { users } from "./users.js";
 import { cars } from "./cars.js";
@@ -32,3 +33,22 @@ export const enquiries = pgTable("enquiries", {
 
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const enquiriesRelations = relations(enquiries, ({ one }) => ({
+  car: one(cars, {
+    fields: [enquiries.carId],
+    references: [cars.id],
+  }),
+
+  customer: one(users, {
+    fields: [enquiries.customerId],
+    references: [users.id],
+    relationName: "enquiry_customer",
+  }),
+
+  dealer: one(users, {
+    fields: [enquiries.dealerId],
+    references: [users.id],
+    relationName: "enquiry_dealer",
+  }),
+}));
