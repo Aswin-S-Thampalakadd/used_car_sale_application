@@ -1202,3 +1202,281 @@
   color: var(--text-secondary);
   line-height: 1.5;
 }
+
+/* ════════════════════════════════════════════════
+   CARDETAILS  v2 additions
+════════════════════════════════════════════════ */
+
+/* ── Star rating ── */
+.cd-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.cd-star {
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+}
+
+.cd-star svg {
+  color: var(--color-gray-300);
+}
+
+.cd-star--on svg {
+  color: var(--color-accent);
+}
+
+/* ── Call Dealer button (in action row) ── */
+.car-btn-call {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  font-family: var(--font-sans);
+}
+
+.car-btn-call:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+}
+
+.car-btn-call svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ── Dealer call button (sidebar) ── */
+.car-dealer-call-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  background: #16a34a;
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  margin: 12px 0;
+  transition: background var(--transition-fast);
+}
+
+.car-dealer-call-btn:hover {
+  background: #15803d;
+}
+
+.car-dealer-call-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Rating summary bar ── */
+.car-rating-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-muted);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.car-rating-big {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.car-rating-bar-right {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.car-rating-bar-count {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* ── Review card ── */
+.car-review-item {
+  list-style: none;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.car-review-item:last-child {
+  border-bottom: none;
+}
+
+.car-review-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.car-review-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.car-review-meta {
+  flex: 1;
+}
+
+.car-review-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  margin: 0 0 3px;
+}
+
+.car-review-date {
+  font-size: 0.775rem;
+  color: var(--text-secondary);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.car-review-comment {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Dealer reply bubble ── */
+.cd-review-reply {
+  margin-top: 10px;
+  margin-left: 50px;
+  background: var(--color-primary-subtle);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 10px 14px;
+}
+
+.cd-review-reply-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.cd-review-reply-label svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cd-review-reply-text {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.cd-review-reply-date {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  display: block;
+}
+
+/* ── Mobile sticky call bar ── */
+.car-mobile-call-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  padding: 12px 16px;
+  gap: 10px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.car-mobile-call-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px;
+  background: #16a34a;
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  font-family: var(--font-sans);
+}
+
+.car-mobile-call-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.car-mobile-enquiry-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.car-mobile-enquiry-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 768px) {
+  .car-mobile-call-bar {
+    display: flex;
+  }
+
+  /* push content up so it's not hidden behind the bar */
+  .car-details {
+    padding-bottom: 80px;
+  }
+}

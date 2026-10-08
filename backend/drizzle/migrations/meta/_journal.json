@@ -22,6 +22,20 @@
       "when": 1790851387766,
       "tag": "0002_solid_falcon",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791000000000,
+      "tag": "0003_subscriptions",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791100000000,
+      "tag": "0004_reviews_v2",
+      "breakpoints": true
     }
   ]
 }

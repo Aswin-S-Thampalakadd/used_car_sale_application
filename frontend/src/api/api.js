@@ -179,6 +179,7 @@ export const favouritesAPI = {
 
 // ── Reviews ─────────────────────────────────────────────────────────────────
 export const reviewsAPI = {
+  // ── Car reviews (public + customer) ─────────────────────────────────────
   getByCar: (carId) => apiFetch(`/reviews/car/${carId}`),
 
   create: (data) =>
@@ -188,6 +189,26 @@ export const reviewsAPI = {
     apiFetch(`/reviews/${id}`, { method: "PUT", body: JSON.stringify(data) }),
 
   delete: (id) => apiFetch(`/reviews/${id}`, { method: "DELETE" }),
+
+  // ── App reviews (platform reviews shown in Testimonials) ─────────────────
+  getTopAppReviews: () => apiFetch("/reviews/app/top"),
+
+  getAllAppReviews: () => apiFetch("/reviews/app"),
+
+  createAppReview: (data) =>
+    apiFetch("/reviews/app", { method: "POST", body: JSON.stringify(data) }),
+
+  // ── Dealer dashboard review management ───────────────────────────────────
+  getDealerReviews: () => apiFetch("/reviews/dealer/mine"),
+
+  replyToReview: (id, replyText) =>
+    apiFetch(`/reviews/${id}/reply`, {
+      method: "POST",
+      body: JSON.stringify({ replyText }),
+    }),
+
+  dealerDeleteReview: (id) =>
+    apiFetch(`/reviews/${id}/dealer`, { method: "DELETE" }),
 };
 
 // ── Dealers ─────────────────────────────────────────────────────────────────
@@ -212,6 +233,73 @@ export const usersAPI = {
 
   updateMyProfile: (data) =>
     apiFetch("/users/me", { method: "PUT", body: JSON.stringify(data) }),
+};
+
+// ── Subscriptions ────────────────────────────────────────────────────────────
+export const subscriptionsAPI = {
+  // Public: get all available plans
+  getPlans: () => apiFetch("/subscriptions/plans"),
+
+  // Dealer's current active plan
+  getMyPlan: () => apiFetch("/subscriptions/my-plan"),
+
+  // Subscription history
+  getHistory: () => apiFetch("/subscriptions/history"),
+
+  // Check if dealer has hit their car limit
+  checkLimit: (currentCarCount) =>
+    apiFetch(`/subscriptions/check-limit?currentCarCount=${currentCarCount}`),
+
+  // Create a Razorpay order for a plan upgrade
+  createOrder: (planType) =>
+    apiFetch("/subscriptions/create-order", {
+      method: "POST",
+      body: JSON.stringify({ planType }),
+    }),
+
+  // Verify payment after Razorpay checkout completes
+  verifyPayment: (razorpay_order_id, razorpay_payment_id, razorpay_signature) =>
+    apiFetch("/subscriptions/verify-payment", {
+      method: "POST",
+      body: JSON.stringify({
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
+      }),
+    }),
+};
+
+// ── Uploads ──────────────────────────────────────────────────────────────────
+export const uploadsAPI = {
+  /**
+   * Upload a single image file to Cloudinary via the backend.
+   * @param {File} file - the File object from an <input type="file">
+   * @returns fetch Response — body: { success, imageUrl, publicId }
+   */
+  uploadImage: (file) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const accessToken = getAccessToken();
+    return fetch(`${BASE_URL}/uploads/image`, {
+      method: "POST",
+      headers: {
+        // Do NOT set Content-Type — browser sets it with the multipart boundary
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
+      body: formData,
+    });
+  },
+
+  /**
+   * Delete an image from Cloudinary by its publicId.
+   * @param {string} publicId - returned from uploadImage
+   */
+  deleteImage: (publicId) =>
+    apiFetch("/uploads/image", {
+      method: "DELETE",
+      body: JSON.stringify({ publicId }),
+    }),
 };
 
 export { setTokens, clearTokens, getAccessToken, getRefreshToken };

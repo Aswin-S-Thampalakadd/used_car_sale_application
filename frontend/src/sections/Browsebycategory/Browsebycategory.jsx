@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./Browsebycategory.css";
 
 const SuvIcon = () => (
@@ -203,68 +202,19 @@ const ConvertibleIcon = () => (
   </svg>
 );
 
+// Each category links to /used-cars with the relevant filter pre-applied
 const categories = [
-  { id: "suv", name: "SUV", count: 412, priceFrom: "$12,500", icon: SuvIcon },
-  {
-    id: "sedan",
-    name: "Sedan",
-    count: 638,
-    priceFrom: "$6,900",
-    icon: SedanIcon,
-  },
-  {
-    id: "hatchback",
-    name: "Hatchback",
-    count: 295,
-    priceFrom: "$4,750",
-    icon: HatchbackIcon,
-  },
-  {
-    id: "pickup",
-    name: "Pickup",
-    count: 187,
-    priceFrom: "$15,200",
-    icon: PickupIcon,
-  },
-  {
-    id: "coupe",
-    name: "Coupe",
-    count: 96,
-    priceFrom: "$11,300",
-    icon: CoupeIcon,
-  },
-  {
-    id: "van",
-    name: "Van & MPV",
-    count: 143,
-    priceFrom: "$8,100",
-    icon: VanIcon,
-  },
-  {
-    id: "electric",
-    name: "Electric",
-    count: 208,
-    priceFrom: "$17,900",
-    icon: ElectricIcon,
-    badge: "Growing fast",
-  },
-  {
-    id: "convertible",
-    name: "Convertible",
-    count: 54,
-    priceFrom: "$13,400",
-    icon: ConvertibleIcon,
-  },
+  { id: "suv",         name: "SUV",         icon: SuvIcon,         href: "/used-cars?search=suv",          badge: null },
+  { id: "sedan",       name: "Sedan",       icon: SedanIcon,       href: "/used-cars?search=sedan",        badge: null },
+  { id: "hatchback",   name: "Hatchback",   icon: HatchbackIcon,   href: "/used-cars?search=hatchback",    badge: null },
+  { id: "pickup",      name: "Pickup / MUV", icon: PickupIcon,     href: "/used-cars?search=innova",       badge: null },
+  { id: "coupe",       name: "Coupe",       icon: CoupeIcon,       href: "/used-cars?search=coupe",        badge: null },
+  { id: "van",         name: "Van & MPV",   icon: VanIcon,         href: "/used-cars?search=mpv",          badge: null },
+  { id: "electric",    name: "Electric",    icon: ElectricIcon,    href: "/used-cars?fuelType=electric",   badge: "EV" },
+  { id: "convertible", name: "Convertible", icon: ConvertibleIcon, href: "/used-cars?search=convertible",  badge: null },
 ];
 
-export default function BrowseByCategory({ items = categories, onSelect }) {
-  const [active, setActive] = useState(null);
-
-  const handleSelect = (category) => {
-    setActive(category.id);
-    if (onSelect) onSelect(category);
-  };
-
+export default function BrowseByCategory() {
   return (
     <section className="categories" aria-labelledby="categories-heading">
       <div className="categories__inner">
@@ -274,43 +224,30 @@ export default function BrowseByCategory({ items = categories, onSelect }) {
               Browse by category
             </h2>
             <p className="categories__subtitle">
-              Every listing is inspected and history-checked before it goes
-              live.
+              Every listing is inspected and history-checked before it goes live.
             </p>
           </div>
-          <a className="categories__all" href="/inventory">
-            See all 2,033 cars
+          <a className="categories__all" href="/used-cars">
+            See all cars →
           </a>
         </header>
 
         <ul className="categories__grid">
-          {items.map((category) => {
+          {categories.map((category) => {
             const Icon = category.icon;
             return (
               <li key={category.id}>
-                <button
-                  type="button"
-                  className={
-                    active === category.id
-                      ? "category-card category-card--active"
-                      : "category-card"
-                  }
-                  onClick={() => handleSelect(category)}
-                  aria-pressed={active === category.id}
+                <a
+                  className="category-card"
+                  href={category.href}
+                  aria-label={`Browse ${category.name} cars`}
                 >
                   {category.badge && (
-                    <span className="category-card__badge">
-                      {category.badge}
-                    </span>
+                    <span className="category-card__badge">{category.badge}</span>
                   )}
-                  <span className="category-card__icon">
-                    <Icon />
-                  </span>
+                  <span className="category-card__icon"><Icon /></span>
                   <span className="category-card__name">{category.name}</span>
-                  <span className="category-card__meta">
-                    {category.count} cars · from {category.priceFrom}
-                  </span>
-                </button>
+                </a>
               </li>
             );
           })}

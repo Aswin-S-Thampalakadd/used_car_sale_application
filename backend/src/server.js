@@ -12,6 +12,8 @@ import reviewsRouter from "./modules/reviews/reviews.routes.js";
 import dealersRouter from "./modules/dealers/dealers.routes.js";
 import carImagesRouter from "./modules/car-images/car-images.routes.js";
 import usersRouter from "./modules/users/users.routes.js";
+import subscriptionsRouter from "./modules/subscriptions/subscriptions.routes.js";
+import uploadsRouter from "./modules/uploads/uploads.routes.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -30,6 +32,8 @@ app.use("/api/v1/favourites", favouritesRouter);
 app.use("/api/v1/reviews", reviewsRouter);
 app.use("/api/v1/dealers", dealersRouter);
 app.use("/api/v1/users", usersRouter);
+app.use("/api/v1/subscriptions", subscriptionsRouter);
+app.use("/api/v1/uploads", uploadsRouter);
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });

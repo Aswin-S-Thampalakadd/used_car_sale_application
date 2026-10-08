@@ -691,3 +691,66 @@
     .explore-sort-label { display: none; }
     .explore-sort select { padding-top: 10px; padding-bottom: 10px; }
   }
+
+/* ── Loading / Error / No-image states ───────────────────── */
+.explore-loading-state,
+.explore-error-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  gap: var(--space-md);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.explore-error-state svg {
+  width: 48px;
+  height: 48px;
+  opacity: 0.4;
+}
+
+.explore-error-state h3 {
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.explore-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.explore-spinner-ring {
+  width: 44px;
+  height: 44px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: explore-spin 0.8s linear infinite;
+}
+
+@keyframes explore-spin { to { transform: rotate(360deg); } }
+
+.car-card-no-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-muted);
+  color: var(--color-gray-300);
+}
+
+.car-card-no-image svg {
+  width: 40px;
+  height: 40px;
+}
+
+.explore-page-ellipsis {
+  padding: 8px 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}

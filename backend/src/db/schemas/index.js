@@ -11,3 +11,4 @@ export * from "./refresh_tokens.js";
 export * from "./enquiries.js";
 export * from "./favourites.js";
 export * from "./reviews.js";
+export * from "./subscriptions.js";

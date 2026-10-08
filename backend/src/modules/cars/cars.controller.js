@@ -184,6 +184,14 @@ export const addCar = async (req, res) => {
   } catch (error) {
     console.error(error);
 
+    if (error.message === "CAR_LIMIT_REACHED") {
+      return res.status(403).json({
+        message: "CAR_LIMIT_REACHED",
+        planType: error.planType,
+        limit: error.limit,
+      });
+    }
+
     return res.status(500).json({
       message: "Failed to add car",
     });

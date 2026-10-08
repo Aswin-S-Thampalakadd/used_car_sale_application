@@ -4,36 +4,37 @@ import { useAuth } from "../../context/AuthContext";
 import { carsAPI, enquiriesAPI, favouritesAPI, reviewsAPI } from "../../api/api";
 import "./CarDetails.css";
 
-const formatPrice = (value) => {
-  const num = Number(value);
-  if (Number.isNaN(num)) return value;
-  return new Intl.NumberFormat("en-IN", {
+/* ── helpers ──────────────────────────────────────────────── */
+const formatPrice = (v) =>
+  new Intl.NumberFormat("en-IN", {
     style: "currency", currency: "INR", maximumFractionDigits: 0,
-  }).format(num);
-};
+  }).format(Number(v));
 
 const formatKm = (km) => `${Number(km).toLocaleString("en-IN")} km`;
 
 const formatDate = (iso) =>
-  new Date(iso).toLocaleDateString("en-US", {
+  new Date(iso).toLocaleDateString("en-IN", {
     year: "numeric", month: "short", day: "numeric",
   });
 
 const conditionLabel = { excellent: "Excellent", good: "Good", fair: "Fair" };
 
+/* ── star rating component ─────────────────────────────────── */
 const StarRating = ({ value, onChange, readonly = false, size = 20 }) => (
-  <div className="star-rating" aria-label={`Rating: ${value} out of 5`}>
-    {[1, 2, 3, 4, 5].map((star) => (
+  <div className="cd-stars" aria-label={`${value} out of 5 stars`}>
+    {[1, 2, 3, 4, 5].map((s) => (
       <button
-        key={star}
-        type={readonly ? "button" : "button"}
-        className={`star ${star <= value ? "star-filled" : "star-empty"}`}
-        onClick={readonly ? undefined : () => onChange(star)}
+        key={s}
+        type="button"
+        className={`cd-star ${s <= value ? "cd-star--on" : ""}`}
+        onClick={readonly ? undefined : () => onChange(s)}
         style={{ width: size, height: size, cursor: readonly ? "default" : "pointer" }}
-        aria-label={`${star} star`}
         tabIndex={readonly ? -1 : 0}
+        aria-label={`${s} star`}
       >
-        <svg viewBox="0 0 24 24" fill={star <= value ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
+        <svg viewBox="0 0 24 24"
+          fill={s <= value ? "currentColor" : "none"}
+          stroke="currentColor" strokeWidth="2">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
       </button>
@@ -41,31 +42,72 @@ const StarRating = ({ value, onChange, readonly = false, size = 20 }) => (
   </div>
 );
 
+/* ── review card (with dealer reply) ─────────────────────── */
+const ReviewCard = ({ review }) => (
+  <li className="cd-review-item">
+    <div className="cd-review-top">
+      <div className="cd-review-avatar">
+        {review.customer?.name?.charAt(0)?.toUpperCase() || "?"}
+      </div>
+      <div className="cd-review-meta">
+        <p className="cd-review-name">{review.customer?.name || "Anonymous"}</p>
+        <StarRating value={review.rating} readonly size={14} />
+      </div>
+      <span className="cd-review-date">{formatDate(review.createdAt)}</span>
+    </div>
+
+    {review.comment && (
+      <p className="cd-review-comment">{review.comment}</p>
+    )}
+
+    {/* dealer reply */}
+    {review.replyText && (
+      <div className="cd-review-reply">
+        <div className="cd-review-reply-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+          Dealer's reply
+        </div>
+        <p className="cd-review-reply-text">{review.replyText}</p>
+        {review.replyAt && (
+          <span className="cd-review-reply-date">{formatDate(review.replyAt)}</span>
+        )}
+      </div>
+    )}
+  </li>
+);
+
+/* ═══════════════════════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════════════════════ */
 const CarDetails = () => {
   const { id } = useParams();
-  const { isAuthenticated, isCustomer, user } = useAuth();
+  const { isAuthenticated, isCustomer } = useAuth();
   const navigate = useNavigate();
 
+  /* ── car data ── */
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  /* ── gallery ── */
   const [activeImage, setActiveImage] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // Favourite
+  /* ── favourite ── */
   const [isFavourite, setIsFavourite] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
 
-  // Enquiry
+  /* ── enquiry ── */
   const [enquiryMessage, setEnquiryMessage] = useState("");
   const [enquiryLoading, setEnquiryLoading] = useState(false);
   const [enquirySuccess, setEnquirySuccess] = useState("");
   const [enquiryError, setEnquiryError] = useState("");
   const [showEnquiryForm, setShowEnquiryForm] = useState(false);
 
-  // Reviews
+  /* ── reviews ── */
   const [reviews, setReviews] = useState([]);
   const [avgRating, setAvgRating] = useState(null);
   const [totalReviews, setTotalReviews] = useState(0);
@@ -76,19 +118,15 @@ const CarDetails = () => {
   const [reviewSuccess, setReviewSuccess] = useState("");
   const [showReviewForm, setShowReviewForm] = useState(false);
 
+  /* ── data loaders ── */
   const loadCar = useCallback(async () => {
-    setLoading(true);
-    setError("");
+    setLoading(true); setError("");
     try {
       const res = await carsAPI.getById(id);
       if (!res.ok) throw new Error("Car not found");
-      const data = await res.json();
-      setCar(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+      setCar(await res.json());
+    } catch (err) { setError(err.message); }
+    finally { setLoading(false); }
   }, [id]);
 
   const loadReviews = useCallback(async () => {
@@ -107,176 +145,135 @@ const CarDetails = () => {
     if (!isAuthenticated) return;
     try {
       const res = await favouritesAPI.check(id);
-      if (res.ok) {
-        const data = await res.json();
-        setIsFavourite(data.isFavourite);
-      }
+      if (res.ok) setIsFavourite((await res.json()).isFavourite);
     } catch { /* non-critical */ }
   }, [id, isAuthenticated]);
 
   useEffect(() => {
-    loadCar();
-    loadReviews();
-    checkFavourite();
+    loadCar(); loadReviews(); checkFavourite();
   }, [loadCar, loadReviews, checkFavourite]);
 
+  /* ── derived ── */
   const images = useMemo(
     () => (car?.carImages ? [...car.carImages].sort((a, b) => a.sortOrder - b.sortOrder) : []),
     [car]
   );
-
   const features = useMemo(
     () => (car?.carFeatureMappings ? car.carFeatureMappings.map((f) => f.feature.name) : []),
     [car]
   );
 
-  const nextImage = () => setActiveImage((prev) => (prev + 1) % images.length);
-  const prevImage = () => setActiveImage((prev) => (prev - 1 + images.length) % images.length);
+  /* ── gallery handlers ── */
+  const nextImage = () => setActiveImage((p) => (p + 1) % images.length);
+  const prevImage = () => setActiveImage((p) => (p - 1 + images.length) % images.length);
 
   const handleCopyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch { /* noop */ }
+    try { await navigator.clipboard.writeText(window.location.href); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { }
   };
 
+  /* ── favourite ── */
   const handleFavourite = async () => {
     if (!isAuthenticated) { navigate("/login"); return; }
     setFavLoading(true);
     try {
-      if (isFavourite) {
-        await favouritesAPI.remove(id);
-        setIsFavourite(false);
-      } else {
-        await favouritesAPI.add(id);
-        setIsFavourite(true);
-      }
-    } catch { /* noop */ }
+      isFavourite ? await favouritesAPI.remove(id) : await favouritesAPI.add(id);
+      setIsFavourite(!isFavourite);
+    } catch { }
     setFavLoading(false);
   };
 
+  /* ── enquiry ── */
   const handleEnquiry = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) { navigate("/login"); return; }
-    setEnquiryLoading(true);
-    setEnquiryError("");
-    setEnquirySuccess("");
+    setEnquiryLoading(true); setEnquiryError(""); setEnquirySuccess("");
     try {
-      const res = await enquiriesAPI.create({
-        carId: Number(id),
-        message: enquiryMessage,
-      });
+      const res = await enquiriesAPI.create({ carId: Number(id), message: enquiryMessage });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to send enquiry");
       setEnquirySuccess("Enquiry sent! The dealer will contact you soon.");
-      setEnquiryMessage("");
-      setShowEnquiryForm(false);
-    } catch (err) {
-      setEnquiryError(err.message);
-    } finally {
-      setEnquiryLoading(false);
-    }
+      setEnquiryMessage(""); setShowEnquiryForm(false);
+    } catch (err) { setEnquiryError(err.message); }
+    finally { setEnquiryLoading(false); }
   };
 
+  /* ── review submit ── */
   const handleReview = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) { navigate("/login"); return; }
-    setReviewLoading(true);
-    setReviewError("");
-    setReviewSuccess("");
+    if (myRating === 0) { setReviewError("Please select a star rating."); return; }
+    setReviewLoading(true); setReviewError(""); setReviewSuccess("");
     try {
-      const res = await reviewsAPI.create({
-        carId: Number(id),
-        rating: myRating,
-        comment: myComment,
-      });
+      const res = await reviewsAPI.create({ carId: Number(id), rating: myRating, comment: myComment });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to submit review");
-      setReviewSuccess("Review submitted!");
-      setMyRating(0);
-      setMyComment("");
-      setShowReviewForm(false);
+      setReviewSuccess("Review submitted! Thank you.");
+      setMyRating(0); setMyComment(""); setShowReviewForm(false);
       loadReviews();
-    } catch (err) {
-      setReviewError(err.message);
-    } finally {
-      setReviewLoading(false);
-    }
+    } catch (err) { setReviewError(err.message); }
+    finally { setReviewLoading(false); }
   };
 
-  if (loading) {
-    return (
-      <div className="car-details-loading">
-        <div className="dash-spinner" />
-        <p>Loading car details…</p>
-      </div>
-    );
-  }
+  /* ── loading / error states ── */
+  if (loading) return (
+    <div className="car-details-loading">
+      <div className="dash-spinner" />
+      <p>Loading car details…</p>
+    </div>
+  );
 
-  if (error || !car) {
-    return (
-      <div className="car-details-error">
-        <h2>{error || "Car not found"}</h2>
-        <button onClick={() => navigate("/used-cars")}>Browse cars</button>
-      </div>
-    );
-  }
+  if (error || !car) return (
+    <div className="car-details-error">
+      <h2>{error || "Car not found"}</h2>
+      <button onClick={() => navigate("/used-cars")}>Browse cars</button>
+    </div>
+  );
 
   const title = `${car.year} ${car.make} ${car.model}`;
+  const dealerPhone = car.dealer?.phone;
 
   return (
     <div className="car-details">
       <div className="car-details-container">
+
         {/* Breadcrumb */}
         <nav className="car-breadcrumb" aria-label="Breadcrumb">
           <a href="/">Home</a>
-          <span aria-hidden="true">/</span>
+          <span>/</span>
           <a href="/used-cars">Used Cars</a>
-          <span aria-hidden="true">/</span>
+          <span>/</span>
           <span className="car-breadcrumb-current">{title}</span>
         </nav>
 
         <div className="car-hero">
-          {/* Gallery */}
+          {/* ── Gallery ── */}
           <div className="car-gallery">
             <div className="car-gallery-main" onClick={() => setLightboxOpen(true)}>
-              {images[activeImage] ? (
-                <img
-                  src={images[activeImage].imageUrl}
-                  alt={`${title} - view ${activeImage + 1}`}
-                  loading="eager"
-                />
-              ) : (
-                <div className="car-gallery-placeholder">No images available</div>
-              )}
+              {images[activeImage]
+                ? <img src={images[activeImage].imageUrl} alt={`${title} view ${activeImage + 1}`} loading="eager" />
+                : <div className="car-gallery-placeholder">No images available</div>
+              }
 
               <div className="car-gallery-badges">
                 {car.isFeatured && (
                   <span className="car-badge car-badge-featured">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z" />
-                    </svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z" /></svg>
                     Featured
                   </span>
                 )}
                 {car.condition && (
-                  <span className="car-badge car-badge-condition">
-                    {conditionLabel[car.condition] || car.condition}
-                  </span>
+                  <span className="car-badge car-badge-condition">{conditionLabel[car.condition] || car.condition}</span>
                 )}
               </div>
 
-              {images.length > 0 && (
-                <span className="car-gallery-count">{activeImage + 1} / {images.length}</span>
-              )}
+              {images.length > 0 && <span className="car-gallery-count">{activeImage + 1} / {images.length}</span>}
 
               {images.length > 1 && (
                 <>
-                  <button type="button" className="car-gallery-arrow car-gallery-arrow-prev" onClick={(e) => { e.stopPropagation(); prevImage(); }} aria-label="Previous image">
+                  <button type="button" className="car-gallery-arrow car-gallery-arrow-prev" onClick={(e) => { e.stopPropagation(); prevImage(); }} aria-label="Previous">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6" /></svg>
                   </button>
-                  <button type="button" className="car-gallery-arrow car-gallery-arrow-next" onClick={(e) => { e.stopPropagation(); nextImage(); }} aria-label="Next image">
+                  <button type="button" className="car-gallery-arrow car-gallery-arrow-next" onClick={(e) => { e.stopPropagation(); nextImage(); }} aria-label="Next">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                   </button>
                 </>
@@ -296,7 +293,7 @@ const CarDetails = () => {
             )}
           </div>
 
-          {/* Summary sidebar */}
+          {/* ── Summary sidebar ── */}
           <aside className="car-summary">
             <div className="car-summary-header">
               <div className="car-summary-title-row">
@@ -322,17 +319,12 @@ const CarDetails = () => {
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
                   {car.viewsCount} views
                 </span>
-                <span className="car-meta-item">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
-                  {formatDate(car.createdAt)}
-                </span>
               </div>
 
-              {/* Rating summary */}
               {totalReviews > 0 && (
                 <div className="car-rating-summary">
-                  <StarRating value={Math.round(avgRating)} readonly size={16} onChange={() => {}} />
-                  <span className="car-rating-avg">{avgRating?.toFixed(1)}</span>
+                  <StarRating value={Math.round(avgRating)} readonly size={16} />
+                  <span className="car-rating-avg">{Number(avgRating).toFixed(1)}</span>
                   <span className="car-rating-count">({totalReviews} review{totalReviews !== 1 ? "s" : ""})</span>
                 </div>
               )}
@@ -344,51 +336,49 @@ const CarDetails = () => {
             </div>
 
             <div className="car-quick-specs">
-              <div className="car-quick-spec">
-                <span className="car-quick-spec-value">{formatKm(car.kilometersDriven)}</span>
-                <span className="car-quick-spec-label">Driven</span>
-              </div>
-              <div className="car-quick-spec">
-                <span className="car-quick-spec-value">{car.year}</span>
-                <span className="car-quick-spec-label">Year</span>
-              </div>
-              <div className="car-quick-spec">
-                <span className="car-quick-spec-value" style={{ textTransform: "capitalize" }}>{car.fuelType}</span>
-                <span className="car-quick-spec-label">Fuel</span>
-              </div>
-              <div className="car-quick-spec">
-                <span className="car-quick-spec-value" style={{ textTransform: "capitalize" }}>{car.transmission}</span>
-                <span className="car-quick-spec-label">Transmission</span>
-              </div>
+              {[
+                [formatKm(car.kilometersDriven), "Driven"],
+                [car.year, "Year"],
+                [car.fuelType, "Fuel"],
+                [car.transmission, "Transmission"],
+              ].map(([val, lbl]) => (
+                <div key={lbl} className="car-quick-spec">
+                  <span className="car-quick-spec-value" style={{ textTransform: "capitalize" }}>{val}</span>
+                  <span className="car-quick-spec-label">{lbl}</span>
+                </div>
+              ))}
             </div>
 
-            {/* Enquiry success */}
-            {enquirySuccess && (
-              <div className="car-enquiry-success" role="status">{enquirySuccess}</div>
-            )}
+            {enquirySuccess && <div className="car-enquiry-success" role="status">{enquirySuccess}</div>}
 
-            {/* Action buttons */}
+            {/* ── CTA Buttons ── */}
             <div className="car-actions">
-              <button
-                type="button"
-                className="car-btn car-btn-primary"
-                onClick={() => {
-                  if (!isAuthenticated) { navigate("/login"); return; }
-                  setShowEnquiryForm((v) => !v);
-                }}
-              >
+              <button type="button" className="car-btn car-btn-primary"
+                onClick={() => { if (!isAuthenticated) { navigate("/login"); return; } setShowEnquiryForm((v) => !v); }}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
                 Contact Dealer
               </button>
-              <button
-                type="button"
+
+              {/* ── CALL DEALER BUTTON ── */}
+              {dealerPhone && (
+                <a
+                  href={`tel:${dealerPhone}`}
+                  className="car-btn car-btn-call"
+                  aria-label={`Call dealer at ${dealerPhone}`}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                  Call Dealer
+                </a>
+              )}
+
+              <button type="button"
                 className={`car-btn car-btn-secondary ${isFavourite ? "car-btn-saved" : ""}`}
-                onClick={handleFavourite}
-                disabled={favLoading}
-                aria-label={isFavourite ? "Remove from saved" : "Save car"}
-              >
+                onClick={handleFavourite} disabled={favLoading}
+                aria-label={isFavourite ? "Remove from saved" : "Save car"}>
                 <svg viewBox="0 0 24 24" fill={isFavourite ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                 </svg>
@@ -396,18 +386,12 @@ const CarDetails = () => {
               </button>
             </div>
 
-            {/* Enquiry form inline */}
+            {/* Enquiry form */}
             {showEnquiryForm && (
               <form className="car-enquiry-form" onSubmit={handleEnquiry}>
                 <label htmlFor="enq-msg" className="car-enquiry-label">Your message (optional)</label>
-                <textarea
-                  id="enq-msg"
-                  value={enquiryMessage}
-                  onChange={(e) => setEnquiryMessage(e.target.value)}
-                  placeholder="I'm interested in this car. Please contact me."
-                  rows={3}
-                  className="car-enquiry-textarea"
-                />
+                <textarea id="enq-msg" value={enquiryMessage} onChange={(e) => setEnquiryMessage(e.target.value)}
+                  placeholder="I'm interested in this car. Please contact me." rows={3} className="car-enquiry-textarea" />
                 {enquiryError && <p className="car-enquiry-error">{enquiryError}</p>}
                 <button type="submit" className="car-enquiry-submit" disabled={enquiryLoading}>
                   {enquiryLoading ? "Sending…" : "Send Enquiry"}
@@ -417,21 +401,21 @@ const CarDetails = () => {
           </aside>
         </div>
 
-        {/* Main content */}
+        {/* ── Main content ── */}
         <div className="car-content">
           <div className="car-content-main">
+
+            {/* Overview */}
             <section className="car-section">
               <h2 className="car-section-title">Overview</h2>
               <div className="car-spec-grid">
                 {[
-                  ["Make", car.make],
-                  ["Model", car.model],
+                  ["Make", car.make], ["Model", car.model],
                   car.variant && ["Variant", car.variant],
                   ["Year", car.year],
                   car.registrationYear && ["Registration Year", car.registrationYear],
                   car.registrationNumber && ["Registration No.", car.registrationNumber],
-                  ["Fuel Type", car.fuelType],
-                  ["Transmission", car.transmission],
+                  ["Fuel Type", car.fuelType], ["Transmission", car.transmission],
                   ["Kilometers Driven", formatKm(car.kilometersDriven)],
                   car.color && ["Color", car.color],
                   car.condition && ["Condition", conditionLabel[car.condition] || car.condition],
@@ -439,12 +423,16 @@ const CarDetails = () => {
                 ].filter(Boolean).map(([label, value]) => (
                   <div key={label} className="car-spec">
                     <span className="car-spec-label">{label}</span>
-                    <span className="car-spec-value" style={{ textTransform: ["Fuel Type", "Transmission", "Condition", "Status"].includes(label) ? "capitalize" : "none" }}>{value}</span>
+                    <span className="car-spec-value"
+                      style={{ textTransform: ["Fuel Type","Transmission","Condition","Status"].includes(label) ? "capitalize" : "none" }}>
+                      {value}
+                    </span>
                   </div>
                 ))}
               </div>
             </section>
 
+            {/* Description */}
             {car.description && (
               <section className="car-section">
                 <h2 className="car-section-title">Description</h2>
@@ -452,6 +440,7 @@ const CarDetails = () => {
               </section>
             )}
 
+            {/* Features */}
             {features.length > 0 && (
               <section className="car-section">
                 <h2 className="car-section-title">
@@ -460,7 +449,7 @@ const CarDetails = () => {
                 <ul className="car-features">
                   {features.map((name) => (
                     <li key={name} className="car-feature">
-                      <span className="car-feature-icon" aria-hidden="true">
+                      <span className="car-feature-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
                       </span>
                       {name}
@@ -470,74 +459,68 @@ const CarDetails = () => {
               </section>
             )}
 
-            {/* Reviews section */}
+            {/* ── Reviews section ── */}
             <section className="car-section">
               <div className="car-reviews-header">
                 <h2 className="car-section-title">
                   Reviews <span className="car-section-count">{totalReviews}</span>
                 </h2>
                 {isCustomer && (
-                  <button
-                    className="car-write-review-btn"
-                    onClick={() => setShowReviewForm((v) => !v)}
-                  >
+                  <button className="car-write-review-btn"
+                    onClick={() => setShowReviewForm((v) => !v)}>
                     {showReviewForm ? "Cancel" : "Write a Review"}
                   </button>
                 )}
               </div>
 
+              {/* Rating summary bar */}
+              {totalReviews > 0 && avgRating && (
+                <div className="car-rating-bar">
+                  <div className="car-rating-big">{Number(avgRating).toFixed(1)}</div>
+                  <div className="car-rating-bar-right">
+                    <StarRating value={Math.round(avgRating)} readonly size={20} />
+                    <span className="car-rating-bar-count">Based on {totalReviews} review{totalReviews !== 1 ? "s" : ""}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Write review form */}
               {showReviewForm && (
                 <form className="car-review-form" onSubmit={handleReview}>
                   <div className="car-review-form-rating">
                     <label>Your Rating *</label>
-                    <StarRating value={myRating} onChange={setMyRating} size={28} />
+                    <StarRating value={myRating} onChange={setMyRating} size={30} />
                   </div>
-                  <textarea
-                    value={myComment}
-                    onChange={(e) => setMyComment(e.target.value)}
-                    placeholder="Share your experience with this car…"
-                    rows={3}
-                    className="car-review-textarea"
-                  />
+                  <textarea value={myComment} onChange={(e) => setMyComment(e.target.value)}
+                    placeholder="Share your experience with this car and dealer…" rows={3}
+                    className="car-review-textarea" />
                   {reviewError && <p className="car-review-error">{reviewError}</p>}
                   {reviewSuccess && <p className="car-review-success">{reviewSuccess}</p>}
-                  <button type="submit" className="car-review-submit" disabled={reviewLoading || myRating === 0}>
+                  <button type="submit" className="car-review-submit"
+                    disabled={reviewLoading || myRating === 0}>
                     {reviewLoading ? "Submitting…" : "Submit Review"}
                   </button>
                 </form>
               )}
 
+              {/* Reviews list */}
               {reviews.length === 0 ? (
-                <p className="car-no-reviews">No reviews yet. Be the first to review this car.</p>
+                <p className="car-no-reviews">No reviews yet. Be the first to review!</p>
               ) : (
                 <ul className="car-reviews-list">
-                  {reviews.map((review) => (
-                    <li key={review.id} className="car-review-item">
-                      <div className="car-review-top">
-                        <div className="car-review-avatar">
-                          {review.customer?.name?.charAt(0)?.toUpperCase() || "?"}
-                        </div>
-                        <div>
-                          <p className="car-review-name">{review.customer?.name || "Anonymous"}</p>
-                          <StarRating value={review.rating} readonly size={14} onChange={() => {}} />
-                        </div>
-                        <span className="car-review-date">{formatDate(review.createdAt)}</span>
-                      </div>
-                      {review.comment && <p className="car-review-comment">{review.comment}</p>}
-                    </li>
-                  ))}
+                  {reviews.map((r) => <ReviewCard key={r.id} review={r} />)}
                 </ul>
               )}
             </section>
           </div>
 
-          {/* Dealer sidebar */}
+          {/* ── Dealer sidebar ── */}
           <aside className="car-content-side">
             {car.dealer && (
               <section className="car-dealer-card">
-                <h2 className="car-section-title">Dealer</h2>
+                <h2 className="car-section-title">About the Dealer</h2>
                 <div className="car-dealer-head">
-                  <div className="car-dealer-avatar" aria-hidden="true">
+                  <div className="car-dealer-avatar">
                     {car.dealer.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="car-dealer-info">
@@ -551,16 +534,30 @@ const CarDetails = () => {
                   </div>
                 </div>
 
+                {/* ── Call button in sidebar ── */}
+                {dealerPhone && (
+                  <a href={`tel:${dealerPhone}`} className="car-dealer-call-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+                    </svg>
+                    Call {dealerPhone}
+                  </a>
+                )}
+
                 <ul className="car-dealer-contact">
-                  {car.dealer.phone && (
+                  {dealerPhone && (
                     <li>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
-                      <a href={`tel:${car.dealer.phone}`}>{car.dealer.phone}</a>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+                      </svg>
+                      <a href={`tel:${dealerPhone}`}>{dealerPhone}</a>
                     </li>
                   )}
                   {car.dealer.email && (
                     <li>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-10 5L2 7" /></svg>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-10 5L2 7" />
+                      </svg>
                       <a href={`mailto:${car.dealer.email}`}>{car.dealer.email}</a>
                     </li>
                   )}
@@ -589,10 +586,29 @@ const CarDetails = () => {
         </div>
       </div>
 
+      {/* ── Mobile sticky Call bar ── */}
+      {dealerPhone && (
+        <div className="car-mobile-call-bar">
+          <a href={`tel:${dealerPhone}`} className="car-mobile-call-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            Call Dealer
+          </a>
+          <button type="button" className="car-mobile-enquiry-btn"
+            onClick={() => { if (!isAuthenticated) { navigate("/login"); return; } setShowEnquiryForm((v) => !v); }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            Send Enquiry
+          </button>
+        </div>
+      )}
+
       {/* Lightbox */}
       {lightboxOpen && images.length > 0 && (
         <div className="car-lightbox" onClick={() => setLightboxOpen(false)} role="dialog" aria-modal="true">
-          <button type="button" className="car-lightbox-close" onClick={() => setLightboxOpen(false)} aria-label="Close preview">
+          <button type="button" className="car-lightbox-close" onClick={() => setLightboxOpen(false)} aria-label="Close">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
           </button>
           {images.length > 1 && (

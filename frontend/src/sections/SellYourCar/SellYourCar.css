@@ -313,3 +313,22 @@
       transform: none;
     }
   }
+
+/* ── Added for real-API version ─────────────────────────── */
+.sell-car-ctas {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-lg);
+}
+
+.sell-car-button--outline {
+  background: transparent !important;
+  border: 2px solid rgba(255, 255, 255, 0.6) !important;
+  color: var(--color-white) !important;
+}
+
+.sell-car-button--outline:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: var(--color-white) !important;
+}

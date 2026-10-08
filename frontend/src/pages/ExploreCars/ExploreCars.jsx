@@ -1,291 +1,9 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { carsAPI } from "../../api/api";
 import "./ExploreCars.css";
 
-const allCars = [
-  {
-    id: 6,
-    dealerId: 3,
-    make: "Kia",
-    model: "Seltos",
-    variant: "HTX 1.5",
-    year: 2022,
-    registrationYear: 2022,
-    fuelType: "petrol",
-    transmission: "automatic",
-    kilometersDriven: 22000,
-    price: "1540000.00",
-    color: "Grey",
-    condition: "excellent",
-    description:
-      "Low-mileage Kia Seltos with automatic transmission and premium features.",
-    registrationNumber: "KL13KL2468",
-    isNegotiable: true,
-    status: "active",
-    isFeatured: true,
-    viewsCount: 185,
-    createdAt: "2026-09-19T05:58:16.897Z",
-    carImages: [
-      {
-        id: 13,
-        imageUrl:
-          "https://images.unsplash.com/photo-1617469767053-d3b523a0b982?w=800",
-        sortOrder: 0,
-        isPrimary: true,
-      },
-      {
-        id: 14,
-        imageUrl:
-          "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800",
-        sortOrder: 1,
-        isPrimary: false,
-      },
-    ],
-    carFeatureMappings: [
-      { featureId: 1, feature: { id: 1, name: "Air Conditioning" } },
-      { featureId: 5, feature: { id: 5, name: "Airbags" } },
-      { featureId: 6, feature: { id: 6, name: "ABS" } },
-      { featureId: 7, feature: { id: 7, name: "Rear Parking Camera" } },
-      { featureId: 10, feature: { id: 10, name: "Apple CarPlay" } },
-      { featureId: 11, feature: { id: 11, name: "Android Auto" } },
-      { featureId: 16, feature: { id: 16, name: "Push Button Start" } },
-    ],
-  },
-  {
-    id: 5,
-    dealerId: 3,
-    make: "Maruti Suzuki",
-    model: "Baleno",
-    variant: "Alpha",
-    year: 2019,
-    registrationYear: 2019,
-    fuelType: "petrol",
-    transmission: "manual",
-    kilometersDriven: 46000,
-    price: "685000.00",
-    color: "Red",
-    condition: "good",
-    description:
-      "Economical and well-maintained Maruti Suzuki Baleno suitable for city and highway driving.",
-    registrationNumber: "KL12IJ7890",
-    isNegotiable: true,
-    status: "active",
-    isFeatured: false,
-    viewsCount: 54,
-    createdAt: "2026-09-19T05:58:16.893Z",
-    carImages: [
-      {
-        id: 11,
-        imageUrl:
-          "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=800",
-        sortOrder: 0,
-        isPrimary: true,
-      },
-      {
-        id: 12,
-        imageUrl:
-          "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800",
-        sortOrder: 1,
-        isPrimary: false,
-      },
-    ],
-    carFeatureMappings: [
-      { featureId: 1, feature: { id: 1, name: "Air Conditioning" } },
-      { featureId: 5, feature: { id: 5, name: "Airbags" } },
-      { featureId: 9, feature: { id: 9, name: "Bluetooth" } },
-    ],
-  },
-  {
-    id: 4,
-    dealerId: 3,
-    make: "Tata",
-    model: "Nexon",
-    variant: "XZ Plus",
-    year: 2021,
-    registrationYear: 2021,
-    fuelType: "petrol",
-    transmission: "manual",
-    kilometersDriven: 31000,
-    price: "875000.00",
-    color: "Blue",
-    condition: "good",
-    description:
-      "Well-maintained Tata Nexon with good mileage, spacious interiors and strong safety features.",
-    registrationNumber: "KL10GH3456",
-    isNegotiable: false,
-    status: "active",
-    isFeatured: false,
-    viewsCount: 76,
-    createdAt: "2026-09-19T05:58:16.891Z",
-    carImages: [
-      {
-        id: 9,
-        imageUrl:
-          "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=800",
-        sortOrder: 0,
-        isPrimary: true,
-      },
-      {
-        id: 10,
-        imageUrl:
-          "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800",
-        sortOrder: 1,
-        isPrimary: false,
-      },
-    ],
-    carFeatureMappings: [
-      { featureId: 1, feature: { id: 1, name: "Air Conditioning" } },
-      { featureId: 6, feature: { id: 6, name: "ABS" } },
-      { featureId: 11, feature: { id: 11, name: "Android Auto" } },
-    ],
-  },
-  {
-    id: 3,
-    dealerId: 3,
-    make: "Honda",
-    model: "City",
-    variant: "VX CVT",
-    year: 2020,
-    registrationYear: 2020,
-    fuelType: "petrol",
-    transmission: "cvt",
-    kilometersDriven: 35000,
-    price: "1125000.00",
-    color: "Silver",
-    condition: "good",
-    description:
-      "Comfortable and reliable Honda City with smooth CVT transmission and excellent interiors.",
-    registrationNumber: "KL05EF9012",
-    isNegotiable: true,
-    status: "active",
-    isFeatured: false,
-    viewsCount: 98,
-    createdAt: "2026-09-19T05:58:16.889Z",
-    carImages: [
-      {
-        id: 7,
-        imageUrl:
-          "https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800",
-        sortOrder: 0,
-        isPrimary: true,
-      },
-      {
-        id: 8,
-        imageUrl:
-          "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800",
-        sortOrder: 1,
-        isPrimary: false,
-      },
-    ],
-    carFeatureMappings: [
-      { featureId: 1, feature: { id: 1, name: "Air Conditioning" } },
-      { featureId: 10, feature: { id: 10, name: "Apple CarPlay" } },
-      { featureId: 12, feature: { id: 12, name: "Cruise Control" } },
-    ],
-  },
-  {
-    id: 2,
-    dealerId: 3,
-    make: "Hyundai",
-    model: "Creta",
-    variant: "SX 1.5 Diesel",
-    year: 2022,
-    registrationYear: 2022,
-    fuelType: "diesel",
-    transmission: "manual",
-    kilometersDriven: 28000,
-    price: "1625000.00",
-    color: "Black",
-    condition: "excellent",
-    description:
-      "Single-owner Hyundai Creta in excellent condition with low kilometers and complete service history.",
-    registrationNumber: "KL01CD5678",
-    isNegotiable: true,
-    status: "active",
-    isFeatured: true,
-    viewsCount: 210,
-    createdAt: "2026-09-19T05:58:16.886Z",
-    carImages: [
-      {
-        id: 4,
-        imageUrl:
-          "https://images.unsplash.com/photo-1568844293986-8d0400bd4745?w=800",
-        sortOrder: 0,
-        isPrimary: true,
-      },
-      {
-        id: 5,
-        imageUrl:
-          "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800",
-        sortOrder: 1,
-        isPrimary: false,
-      },
-      {
-        id: 6,
-        imageUrl:
-          "https://images.unsplash.com/photo-1550355291-bbee04a92027?w=800",
-        sortOrder: 2,
-        isPrimary: false,
-      },
-    ],
-    carFeatureMappings: [
-      { featureId: 1, feature: { id: 1, name: "Air Conditioning" } },
-      { featureId: 7, feature: { id: 7, name: "Rear Parking Camera" } },
-      { featureId: 15, feature: { id: 15, name: "Keyless Entry" } },
-    ],
-  },
-  {
-    id: 1,
-    dealerId: 3,
-    make: "Toyota",
-    model: "Fortuner",
-    variant: "2.8 4x2 AT",
-    year: 2021,
-    registrationYear: 2021,
-    fuelType: "diesel",
-    transmission: "automatic",
-    kilometersDriven: 42000,
-    price: "3450000.00",
-    color: "White",
-    condition: "excellent",
-    description:
-      "Well-maintained Toyota Fortuner with automatic transmission and excellent service history.",
-    registrationNumber: "KL07AB1234",
-    isNegotiable: true,
-    status: "active",
-    isFeatured: true,
-    viewsCount: 125,
-    createdAt: "2026-09-19T05:58:16.883Z",
-    carImages: [
-      {
-        id: 1,
-        imageUrl:
-          "https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800",
-        sortOrder: 0,
-        isPrimary: true,
-      },
-      {
-        id: 2,
-        imageUrl:
-          "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800",
-        sortOrder: 1,
-        isPrimary: false,
-      },
-      {
-        id: 3,
-        imageUrl:
-          "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800",
-        sortOrder: 2,
-        isPrimary: false,
-      },
-    ],
-    carFeatureMappings: [
-      { featureId: 1, feature: { id: 1, name: "Air Conditioning" } },
-      { featureId: 5, feature: { id: 5, name: "Airbags" } },
-      { featureId: 14, feature: { id: 14, name: "Alloy Wheels" } },
-      { featureId: 16, feature: { id: 16, name: "Push Button Start" } },
-    ],
-  },
-];
+const ITEMS_PER_PAGE = 9;
 
 const formatPrice = (value) => {
   const num = Number(value);
@@ -299,11 +17,20 @@ const formatPrice = (value) => {
 
 const formatKm = (km) => `${Number(km).toLocaleString("en-IN")} km`;
 
-const ITEMS_PER_PAGE = 6;
+const FUEL_OPTIONS = ["petrol", "diesel", "electric", "hybrid", "cng", "lpg"];
+const TRANSMISSION_OPTIONS = ["manual", "automatic", "amt", "cvt", "dct"];
+const CONDITION_OPTIONS = ["excellent", "good", "fair"];
+
+const Spinner = () => (
+  <div className="explore-spinner" aria-label="Loading">
+    <div className="explore-spinner-ring" />
+  </div>
+);
 
 const ExploreCars = () => {
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const location = useLocation();
 
+  // ── Filter state ─────────────────────────────────────────
   const [search, setSearch] = useState("");
   const [selectedMakes, setSelectedMakes] = useState([]);
   const [selectedFuel, setSelectedFuel] = useState([]);
@@ -316,174 +43,134 @@ const ExploreCars = () => {
   const [maxKm, setMaxKm] = useState("");
   const [negotiableOnly, setNegotiableOnly] = useState(false);
   const [featuredOnly, setFeaturedOnly] = useState(false);
-
   const [sortBy, setSortBy] = useState("newest");
   const [page, setPage] = useState(1);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
-  const makes = useMemo(
-    () => [...new Set(allCars.map((c) => c.make))].sort(),
-    []
-  );
-  const fuels = useMemo(
-    () => [...new Set(allCars.map((c) => c.fuelType))].sort(),
-    []
-  );
-  const transmissions = useMemo(
-    () => [...new Set(allCars.map((c) => c.transmission))].sort(),
-    []
-  );
-  const conditions = useMemo(
-    () => [...new Set(allCars.map((c) => c.condition))].sort(),
-    []
-  );
+  // ── Data state ───────────────────────────────────────────
+  const [cars, setCars] = useState([]);
+  const [makes, setMakes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [total, setTotal] = useState(0);
 
+  const isFirstMount = useRef(true);
+
+  // ── Parse URL params on first load ──────────────────────
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("search")) setSearch(params.get("search"));
+    if (params.get("fuelType")) setSelectedFuel([params.get("fuelType")]);
+    if (params.get("transmission")) setSelectedTransmission([params.get("transmission")]);
+    if (params.get("make")) setSelectedMakes([params.get("make")]);
+    if (params.get("isFeatured") === "true") setFeaturedOnly(true);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Load makes once ──────────────────────────────────────
+  useEffect(() => {
+    carsAPI.getAll({ limit: 200, status: "active" })
+      .then((r) => r.json())
+      .then((data) => {
+        const allCars = Array.isArray(data) ? data : (data.cars || []);
+        const uniqueMakes = [...new Set(allCars.map((c) => c.make))].sort();
+        setMakes(uniqueMakes);
+      })
+      .catch(() => {});
+  }, []);
+
+  // ── Map sort UI value → API params ──────────────────────
+  const sortParams = useMemo(() => {
+    switch (sortBy) {
+      case "price-asc":   return { sortBy: "price",           sortOrder: "asc" };
+      case "price-desc":  return { sortBy: "price",           sortOrder: "desc" };
+      case "year-desc":   return { sortBy: "year",            sortOrder: "desc" };
+      case "year-asc":    return { sortBy: "year",            sortOrder: "asc" };
+      case "km-asc":      return { sortBy: "kilometersDriven", sortOrder: "asc" };
+      case "km-desc":     return { sortBy: "kilometersDriven", sortOrder: "desc" };
+      case "popular":     return { sortBy: "viewsCount",      sortOrder: "desc" };
+      default:            return { sortBy: "createdAt",       sortOrder: "desc" };
+    }
+  }, [sortBy]);
+
+  // ── Fetch from API ───────────────────────────────────────
+  const fetchCars = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const params = {
+        page,
+        limit: ITEMS_PER_PAGE,
+        status: "active",
+        ...sortParams,
+      };
+
+      if (search.trim())         params.search = search.trim();
+      if (selectedMakes.length === 1)    params.make = selectedMakes[0];
+      if (selectedFuel.length === 1)     params.fuelType = selectedFuel[0];
+      if (selectedTransmission.length === 1) params.transmission = selectedTransmission[0];
+      if (selectedCondition.length === 1)    params.condition = selectedCondition[0];
+      if (minPrice)              params.minPrice = minPrice;
+      if (maxPrice)              params.maxPrice = maxPrice;
+      if (minYear)               params.minYear = minYear;
+      if (maxYear)               params.maxYear = maxYear;
+      if (maxKm)                 params.maxKm = maxKm;
+      if (negotiableOnly)        params.isNegotiable = "true";
+      if (featuredOnly)          params.isFeatured = "true";
+
+      const res = await carsAPI.getAll(params);
+      if (!res.ok) throw new Error("Failed to load cars");
+      const data = await res.json();
+
+      // API returns array or { cars: [] }
+      const list = Array.isArray(data) ? data : (data.cars || []);
+      setCars(list);
+      setTotal(data.total ?? list.length);
+    } catch (err) {
+      setError("Failed to load cars. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    page, sortParams, search, selectedMakes, selectedFuel,
+    selectedTransmission, selectedCondition, minPrice, maxPrice,
+    minYear, maxYear, maxKm, negotiableOnly, featuredOnly,
+  ]);
+
+  // ── Reset page when filters change ──────────────────────
+  useEffect(() => {
+    if (isFirstMount.current) { isFirstMount.current = false; return; }
     setPage(1);
   }, [
-    search,
-    selectedMakes,
-    selectedFuel,
-    selectedTransmission,
-    selectedCondition,
-    minPrice,
-    maxPrice,
-    minYear,
-    maxYear,
-    maxKm,
-    negotiableOnly,
-    featuredOnly,
-    sortBy,
+    search, selectedMakes, selectedFuel, selectedTransmission,
+    selectedCondition, minPrice, maxPrice, minYear, maxYear,
+    maxKm, negotiableOnly, featuredOnly, sortBy,
   ]);
 
+  useEffect(() => {
+    fetchCars();
+  }, [fetchCars]);
+
+  // ── Helpers ──────────────────────────────────────────────
   const toggleInArray = (arr, setArr, value) => {
-    setArr(
-      arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value]
-    );
+    setArr(arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value]);
   };
 
-  const filteredCars = useMemo(() => {
-    const q = search.trim().toLowerCase();
-
-    let list = allCars.filter((car) => {
-      const matchSearch =
-        !q ||
-        `${car.make} ${car.model} ${car.variant}`.toLowerCase().includes(q) ||
-        car.registrationNumber.toLowerCase().includes(q);
-
-      const matchMake =
-        selectedMakes.length === 0 || selectedMakes.includes(car.make);
-      const matchFuel =
-        selectedFuel.length === 0 || selectedFuel.includes(car.fuelType);
-      const matchTrans =
-        selectedTransmission.length === 0 ||
-        selectedTransmission.includes(car.transmission);
-      const matchCond =
-        selectedCondition.length === 0 ||
-        selectedCondition.includes(car.condition);
-
-      const price = Number(car.price);
-      const matchMinPrice = !minPrice || price >= Number(minPrice);
-      const matchMaxPrice = !maxPrice || price <= Number(maxPrice);
-
-      const matchMinYear = !minYear || car.year >= Number(minYear);
-      const matchMaxYear = !maxYear || car.year <= Number(maxYear);
-
-      const matchKm = !maxKm || car.kilometersDriven <= Number(maxKm);
-
-      const matchNegotiable = !negotiableOnly || car.isNegotiable;
-      const matchFeatured = !featuredOnly || car.isFeatured;
-
-      return (
-        matchSearch &&
-        matchMake &&
-        matchFuel &&
-        matchTrans &&
-        matchCond &&
-        matchMinPrice &&
-        matchMaxPrice &&
-        matchMinYear &&
-        matchMaxYear &&
-        matchKm &&
-        matchNegotiable &&
-        matchFeatured
-      );
-    });
-
-    list = [...list].sort((a, b) => {
-      switch (sortBy) {
-        case "price-asc":
-          return Number(a.price) - Number(b.price);
-        case "price-desc":
-          return Number(b.price) - Number(a.price);
-        case "year-desc":
-          return b.year - a.year;
-        case "year-asc":
-          return a.year - b.year;
-        case "km-asc":
-          return a.kilometersDriven - b.kilometersDriven;
-        case "km-desc":
-          return b.kilometersDriven - a.kilometersDriven;
-        case "popular":
-          return b.viewsCount - a.viewsCount;
-        case "newest":
-        default:
-          return new Date(b.createdAt) - new Date(a.createdAt);
-      }
-    });
-
-    return list;
-  }, [
-    search,
-    selectedMakes,
-    selectedFuel,
-    selectedTransmission,
-    selectedCondition,
-    minPrice,
-    maxPrice,
-    minYear,
-    maxYear,
-    maxKm,
-    negotiableOnly,
-    featuredOnly,
-    sortBy,
-  ]);
-
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredCars.length / ITEMS_PER_PAGE)
-  );
-  const paginatedCars = filteredCars.slice(
-    (page - 1) * ITEMS_PER_PAGE,
-    page * ITEMS_PER_PAGE
-  );
-
   const clearAllFilters = () => {
-    setSearch("");
-    setSelectedMakes([]);
-    setSelectedFuel([]);
-    setSelectedTransmission([]);
-    setSelectedCondition([]);
-    setMinPrice("");
-    setMaxPrice("");
-    setMinYear("");
-    setMaxYear("");
-    setMaxKm("");
-    setNegotiableOnly(false);
-    setFeaturedOnly(false);
+    setSearch(""); setSelectedMakes([]); setSelectedFuel([]);
+    setSelectedTransmission([]); setSelectedCondition([]);
+    setMinPrice(""); setMaxPrice(""); setMinYear(""); setMaxYear("");
+    setMaxKm(""); setNegotiableOnly(false); setFeaturedOnly(false);
   };
 
   const activeFilterCount =
-    selectedMakes.length +
-    selectedFuel.length +
-    selectedTransmission.length +
-    selectedCondition.length +
-    (minPrice ? 1 : 0) +
-    (maxPrice ? 1 : 0) +
-    (minYear ? 1 : 0) +
-    (maxYear ? 1 : 0) +
-    (maxKm ? 1 : 0) +
-    (negotiableOnly ? 1 : 0) +
-    (featuredOnly ? 1 : 0);
+    selectedMakes.length + selectedFuel.length +
+    selectedTransmission.length + selectedCondition.length +
+    (minPrice ? 1 : 0) + (maxPrice ? 1 : 0) +
+    (minYear ? 1 : 0) + (maxYear ? 1 : 0) + (maxKm ? 1 : 0) +
+    (negotiableOnly ? 1 : 0) + (featuredOnly ? 1 : 0);
+
+  // Calculate pages — server knows total, fallback to list length
+  const totalPages = Math.max(1, Math.ceil((total || cars.length) / ITEMS_PER_PAGE));
 
   return (
     <div className="explore">
@@ -492,23 +179,14 @@ const ExploreCars = () => {
           <div className="explore-header-text">
             <h1 className="explore-title">Explore Used Cars</h1>
             <p className="explore-subtitle">
-              {filteredCars.length} {filteredCars.length === 1 ? "car" : "cars"}{" "}
-              found
+              {loading ? "Loading…" : `${total || cars.length} car${(total || cars.length) !== 1 ? "s" : ""} found`}
             </p>
           </div>
 
           <div className="explore-header-controls">
             <div className="explore-search">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.35-4.35" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
               </svg>
               <input
                 type="text"
@@ -520,14 +198,8 @@ const ExploreCars = () => {
             </div>
 
             <div className="explore-sort">
-              <label htmlFor="sortBy" className="explore-sort-label">
-                Sort by
-              </label>
-              <select
-                id="sortBy"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-              >
+              <label htmlFor="sortBy" className="explore-sort-label">Sort by</label>
+              <select id="sortBy" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
                 <option value="newest">Newest First</option>
                 <option value="popular">Most Viewed</option>
                 <option value="price-asc">Price: Low to High</option>
@@ -545,55 +217,30 @@ const ExploreCars = () => {
               onClick={() => setFiltersOpen((v) => !v)}
               aria-expanded={filtersOpen}
             >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
               </svg>
               Filters
               {activeFilterCount > 0 && (
-                <span className="explore-filter-count">
-                  {activeFilterCount}
-                </span>
+                <span className="explore-filter-count">{activeFilterCount}</span>
               )}
             </button>
           </div>
         </header>
 
         <div className="explore-body">
+          {/* ── Sidebar filters ── */}
           <aside className={`explore-filters ${filtersOpen ? "open" : ""}`}>
             <div className="explore-filters-header">
               <h2 className="explore-filters-title">Filters</h2>
               {activeFilterCount > 0 && (
-                <button
-                  type="button"
-                  className="explore-filters-clear"
-                  onClick={clearAllFilters}
-                >
+                <button type="button" className="explore-filters-clear" onClick={clearAllFilters}>
                   Clear all
                 </button>
               )}
-              <button
-                type="button"
-                className="explore-filters-close"
-                onClick={() => setFiltersOpen(false)}
-                aria-label="Close filters"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
+              <button type="button" className="explore-filters-close" onClick={() => setFiltersOpen(false)} aria-label="Close filters">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
             </div>
@@ -601,80 +248,48 @@ const ExploreCars = () => {
             <div className="explore-filter-group">
               <h3 className="explore-filter-heading">Availability</h3>
               <label className="explore-checkbox">
-                <input
-                  type="checkbox"
-                  checked={featuredOnly}
-                  onChange={(e) => setFeaturedOnly(e.target.checked)}
-                />
+                <input type="checkbox" checked={featuredOnly} onChange={(e) => setFeaturedOnly(e.target.checked)} />
                 <span>Featured only</span>
               </label>
               <label className="explore-checkbox">
-                <input
-                  type="checkbox"
-                  checked={negotiableOnly}
-                  onChange={(e) => setNegotiableOnly(e.target.checked)}
-                />
+                <input type="checkbox" checked={negotiableOnly} onChange={(e) => setNegotiableOnly(e.target.checked)} />
                 <span>Negotiable only</span>
               </label>
             </div>
 
-            <div className="explore-filter-group">
-              <h3 className="explore-filter-heading">Make</h3>
-              <div className="explore-filter-options">
-                {makes.map((m) => (
-                  <label key={m} className="explore-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={selectedMakes.includes(m)}
-                      onChange={() =>
-                        toggleInArray(selectedMakes, setSelectedMakes, m)
-                      }
-                    />
-                    <span>{m}</span>
-                  </label>
-                ))}
+            {makes.length > 0 && (
+              <div className="explore-filter-group">
+                <h3 className="explore-filter-heading">Make</h3>
+                <div className="explore-filter-options">
+                  {makes.map((m) => (
+                    <label key={m} className="explore-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={selectedMakes.includes(m)}
+                        onChange={() => toggleInArray(selectedMakes, setSelectedMakes, m)}
+                      />
+                      <span>{m}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="explore-filter-group">
               <h3 className="explore-filter-heading">Price Range (₹)</h3>
               <div className="explore-range">
-                <input
-                  type="number"
-                  placeholder="Min"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                  aria-label="Minimum price"
-                />
+                <input type="number" placeholder="Min" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} aria-label="Minimum price" />
                 <span className="explore-range-sep">—</span>
-                <input
-                  type="number"
-                  placeholder="Max"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                  aria-label="Maximum price"
-                />
+                <input type="number" placeholder="Max" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} aria-label="Maximum price" />
               </div>
             </div>
 
             <div className="explore-filter-group">
               <h3 className="explore-filter-heading">Year</h3>
               <div className="explore-range">
-                <input
-                  type="number"
-                  placeholder="From"
-                  value={minYear}
-                  onChange={(e) => setMinYear(e.target.value)}
-                  aria-label="Minimum year"
-                />
+                <input type="number" placeholder="From" value={minYear} onChange={(e) => setMinYear(e.target.value)} aria-label="Minimum year" />
                 <span className="explore-range-sep">—</span>
-                <input
-                  type="number"
-                  placeholder="To"
-                  value={maxYear}
-                  onChange={(e) => setMaxYear(e.target.value)}
-                  aria-label="Maximum year"
-                />
+                <input type="number" placeholder="To" value={maxYear} onChange={(e) => setMaxYear(e.target.value)} aria-label="Maximum year" />
               </div>
             </div>
 
@@ -693,16 +308,13 @@ const ExploreCars = () => {
             <div className="explore-filter-group">
               <h3 className="explore-filter-heading">Fuel Type</h3>
               <div className="explore-chip-group">
-                {fuels.map((f) => (
+                {FUEL_OPTIONS.map((f) => (
                   <button
                     key={f}
                     type="button"
-                    className={`explore-chip ${
-                      selectedFuel.includes(f) ? "active" : ""
-                    }`}
-                    onClick={() =>
-                      toggleInArray(selectedFuel, setSelectedFuel, f)
-                    }
+                    className={`explore-chip ${selectedFuel.includes(f) ? "active" : ""}`}
+                    onClick={() => toggleInArray(selectedFuel, setSelectedFuel, f)}
+                    style={{ textTransform: "capitalize" }}
                   >
                     {f}
                   </button>
@@ -713,20 +325,13 @@ const ExploreCars = () => {
             <div className="explore-filter-group">
               <h3 className="explore-filter-heading">Transmission</h3>
               <div className="explore-chip-group">
-                {transmissions.map((t) => (
+                {TRANSMISSION_OPTIONS.map((t) => (
                   <button
                     key={t}
                     type="button"
-                    className={`explore-chip ${
-                      selectedTransmission.includes(t) ? "active" : ""
-                    }`}
-                    onClick={() =>
-                      toggleInArray(
-                        selectedTransmission,
-                        setSelectedTransmission,
-                        t
-                      )
-                    }
+                    className={`explore-chip ${selectedTransmission.includes(t) ? "active" : ""}`}
+                    onClick={() => toggleInArray(selectedTransmission, setSelectedTransmission, t)}
+                    style={{ textTransform: "uppercase" }}
                   >
                     {t}
                   </button>
@@ -737,16 +342,13 @@ const ExploreCars = () => {
             <div className="explore-filter-group">
               <h3 className="explore-filter-heading">Condition</h3>
               <div className="explore-chip-group">
-                {conditions.map((c) => (
+                {CONDITION_OPTIONS.map((c) => (
                   <button
                     key={c}
                     type="button"
-                    className={`explore-chip ${
-                      selectedCondition.includes(c) ? "active" : ""
-                    }`}
-                    onClick={() =>
-                      toggleInArray(selectedCondition, setSelectedCondition, c)
-                    }
+                    className={`explore-chip ${selectedCondition.includes(c) ? "active" : ""}`}
+                    onClick={() => toggleInArray(selectedCondition, setSelectedCondition, c)}
+                    style={{ textTransform: "capitalize" }}
                   >
                     {c}
                   </button>
@@ -754,54 +356,49 @@ const ExploreCars = () => {
               </div>
             </div>
 
-            <button
-              type="button"
-              className="explore-filters-apply"
-              onClick={() => setFiltersOpen(false)}
-            >
-              Show {filteredCars.length} results
+            <button type="button" className="explore-filters-apply" onClick={() => setFiltersOpen(false)}>
+              Show results
             </button>
           </aside>
 
           {filtersOpen && (
-            <div
-              className="explore-filters-backdrop"
-              onClick={() => setFiltersOpen(false)}
-              aria-hidden="true"
-            />
+            <div className="explore-filters-backdrop" onClick={() => setFiltersOpen(false)} aria-hidden="true" />
           )}
 
+          {/* ── Main results ── */}
           <main className="explore-results">
-            {paginatedCars.length === 0 ? (
+            {loading ? (
+              <div className="explore-loading-state">
+                <Spinner />
+                <p>Loading cars…</p>
+              </div>
+            ) : error ? (
+              <div className="explore-error-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <h3>Something went wrong</h3>
+                <p>{error}</p>
+                <button type="button" onClick={fetchCars} className="explore-empty-btn">Try again</button>
+              </div>
+            ) : cars.length === 0 ? (
               <div className="explore-empty">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <path d="m21 21-4.35-4.35" />
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
                 </svg>
                 <h3>No cars match your filters</h3>
                 <p>Try adjusting your search or clearing some filters.</p>
-                <button
-                  type="button"
-                  onClick={clearAllFilters}
-                  className="explore-empty-btn"
-                >
+                <button type="button" onClick={clearAllFilters} className="explore-empty-btn">
                   Clear all filters
                 </button>
               </div>
             ) : (
               <>
                 <div className="explore-grid">
-                  {paginatedCars.map((car) => {
+                  {cars.map((car) => {
                     const primaryImage =
-                      car.carImages.find((img) => img.isPrimary) ||
-                      car.carImages[0];
+                      (car.carImages || []).find((img) => img.isPrimary) ||
+                      (car.carImages || [])[0];
                     return (
                       <article className="car-card" key={car.id}>
                         <a
@@ -810,11 +407,21 @@ const ExploreCars = () => {
                           aria-label={`View ${car.year} ${car.make} ${car.model}`}
                         >
                           <div className="car-card-image">
-                            <img
-                              src={primaryImage?.imageUrl}
-                              alt={`${car.year} ${car.make} ${car.model} ${car.variant}`}
-                              loading="lazy"
-                            />
+                            {primaryImage ? (
+                              <img
+                                src={primaryImage.imageUrl}
+                                alt={`${car.year} ${car.make} ${car.model}`}
+                                loading="lazy"
+                              />
+                            ) : (
+                              <div className="car-card-no-image">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                                  <circle cx="8.5" cy="8.5" r="1.5" />
+                                  <polyline points="21 15 16 10 5 21" />
+                                </svg>
+                              </div>
+                            )}
                             <div className="car-card-badges">
                               {car.isFeatured && (
                                 <span className="car-card-badge car-card-badge-featured">
@@ -825,33 +432,19 @@ const ExploreCars = () => {
                                 </span>
                               )}
                               {car.isNegotiable && (
-                                <span className="car-card-badge car-card-badge-negotiable">
-                                  Negotiable
-                                </span>
+                                <span className="car-card-badge car-card-badge-negotiable">Negotiable</span>
                               )}
                             </div>
-                            <span className="car-card-images-count">
-                              <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              >
-                                <rect
-                                  x="3"
-                                  y="3"
-                                  width="18"
-                                  height="18"
-                                  rx="2"
-                                  ry="2"
-                                />
-                                <circle cx="8.5" cy="8.5" r="1.5" />
-                                <polyline points="21 15 16 10 5 21" />
-                              </svg>
-                              {car.carImages.length}
-                            </span>
+                            {(car.carImages || []).length > 0 && (
+                              <span className="car-card-images-count">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                  <circle cx="8.5" cy="8.5" r="1.5" />
+                                  <polyline points="21 15 16 10 5 21" />
+                                </svg>
+                                {(car.carImages || []).length}
+                              </span>
+                            )}
                           </div>
 
                           <div className="car-card-body">
@@ -864,67 +457,31 @@ const ExploreCars = () => {
 
                             <ul className="car-card-specs">
                               <li>
-                                <svg
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <circle cx="12" cy="12" r="10" />
-                                  <polyline points="12 6 12 12 16 14" />
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
                                 </svg>
                                 {formatKm(car.kilometersDriven)}
                               </li>
                               <li>
-                                <svg
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <path d="M3 3v18h18" />
-                                  <path d="m7 14 4-4 4 4 5-6" />
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M3 3v18h18" /><path d="m7 14 4-4 4 4 5-6" />
                                 </svg>
-                                <span className="car-card-spec-cap">
-                                  {car.fuelType}
-                                </span>
+                                <span className="car-card-spec-cap">{car.fuelType}</span>
                               </li>
                               <li>
-                                <svg
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                   <circle cx="12" cy="12" r="3" />
                                   <path d="M12 1v6m0 10v6M4.22 4.22l4.24 4.24m7.08 7.08 4.24 4.24M1 12h6m10 0h6M4.22 19.78l4.24-4.24m7.08-7.08 4.24-4.24" />
                                 </svg>
-                                <span className="car-card-spec-cap">
-                                  {car.transmission}
-                                </span>
+                                <span className="car-card-spec-cap">{car.transmission}</span>
                               </li>
                             </ul>
 
                             <div className="car-card-footer">
-                              <div className="car-card-price">
-                                {formatPrice(car.price)}
-                              </div>
+                              <div className="car-card-price">{formatPrice(car.price)}</div>
                               <span className="car-card-cta">
                                 View
-                                <svg
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                   <polyline points="9 18 15 12 9 6" />
                                 </svg>
                               </span>
@@ -945,49 +502,42 @@ const ExploreCars = () => {
                       disabled={page === 1}
                       aria-label="Previous page"
                     >
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="15 18 9 12 15 6" />
                       </svg>
                     </button>
 
-                    {Array.from({ length: totalPages }).map((_, i) => (
-                      <button
-                        key={i}
-                        type="button"
-                        className={`explore-page-btn ${
-                          page === i + 1 ? "active" : ""
-                        }`}
-                        onClick={() => setPage(i + 1)}
-                        aria-current={page === i + 1 ? "page" : undefined}
-                      >
-                        {i + 1}
-                      </button>
-                    ))}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 2)
+                      .reduce((acc, p, idx, arr) => {
+                        if (idx > 0 && p - arr[idx - 1] > 1) acc.push("...");
+                        acc.push(p);
+                        return acc;
+                      }, [])
+                      .map((p, idx) =>
+                        p === "..." ? (
+                          <span key={`ellipsis-${idx}`} className="explore-page-ellipsis">…</span>
+                        ) : (
+                          <button
+                            key={p}
+                            type="button"
+                            className={`explore-page-btn ${page === p ? "active" : ""}`}
+                            onClick={() => setPage(p)}
+                            aria-current={page === p ? "page" : undefined}
+                          >
+                            {p}
+                          </button>
+                        )
+                      )}
 
                     <button
                       type="button"
                       className="explore-page-btn"
-                      onClick={() =>
-                        setPage((p) => Math.min(totalPages, p + 1))
-                      }
+                      onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                       disabled={page === totalPages}
                       aria-label="Next page"
                     >
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="9 18 15 12 9 6" />
                       </svg>
                     </button>

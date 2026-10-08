@@ -12,7 +12,9 @@ import {
   searchCarsDB,
   updateCar,
   updateCarStatus,
+  countDealerCarsDB,
 } from "./cars.repository.js";
+import { checkCarLimitService } from "../subscriptions/subscriptions.service.js";
 
 const validStatuses = ["draft", "active", "sold", "reserved", "inactive"];
 
@@ -80,6 +82,16 @@ export const getRecentlyAddedCarsService = async (limit) => {
 };
 
 export const addCarService = async (dealerId, data) => {
+  // Enforce subscription car limit
+  const currentCount = await countDealerCarsDB(dealerId);
+  const limitCheck = await checkCarLimitService(dealerId, currentCount);
+  if (limitCheck.hasReachedLimit) {
+    const err = new Error("CAR_LIMIT_REACHED");
+    err.planType = limitCheck.planType;
+    err.limit = limitCheck.limit;
+    throw err;
+  }
+
   const car = await createCar({
     dealerId,
     make: data.make.trim(),

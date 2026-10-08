@@ -1,203 +1,383 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { reviewsAPI } from "../../api/api";
+import { useAuth } from "../../context/AuthContext";
 import "./Testimonials.css";
 
-const testimonials = [
+/* ── static fallback (shown while loading or if API returns < 3) ── */
+const STATIC = [
   {
-    id: 1,
-    name: "Sarah Mitchell",
-    role: "Bought a 2021 Honda CR-V",
-    location: "Austin, TX",
+    id: "s1",
+    customer: { name: "Rahul Sharma" },
     rating: 5,
-    avatar: "SM",
-    text: "The entire process was seamless. I found my dream car within a week and the verification process gave me total peace of mind. No hidden fees, no pressure. Highly recommend!",
+    comment:
+      "Found my dream car within a week. The verification process gave me total peace of mind. No hidden fees, zero pressure.",
+    createdAt: "2024-10-01",
   },
   {
-    id: 2,
-    name: "James Rodriguez",
-    role: "Sold a 2019 Ford F-150",
-    location: "Denver, CO",
+    id: "s2",
+    customer: { name: "Priya Menon" },
     rating: 5,
-    avatar: "JR",
-    text: "Sold my truck in just 3 days at a fair price. The inspection team was professional and the payment was transferred instantly. Best car selling experience I have ever had.",
+    comment:
+      "Sold my car in just 3 days at a fair price. Payment was transferred instantly. Best selling experience I've ever had.",
+    createdAt: "2024-09-18",
   },
   {
-    id: 3,
-    name: "Emily Chen",
-    role: "Bought a 2020 Tesla Model 3",
-    location: "San Jose, CA",
+    id: "s3",
+    customer: { name: "Arjun Nair" },
     rating: 5,
-    avatar: "EC",
-    text: "I was nervous about buying a used EV online, but the detailed history reports and 200-point inspection made all the difference. The car was exactly as described.",
+    comment:
+      "Detailed history reports and 200-point inspection made all the difference. The car was exactly as described.",
+    createdAt: "2024-09-05",
   },
   {
-    id: 4,
-    name: "Michael Thompson",
-    role: "Bought a 2022 Toyota Camry",
-    location: "Seattle, WA",
+    id: "s4",
+    customer: { name: "Sneha Pillai" },
     rating: 4,
-    avatar: "MT",
-    text: "Great selection and transparent pricing. The financing options were competitive and the delivery was on time. Only wish there were more color options available.",
+    comment:
+      "Great selection and transparent pricing. Financing options were competitive and delivery was on time.",
+    createdAt: "2024-08-22",
   },
   {
-    id: 5,
-    name: "Priya Patel",
-    role: "Bought a 2021 BMW X3",
-    location: "Chicago, IL",
+    id: "s5",
+    customer: { name: "Kiran Das" },
     rating: 5,
-    avatar: "PP",
-    text: "From browsing to driving off the lot, everything was handled with utmost professionalism. The customer support team answered every question promptly.",
-  },
-  {
-    id: 6,
-    name: "David Okafor",
-    role: "Sold a 2018 Chevrolet Malibu",
-    location: "Atlanta, GA",
-    rating: 5,
-    avatar: "DO",
-    text: "The instant valuation tool was spot on. Got a better offer than any dealership quoted me. The pickup was scheduled at my convenience. Truly hassle-free.",
+    comment:
+      "The instant valuation tool was spot on. Got a better offer than any dealership quoted me. Truly hassle-free.",
+    createdAt: "2024-08-10",
   },
 ];
 
 const StarIcon = ({ filled }) => (
   <svg
-    className={`testimonial-star ${filled ? "filled" : ""}`}
+    className={`t-star ${filled ? "t-star--filled" : ""}`}
     viewBox="0 0 24 24"
     fill={filled ? "currentColor" : "none"}
     stroke="currentColor"
     strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
   >
     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
   </svg>
 );
 
-const Testimonials = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(3);
-  const trackRef = useRef(null);
-  const autoPlayRef = useRef(null);
+const Stars = ({ rating }) => (
+  <div className="t-stars">
+    {[1, 2, 3, 4, 5].map((s) => (
+      <StarIcon key={s} filled={s <= rating} />
+    ))}
+  </div>
+);
 
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 640) setVisibleCount(1);
-      else if (width < 1024) setVisibleCount(2);
-      else setVisibleCount(3);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+/* ── initials avatar ── */
+const Avatar = ({ name }) => {
+  const initials = name
+    ? name
+        .split(" ")
+        .map((w) => w[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
+    : "?";
+  return <div className="t-avatar">{initials}</div>;
+};
 
-  const maxIndex = Math.max(0, testimonials.length - visibleCount);
+/* ── Write-a-Review modal ── */
+const ReviewModal = ({ onClose, onSubmitted }) => {
+  const [rating, setRating] = useState(0);
+  const [hovered, setHovered] = useState(0);
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (currentIndex > maxIndex) setCurrentIndex(maxIndex);
-  }, [visibleCount, maxIndex, currentIndex]);
-
-  useEffect(() => {
-    if (isPaused) return;
-    autoPlayRef.current = setInterval(() => {
-      setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
-    }, 4000);
-    return () => clearInterval(autoPlayRef.current);
-  }, [isPaused, maxIndex]);
-
-  const goTo = (index) => {
-    if (index < 0) setCurrentIndex(maxIndex);
-    else if (index > maxIndex) setCurrentIndex(0);
-    else setCurrentIndex(index);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (rating === 0) {
+      setError("Please select a star rating.");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    try {
+      const res = await reviewsAPI.createAppReview({ rating, comment });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to submit");
+      onSubmitted();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const goPrev = () => goTo(currentIndex - 1);
-  const goNext = () => goTo(currentIndex + 1);
+  /* close on Escape */
+  useEffect(() => {
+    const h = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", h);
+    return () => document.removeEventListener("keydown", h);
+  }, [onClose]);
 
   return (
-    <section className="testimonials-section">
-      <div className="testimonials-container">
-        <div className="testimonials-header">
-          <span className="testimonials-badge">Testimonials</span>
-          <h2 className="testimonials-title">What Our Customers Say</h2>
-          <p className="testimonials-subtitle">
-            Thousands of happy buyers and sellers trust us for their used car
-            needs.
-          </p>
-        </div>
-
-        <div
-          className="testimonials-carousel"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
+    <div
+      className="t-modal-overlay"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="t-modal-title"
+    >
+      <div className="t-modal">
+        <div className="t-modal-head">
+          <h3 id="t-modal-title">Share Your Experience</h3>
           <button
-            className="testimonials-nav testimonials-nav-prev"
-            onClick={goPrev}
-            aria-label="Previous testimonials"
+            className="t-modal-close"
+            onClick={onClose}
+            aria-label="Close"
           >
             <svg
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="t-modal-form">
+          <label className="t-modal-label">Your Rating *</label>
+          <div className="t-modal-stars">
+            {[1, 2, 3, 4, 5].map((s) => (
+              <button
+                key={s}
+                type="button"
+                className={`t-modal-star ${
+                  s <= (hovered || rating) ? "t-modal-star--on" : ""
+                }`}
+                onMouseEnter={() => setHovered(s)}
+                onMouseLeave={() => setHovered(0)}
+                onClick={() => setRating(s)}
+                aria-label={`${s} star`}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill={s <= (hovered || rating) ? "currentColor" : "none"}
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+              </button>
+            ))}
+          </div>
+
+          <label className="t-modal-label" htmlFor="t-comment">
+            Your Review
+          </label>
+          <textarea
+            id="t-comment"
+            className="t-modal-textarea"
+            rows={4}
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder="Tell us about your experience with WheelzLoop…"
+          />
+
+          {error && <p className="t-modal-error">{error}</p>}
+
+          <button type="submit" className="t-modal-submit" disabled={loading}>
+            {loading ? "Submitting…" : "Submit Review"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
+   MAIN COMPONENT
+═══════════════════════════════════════════════════════════ */
+const Testimonials = () => {
+  const { isAuthenticated, isCustomer } = useAuth();
+
+  const [items, setItems] = useState(STATIC);
+  const [loadingReviews, setLoadingReviews] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(3);
+  const [showModal, setShowModal] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const autoPlayRef = useRef(null);
+
+  /* fetch top 5 app reviews */
+  const fetchReviews = async () => {
+    try {
+      const res = await reviewsAPI.getTopAppReviews();
+      if (res.ok) {
+        const data = await res.json();
+        if (data.reviews?.length >= 1) setItems(data.reviews);
+      }
+    } catch {
+      /* keep static fallback */
+    } finally {
+      setLoadingReviews(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  /* responsive visible count */
+  useEffect(() => {
+    const onResize = () => {
+      const w = window.innerWidth;
+      setVisibleCount(w < 640 ? 1 : w < 1024 ? 2 : 3);
+    };
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const maxIndex = Math.max(0, items.length - visibleCount);
+
+  useEffect(() => {
+    if (currentIndex > maxIndex) setCurrentIndex(maxIndex);
+  }, [visibleCount, maxIndex, currentIndex]);
+
+  /* autoplay */
+  useEffect(() => {
+    if (isPaused) return;
+    autoPlayRef.current = setInterval(() => {
+      setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+    }, 4500);
+    return () => clearInterval(autoPlayRef.current);
+  }, [isPaused, maxIndex]);
+
+  const goTo = (i) => setCurrentIndex(Math.max(0, Math.min(i, maxIndex)));
+
+  const handleSubmitted = () => {
+    setShowModal(false);
+    setSubmitSuccess(true);
+    fetchReviews(); // refresh to show the new review
+    setTimeout(() => setSubmitSuccess(false), 4000);
+  };
+
+  const formatDate = (iso) => {
+    if (!iso) return "";
+    return new Date(iso).toLocaleDateString("en-IN", {
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  /* avg rating from current items */
+  const avgRating =
+    items.length > 0
+      ? (
+          items.reduce((s, r) => s + Number(r.rating), 0) / items.length
+        ).toFixed(1)
+      : "4.9";
+
+  return (
+    <section className="t-section">
+      <div className="t-container">
+        {/* ── Header ── */}
+        <div className="t-header">
+          <span className="t-badge">Testimonials</span>
+          <h2 className="t-title">What Our Customers Say</h2>
+          <p className="t-subtitle">
+            Thousands of happy buyers and sellers trust WheelzLoop for their
+            used-car needs.
+          </p>
+          {/* Write a Review CTA */}
+          {isAuthenticated && isCustomer && (
+            <button className="t-write-btn" onClick={() => setShowModal(true)}>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+              </svg>
+              Write a Review
+            </button>
+          )}
+          {submitSuccess && (
+            <p className="t-submit-success">
+              ✓ Thank you! Your review has been submitted.
+            </p>
+          )}
+        </div>
+
+        {/* ── Carousel ── */}
+        <div
+          className="t-carousel"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <button
+            className="t-nav t-nav--prev"
+            onClick={() => goTo(currentIndex - 1)}
+            aria-label="Previous"
+            disabled={currentIndex === 0}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
             >
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
 
-          <div className="testimonials-viewport">
+          <div className="t-viewport">
             <div
-              className="testimonials-track"
-              ref={trackRef}
+              className="t-track"
               style={{
                 transform: `translateX(-${
                   currentIndex * (100 / visibleCount)
                 }%)`,
               }}
             >
-              {testimonials.map((item) => (
+              {items.map((item) => (
                 <div
-                  className="testimonial-card"
                   key={item.id}
+                  className="t-card"
                   style={{ flex: `0 0 ${100 / visibleCount}%` }}
                 >
-                  <div className="testimonial-card-inner">
-                    <div className="testimonial-quote-icon">
+                  <div className="t-card-inner">
+                    {/* quote icon */}
+                    <div className="t-quote-icon" aria-hidden="true">
                       <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z" />
                       </svg>
                     </div>
 
-                    <div className="testimonial-stars">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <StarIcon key={star} filled={star <= item.rating} />
-                      ))}
-                    </div>
+                    <Stars rating={Number(item.rating)} />
 
-                    <p className="testimonial-text">{item.text}</p>
+                    <p className="t-comment">
+                      {item.comment || "Great experience with WheelzLoop!"}
+                    </p>
 
-                    <div className="testimonial-author">
-                      <div className="testimonial-avatar">{item.avatar}</div>
-                      <div className="testimonial-author-info">
-                        <span className="testimonial-name">{item.name}</span>
-                        <span className="testimonial-role">{item.role}</span>
-                        <span className="testimonial-location">
-                          <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                            <circle cx="12" cy="10" r="3" />
-                          </svg>
-                          {item.location}
+                    <div className="t-author">
+                      <Avatar name={item.customer?.name} />
+                      <div className="t-author-info">
+                        <span className="t-author-name">
+                          {item.customer?.name || "Anonymous"}
                         </span>
+                        {item.createdAt && (
+                          <span className="t-author-date">
+                            {formatDate(item.createdAt)}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -207,53 +387,60 @@ const Testimonials = () => {
           </div>
 
           <button
-            className="testimonials-nav testimonials-nav-next"
-            onClick={goNext}
-            aria-label="Next testimonials"
+            className="t-nav t-nav--next"
+            onClick={() => goTo(currentIndex + 1)}
+            aria-label="Next"
+            disabled={currentIndex === maxIndex}
           >
             <svg
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
             >
               <polyline points="9 18 15 12 9 6" />
             </svg>
           </button>
         </div>
 
-        <div className="testimonials-dots">
-          {Array.from({ length: maxIndex + 1 }).map((_, index) => (
+        {/* ── Dots ── */}
+        <div className="t-dots">
+          {Array.from({ length: maxIndex + 1 }).map((_, i) => (
             <button
-              key={index}
-              className={`testimonials-dot ${
-                index === currentIndex ? "active" : ""
-              }`}
-              onClick={() => setCurrentIndex(index)}
-              aria-label={`Go to slide ${index + 1}`}
+              key={i}
+              className={`t-dot ${i === currentIndex ? "t-dot--active" : ""}`}
+              onClick={() => goTo(i)}
+              aria-label={`Go to slide ${i + 1}`}
             />
           ))}
         </div>
 
-        <div className="testimonials-stats">
-          <div className="testimonial-stat">
-            <span className="testimonial-stat-value">4.9</span>
-            <span className="testimonial-stat-label">Average Rating</span>
+        {/* ── Stats strip ── */}
+        <div className="t-stats">
+          <div className="t-stat">
+            <span className="t-stat-value">{avgRating}</span>
+            <span className="t-stat-label">Average Rating</span>
           </div>
-          <div className="testimonial-stat-divider" />
-          <div className="testimonial-stat">
-            <span className="testimonial-stat-value">12K+</span>
-            <span className="testimonial-stat-label">Happy Customers</span>
+          <div className="t-stat-divider" />
+          <div className="t-stat">
+            <span className="t-stat-value">12K+</span>
+            <span className="t-stat-label">Happy Customers</span>
           </div>
-          <div className="testimonial-stat-divider" />
-          <div className="testimonial-stat">
-            <span className="testimonial-stat-value">98%</span>
-            <span className="testimonial-stat-label">Would Recommend</span>
+          <div className="t-stat-divider" />
+          <div className="t-stat">
+            <span className="t-stat-value">98%</span>
+            <span className="t-stat-label">Would Recommend</span>
           </div>
         </div>
       </div>
+
+      {/* ── Write a Review Modal ── */}
+      {showModal && (
+        <ReviewModal
+          onClose={() => setShowModal(false)}
+          onSubmitted={handleSubmitted}
+        />
+      )}
     </section>
   );
 };

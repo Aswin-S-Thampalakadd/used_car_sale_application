@@ -1,0 +1,306 @@
+/* ── Root ── */
+.iu-root {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Error list ── */
+.iu-errors {
+  position: relative;
+  list-style: none;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  margin: 0;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.iu-errors li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: #b91c1c;
+  line-height: 1.4;
+}
+
+.iu-errors li svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.iu-errors-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: #b91c1c;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.7;
+}
+
+.iu-errors-close:hover { opacity: 1; }
+
+/* ── Drop zone ── */
+.iu-dropzone {
+  border: 2px dashed var(--border-color-strong, #d1d5db);
+  border-radius: 12px;
+  padding: 2.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  background: var(--bg-surface, #fff);
+  text-align: center;
+  outline: none;
+}
+
+.iu-dropzone:hover,
+.iu-dropzone:focus-visible {
+  border-color: var(--color-primary-light, #93c5fd);
+  background: #f0f9ff;
+}
+
+.iu-dropzone--active {
+  border-color: var(--color-primary, #2563eb);
+  background: #eff6ff;
+}
+
+.iu-hidden-input {
+  display: none;
+}
+
+.iu-dropzone-icon {
+  width: 52px;
+  height: 52px;
+  background: #f3f4f6;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+  transition: background 0.15s;
+}
+
+.iu-dropzone:hover .iu-dropzone-icon,
+.iu-dropzone--active .iu-dropzone-icon {
+  background: #dbeafe;
+}
+
+.iu-dropzone-icon svg {
+  width: 26px;
+  height: 26px;
+  color: var(--color-primary, #2563eb);
+}
+
+.iu-dropzone-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+  margin: 0;
+}
+
+.iu-dropzone-sub {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 0;
+}
+
+.iu-dropzone-link {
+  color: var(--color-primary, #2563eb);
+  font-weight: 600;
+}
+
+.iu-dropzone-slots {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primary, #2563eb);
+  background: #dbeafe;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin: 0;
+}
+
+/* ── Preview grid ── */
+.iu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+/* ── Card ── */
+.iu-card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  border: 2px solid var(--border-color, #e5e7eb);
+  background: #f3f4f6;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.iu-card--primary {
+  border-color: var(--color-primary, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.iu-card--uploading {
+  opacity: 0.7;
+}
+
+.iu-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Uploading overlay */
+.iu-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iu-card-spinner {
+  width: 26px;
+  height: 26px;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: iu-spin 0.7s linear infinite;
+}
+
+@keyframes iu-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Primary badge */
+.iu-card-primary-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: var(--color-primary, #2563eb);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px 2px 5px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  pointer-events: none;
+}
+
+.iu-card-primary-badge svg {
+  width: 10px;
+  height: 10px;
+}
+
+/* Action buttons — visible on hover */
+.iu-card-actions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.iu-card:hover .iu-card-actions {
+  opacity: 1;
+}
+
+.iu-card-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.12s, transform 0.1s;
+}
+
+.iu-card-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.iu-card-btn--star {
+  background: rgba(255, 255, 255, 0.9);
+  color: #d97706;
+}
+
+.iu-card-btn--star:hover {
+  background: #fef3c7;
+  transform: scale(1.08);
+}
+
+.iu-card-btn--delete {
+  background: rgba(255, 255, 255, 0.9);
+  color: #dc2626;
+}
+
+.iu-card-btn--delete:hover {
+  background: #fee2e2;
+  transform: scale(1.08);
+}
+
+/* ── Add-more tile ── */
+.iu-add-more {
+  aspect-ratio: 4/3;
+  border: 2px dashed var(--border-color-strong, #d1d5db);
+  border-radius: 10px;
+  background: var(--bg-surface, #fff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.iu-add-more:hover {
+  border-color: var(--color-primary-light, #93c5fd);
+  color: var(--color-primary, #2563eb);
+  background: #f0f9ff;
+}
+
+.iu-add-more svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .iu-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  }
+
+  .iu-dropzone {
+    padding: 1.5rem 1rem;
+  }
+}

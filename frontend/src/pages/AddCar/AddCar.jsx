@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { carsAPI } from "../../api/api";
+import { carsAPI, subscriptionsAPI } from "../../api/api";
+import SubscriptionModal from "../../components/SubscriptionModal/SubscriptionModal";
+import ImageUploader from "../../components/ImageUploader/ImageUploader";
 import "./AddCar.css";
 
 const FUEL_TYPES = ["petrol", "diesel", "electric", "hybrid", "cng", "lpg"];
@@ -25,15 +27,33 @@ const AddCar = () => {
   const isEditing = Boolean(id);
 
   const [form, setForm] = useState(EMPTY_FORM);
-  const [imageUrls, setImageUrls] = useState([{ url: "", isPrimary: true }]);
+  const [images, setImages] = useState([]);   // [{ id, imageUrl, publicId, isPrimary, uploading? }]
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(isEditing);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // Subscription modal state
+  const [showSubModal, setShowSubModal] = useState(false);
+  const [currentPlan, setCurrentPlan] = useState("free");
+
   useEffect(() => {
     if (!isAuthenticated) { navigate("/login"); return; }
     if (!isDealer) { navigate("/"); return; }
+
+    // Fetch current subscription plan
+    const fetchPlan = async () => {
+      try {
+        const res = await subscriptionsAPI.getMyPlan();
+        if (res.ok) {
+          const data = await res.json();
+          setCurrentPlan(data.subscription?.planType || "free");
+        }
+      } catch {
+        // Silently default to free
+      }
+    };
+    fetchPlan();
   }, [isAuthenticated, isDealer, navigate]);
 
   // Load existing car when editing
@@ -60,8 +80,13 @@ const AddCar = () => {
           status: car.status || "draft",
         });
         if (car.carImages?.length) {
-          setImageUrls(
-            car.carImages.map((img) => ({ url: img.imageUrl, isPrimary: img.isPrimary }))
+          setImages(
+            car.carImages.map((img) => ({
+              id: String(img.id),
+              imageUrl: img.imageUrl,
+              publicId: img.publicId || null,
+              isPrimary: img.isPrimary,
+            }))
           );
         }
       } catch {
@@ -77,27 +102,6 @@ const AddCar = () => {
     const val = e.target.type === "checkbox" ? e.target.checked : e.target.value;
     setForm((f) => ({ ...f, [k]: val }));
   };
-
-  const setImageUrl = (idx, val) =>
-    setImageUrls((prev) => prev.map((img, i) => (i === idx ? { ...img, url: val } : img)));
-
-  const setPrimaryImage = (idx) =>
-    setImageUrls((prev) =>
-      prev.map((img, i) => ({ ...img, isPrimary: i === idx }))
-    );
-
-  const addImageRow = () =>
-    setImageUrls((prev) => [...prev, { url: "", isPrimary: false }]);
-
-  const removeImageRow = (idx) =>
-    setImageUrls((prev) => {
-      const next = prev.filter((_, i) => i !== idx);
-      // Ensure at least one is primary
-      if (next.length > 0 && !next.some((i) => i.isPrimary)) {
-        next[0].isPrimary = true;
-      }
-      return next;
-    });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -125,18 +129,27 @@ const AddCar = () => {
       } else {
         const res = await carsAPI.create(payload);
         const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Failed to add car");
+        if (!res.ok) {
+          // Check if the dealer has hit their subscription limit
+          if (res.status === 403 && data.message === "CAR_LIMIT_REACHED") {
+            setCurrentPlan(data.planType || "free");
+            setShowSubModal(true);
+            return;
+          }
+          throw new Error(data.message || "Failed to add car");
+        }
         carId = data.car.id;
         setSuccess("Car added successfully!");
       }
 
-      // Upload images
-      const validImages = imageUrls.filter((img) => img.url.trim());
-      if (validImages.length > 0 && carId) {
+      // Upload images — only fully-uploaded ones (no uploading:true placeholders)
+      const readyImages = images.filter((img) => img.imageUrl && !img.uploading);
+      if (readyImages.length > 0 && carId) {
         await carsAPI.addImages(
           carId,
-          validImages.map((img, idx) => ({
-            imageUrl: img.url.trim(),
+          readyImages.map((img, idx) => ({
+            imageUrl: img.imageUrl,
+            publicId: img.publicId || null,
             sortOrder: idx,
             isPrimary: img.isPrimary,
           }))
@@ -160,8 +173,23 @@ const AddCar = () => {
     );
   }
 
+  const handleSubscriptionSuccess = (subscription, planType) => {
+    setShowSubModal(false);
+    setSuccess(
+      `Successfully upgraded to ${planType.charAt(0).toUpperCase() + planType.slice(1)} plan! You can now add more cars.`
+    );
+    setCurrentPlan(planType);
+  };
+
   return (
     <div className="addcar-page">
+      {showSubModal && (
+        <SubscriptionModal
+          currentPlan={currentPlan}
+          onClose={() => setShowSubModal(false)}
+          onSuccess={handleSubscriptionSuccess}
+        />
+      )}
       <div className="addcar-container">
         <div className="addcar-header">
           <button className="addcar-back" onClick={() => navigate("/dashboard")}>
@@ -282,49 +310,10 @@ const AddCar = () => {
 
           <section className="addcar-section">
             <h2 className="addcar-section-title">Images</h2>
-            <p className="addcar-hint">Add image URLs. Mark one as the primary display image.</p>
-            <div className="addcar-images">
-              {imageUrls.map((img, idx) => (
-                <div key={idx} className="addcar-image-row">
-                  <input
-                    type="url"
-                    value={img.url}
-                    onChange={(e) => setImageUrl(idx, e.target.value)}
-                    placeholder="https://example.com/car-photo.jpg"
-                    className="addcar-image-input"
-                  />
-                  <label className="addcar-primary-label" title="Set as primary image">
-                    <input
-                      type="radio"
-                      name="primaryImage"
-                      checked={img.isPrimary}
-                      onChange={() => setPrimaryImage(idx)}
-                    />
-                    Primary
-                  </label>
-                  {imageUrls.length > 1 && (
-                    <button
-                      type="button"
-                      className="addcar-remove-img"
-                      onClick={() => removeImageRow(idx)}
-                      aria-label="Remove image"
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                      </svg>
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-            <button type="button" className="addcar-add-img-btn" onClick={addImageRow}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              Add another image
-            </button>
+            <p className="addcar-hint">
+              Upload photos of the car. The first image marked as "Primary" will be used as the main listing photo.
+            </p>
+            <ImageUploader images={images} onChange={setImages} maxImages={10} />
           </section>
 
           <div className="addcar-footer">

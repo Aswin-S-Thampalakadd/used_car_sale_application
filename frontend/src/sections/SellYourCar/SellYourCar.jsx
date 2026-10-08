@@ -1,18 +1,8 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./SellYourCar.css";
 
-export default function SellYourCar({ onSubmit }) {
-  const [regNumber, setRegNumber] = useState("");
-
-  const handleSubmit = () => {
-    const value = regNumber.trim().toUpperCase();
-    if (!value) return;
-    if (onSubmit) onSubmit(value);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleSubmit();
-  };
+export default function SellYourCar() {
+  const navigate = useNavigate();
 
   return (
     <section className="sell-car" id="sell-your-car">
@@ -20,98 +10,68 @@ export default function SellYourCar({ onSubmit }) {
         <div className="sell-car-glow" aria-hidden="true" />
 
         <div className="sell-car-content">
-          <span className="sell-car-eyebrow">For Sellers</span>
+          <span className="sell-car-eyebrow">For Dealers &amp; Sellers</span>
           <h2 className="sell-car-title">
-            Sell your car for what it&apos;s actually worth
+            List your car and reach thousands of buyers
           </h2>
           <p className="sell-car-subtitle">
-            Enter your registration number and get a free, data-backed valuation
-            in under 60 seconds. No dealer haggling, no listing fees.
+            Create a free dealer account, add your listings in minutes, and let
+            verified buyers contact you directly — no middlemen, no hidden fees.
           </p>
 
-          <div className="sell-car-form">
-            <div className="sell-car-field">
-              <label className="sell-car-label" htmlFor="reg-number">
-                Registration number
-              </label>
-              <input
-                id="reg-number"
-                className="sell-car-input"
-                type="text"
-                placeholder="KL 13 AB 1234"
-                value={regNumber}
-                onChange={(e) => setRegNumber(e.target.value)}
-                onKeyDown={handleKeyDown}
-                autoComplete="off"
-              />
-            </div>
+          <div className="sell-car-ctas">
             <button
               type="button"
               className="sell-car-button"
-              onClick={handleSubmit}
+              onClick={() => navigate("/signup")}
             >
-              Get Instant Valuation
+              Create Dealer Account
+            </button>
+            <button
+              type="button"
+              className="sell-car-button sell-car-button--outline"
+              onClick={() => navigate("/login")}
+            >
+              Sign In
             </button>
           </div>
 
           <ul className="sell-car-perks">
-            <li className="sell-car-perk">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-              Free valuation
-            </li>
-            <li className="sell-car-perk">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-              Payment in 24 hours
-            </li>
-            <li className="sell-car-perk">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-              We handle the paperwork
-            </li>
+            {[
+              "Free to list",
+              "Direct buyer contact",
+              "Manage all listings from dashboard",
+            ].map((perk) => (
+              <li key={perk} className="sell-car-perk">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                {perk}
+              </li>
+            ))}
           </ul>
         </div>
 
         <div className="sell-car-stats">
           <div className="sell-car-stat">
             <span className="sell-car-stat-value">12,400+</span>
-            <span className="sell-car-stat-label">Cars sold</span>
+            <span className="sell-car-stat-label">Cars listed</span>
           </div>
           <div className="sell-car-stat">
-            <span className="sell-car-stat-value">₹48K</span>
-            <span className="sell-car-stat-label">Avg. above dealer offer</span>
+            <span className="sell-car-stat-value">50K+</span>
+            <span className="sell-car-stat-label">Active buyers</span>
           </div>
           <div className="sell-car-stat">
             <span className="sell-car-stat-value">4.8/5</span>
-            <span className="sell-car-stat-label">Seller rating</span>
+            <span className="sell-car-stat-label">Dealer rating</span>
           </div>
         </div>
       </div>

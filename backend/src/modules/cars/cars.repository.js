@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gte, ilike, lte, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, ilike, lte, or } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { cars } from "../../db/schemas/cars.js";
 import { dealerProfiles } from "../../db/schemas/dealers.js";
@@ -127,14 +127,34 @@ export const getAllCarsDB = async (page, limit, filters) => {
 
   const result = await query;
 
-  return result;
+  // Get total count for pagination
+  const where = conditions.length ? and(...conditions) : undefined;
+  const countResult = await db
+    .select({ total: count() })
+    .from(cars)
+    .where(where);
+
+  const total = Number(countResult[0]?.total ?? result.length);
+
+  return { cars: result, total };
 };
 
 export const getCarByIdDB = async (id) => {
   const result = await db.query.cars.findFirst({
     where: eq(cars.id, id),
     with: {
-      dealer: true,
+      dealer: {
+        columns: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          profileImage: true,
+          emailVerified: true,
+          phoneVerified: true,
+          createdAt: true,
+        },
+      },
       carImages: true,
       carFeatureMappings: {
         with: {
@@ -149,13 +169,28 @@ export const getCarByIdDB = async (id) => {
 
 export const getAvailableCarBrandsDB = async () => {
   const result = await db
-    .selectDistinct({
-      brand: cars.make,
-    })
+    .selectDistinct({ brand: cars.make })
     .from(cars)
     .orderBy(asc(cars.make));
 
-  return result.map((item) => item.brand);
+  // Normalize to title case and deduplicate
+  const seen = new Set();
+  return result
+    .map((item) => {
+      const normalized = item.brand
+        .trim()
+        .split(" ")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+        .join(" ");
+      return normalized;
+    })
+    .filter((b) => {
+      const key = b.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .sort();
 };
 
 export const getRecentlyAddedCarsDB = async (limit) => {
@@ -359,4 +394,13 @@ export const getLocationRecommendedCarsDB = async ({ city, state, limit }) => {
     .where(and(...filters))
     .orderBy(desc(cars.createdAt))
     .limit(limit);
+};
+
+export const countDealerCarsDB = async (dealerId) => {
+  const result = await db
+    .select({ count: count() })
+    .from(cars)
+    .where(eq(cars.dealerId, dealerId));
+
+  return Number(result[0]?.count ?? 0);
 };
