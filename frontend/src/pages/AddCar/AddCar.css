@@ -37,8 +37,14 @@
   transition: color var(--transition-fast);
 }
 
-.addcar-back:hover { color: var(--color-primary); }
-.addcar-back svg { width: 16px; height: 16px; }
+.addcar-back:hover {
+  color: var(--color-primary);
+}
+
+.addcar-back svg {
+  width: 16px;
+  height: 16px;
+}
 
 .addcar-title {
   font-family: var(--font-heading);
@@ -119,9 +125,13 @@
 }
 
 .addcar-field input:focus,
-.addcar-field select:focus { border-color: var(--color-primary-light); }
+.addcar-field select:focus {
+  border-color: var(--color-primary-light);
+}
 
-.addcar-field-checkbox { justify-content: flex-end; }
+.addcar-field-checkbox {
+  justify-content: flex-end;
+}
 
 .addcar-checkbox-label {
   display: flex;
@@ -148,7 +158,9 @@
   box-sizing: border-box;
 }
 
-.addcar-textarea:focus { border-color: var(--color-primary-light); }
+.addcar-textarea:focus {
+  border-color: var(--color-primary-light);
+}
 
 .addcar-hint {
   font-size: 13px;
@@ -180,7 +192,9 @@
   outline: none;
 }
 
-.addcar-image-input:focus { border-color: var(--color-primary-light); }
+.addcar-image-input:focus {
+  border-color: var(--color-primary-light);
+}
 
 .addcar-primary-label {
   display: flex;
@@ -193,7 +207,9 @@
   color: var(--text-secondary);
 }
 
-.addcar-primary-label input[type="radio"] { accent-color: var(--color-primary); }
+.addcar-primary-label input[type="radio"] {
+  accent-color: var(--color-primary);
+}
 
 .addcar-remove-img {
   background: none;
@@ -207,8 +223,14 @@
   transition: background var(--transition-fast);
 }
 
-.addcar-remove-img:hover { background: var(--color-danger-bg); }
-.addcar-remove-img svg { width: 16px; height: 16px; }
+.addcar-remove-img:hover {
+  background: var(--color-danger-bg);
+}
+
+.addcar-remove-img svg {
+  width: 16px;
+  height: 16px;
+}
 
 .addcar-add-img-btn {
   display: inline-flex;
@@ -230,7 +252,10 @@
   color: var(--color-primary);
 }
 
-.addcar-add-img-btn svg { width: 14px; height: 14px; }
+.addcar-add-img-btn svg {
+  width: 14px;
+  height: 14px;
+}
 
 .addcar-footer {
   display: flex;
@@ -251,7 +276,10 @@
   transition: all var(--transition-fast);
 }
 
-.addcar-cancel:hover { border-color: var(--border-color-strong); color: var(--text-primary); }
+.addcar-cancel:hover {
+  border-color: var(--border-color-strong);
+  color: var(--text-primary);
+}
 
 .addcar-submit {
   padding: 11px var(--space-xl);
@@ -265,12 +293,212 @@
   transition: background var(--transition-fast);
 }
 
-.addcar-submit:hover:not(:disabled) { background: var(--color-primary-dark); }
-.addcar-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.addcar-submit:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.addcar-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 @media (max-width: 600px) {
-  .addcar-grid { grid-template-columns: 1fr; }
-  .addcar-section { padding: var(--space-md); }
-  .addcar-footer { flex-direction: column-reverse; }
-  .addcar-cancel, .addcar-submit { width: 100%; text-align: center; }
+  .addcar-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .addcar-section {
+    padding: var(--space-md);
+  }
+
+  .addcar-footer {
+    flex-direction: column-reverse;
+  }
+
+  .addcar-cancel,
+  .addcar-submit {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ════════════════════════════════════════════════
+   SUCCESS OVERLAY
+════════════════════════════════════════════════ */
+
+.addcar-success-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(10, 15, 30, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: addcar-overlay-in 300ms ease both;
+}
+
+@keyframes addcar-overlay-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.addcar-success-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 48px 40px 40px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    0 24px 64px rgba(0, 0, 0, 0.25);
+  animation: addcar-card-in 360ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes addcar-card-in {
+  from {
+    opacity: 0;
+    transform: scale(0.88) translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* SVG checkmark circle */
+.addcar-success-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 4px;
+}
+
+.addcar-success-icon svg {
+  width: 80px;
+  height: 80px;
+}
+
+/* Animated circle stroke */
+.addcar-success-circle {
+  stroke: #10b981;
+  stroke-width: 2;
+  stroke-dasharray: 157;
+  /* 2π × 25 */
+  stroke-dashoffset: 157;
+  animation: addcar-circle-draw 600ms cubic-bezier(0.65, 0, 0.45, 1) 200ms forwards;
+  transform-origin: center;
+  transform: rotate(-90deg);
+}
+
+@keyframes addcar-circle-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Animated checkmark path */
+.addcar-success-check {
+  stroke: #10b981;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: addcar-check-draw 400ms cubic-bezier(0.65, 0, 0.45, 1) 750ms forwards;
+}
+
+@keyframes addcar-check-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.addcar-success-title {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.addcar-success-sub {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  max-width: 300px;
+}
+
+/* Progress bar */
+.addcar-success-bar {
+  width: 100%;
+  height: 4px;
+  background: #f1f5f9;
+  border-radius: 99px;
+  overflow: hidden;
+  margin: 4px 0;
+}
+
+.addcar-success-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  border-radius: 99px;
+  width: 100%;
+  animation: addcar-bar-drain 2.6s linear 300ms forwards;
+  transform-origin: left;
+}
+
+@keyframes addcar-bar-drain {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
+.addcar-success-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #1e40af, #2563eb);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: filter 150ms, transform 150ms;
+  margin-top: 4px;
+}
+
+.addcar-success-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.addcar-success-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 480px) {
+  .addcar-success-card {
+    padding: 36px 24px 32px;
+  }
 }

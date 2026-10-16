@@ -17,8 +17,8 @@ import {
   createRefreshToken,
 } from "./auth.repository.js";
 
-const CUSTOMER_USER_TYPE_ID = 1;
-const DEALER_USER_TYPE_ID = 2;
+const CUSTOMER_USER_TYPE_ID = 2;
+const DEALER_USER_TYPE_ID = 3;
 
 export const customerSignupService = async ({
   name,

@@ -1,23 +1,23 @@
-const bcrypt = require("bcrypt");
-const { eq } = require("drizzle-orm");
+import bcrypt from "bcrypt";
+import { eq } from "drizzle-orm";
 
-const {
+import {
   usersTypess,
   dummyUsers,
   dummyDealer,
-  carFeatures: dummyCarFeatures,
+  carFeatures as dummyCarFeatures,
   dummyCars,
-} = require("../constants/constants");
+} from "../constants/constants.js";
 
-const { db } = require("../db");
+import { db } from "./index.js";
 
-const { userTypes } = require("./schemas/users_types");
-const { users } = require("./schemas/users");
-const { dealerProfiles } = require("./schemas/dealers");
-const { cars } = require("./schemas/cars");
-const { carFeatures } = require("./schemas/car_features");
-const { carImages } = require("./schemas/car_images");
-const { carFeatureMappings } = require("./schemas/car_feature_mappings");
+import { userTypes } from "./schemas/users_types.js";
+import { users } from "./schemas/users.js";
+import { dealerProfiles } from "./schemas/dealers.js";
+import { cars } from "./schemas/cars.js";
+import { carFeatures } from "./schemas/car_features.js";
+import { carImages } from "./schemas/car_images.js";
+import { carFeatureMappings } from "./schemas/car_feature_mappings.js";
 
 async function seedDatabase() {
   console.log("Seeding data...");
@@ -38,7 +38,7 @@ async function seedDatabase() {
     userTypeMap[userType.name] = userType.id;
   }
 
-  console.log("User types ready.");
+  console.log("User types ready:", userTypeMap);
 
   // Users
   const userValues = await Promise.all(
@@ -200,7 +200,6 @@ async function seedDatabase() {
   }
 
   console.log("Car feature mappings seeded.");
-
   console.log("Seeding completed.");
 
   process.exit(0);

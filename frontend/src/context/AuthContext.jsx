@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import {
   authAPI,
+  adminAPI,
   clearTokens,
   getAccessToken,
   setTokens,
@@ -25,6 +26,16 @@ export function AuthProvider({ children }) {
   });
 
   const [loading, setLoading] = useState(false);
+  // True during the first render — prevents guards from redirecting before
+  // auth state has been read from localStorage.
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  useEffect(() => {
+    // Mark initialization complete after the first synchronous render.
+    // localStorage reads are synchronous so user/token are already populated
+    // by the time this effect fires.
+    setIsInitializing(false);
+  }, []);
 
   // Listen for forced logouts (e.g. refresh token expired)
   useEffect(() => {
@@ -110,8 +121,23 @@ export function AuthProvider({ children }) {
     setUser(null);
   }, []);
 
-  const isDealer = user?.userTypeId === 2;
-  const isCustomer = user?.userTypeId === 1;
+  const adminLogin = useCallback(async (email, password) => {
+    setLoading(true);
+    try {
+      const res = await adminAPI.login({ email, password });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Login failed");
+      setTokens(data.accessToken, data.refreshToken);
+      persistUser(data.user);
+      return data;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const isDealer = user?.userTypeId === 3;
+  const isCustomer = user?.userTypeId === 2;
+  const isAdmin = user?.userTypeId === 1;
   const isAuthenticated = !!user && !!getAccessToken();
 
   return (
@@ -119,11 +145,14 @@ export function AuthProvider({ children }) {
       value={{
         user,
         loading,
+        isInitializing,
         isAuthenticated,
         isDealer,
         isCustomer,
+        isAdmin,
         customerLogin,
         dealerLogin,
+        adminLogin,
         customerSignup,
         dealerSignup,
         logout,

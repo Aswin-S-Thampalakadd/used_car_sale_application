@@ -316,7 +316,7 @@ const dummyCars = [
   },
 ];
 
-module.exports = {
+export {
   usersTypess,
   dummyUsers,
   dummyDealer,

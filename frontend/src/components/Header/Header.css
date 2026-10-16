@@ -178,7 +178,10 @@
   background: var(--border-color);
 }
 
-.hdr-search-clear svg { width: 13px; height: 13px; }
+.hdr-search-clear svg {
+  width: 13px;
+  height: 13px;
+}
 
 /* ════════════════════════════════════════════════
    RIGHT ACTIONS
@@ -211,11 +214,15 @@
   background: var(--color-primary-subtle);
 }
 
-.hdr-icon-btn svg { width: 20px; height: 20px; }
+.hdr-icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
 
 /* ── Mobile search toggle ── */
 .hdr-search-toggle {
-  display: none; /* shown only on mobile via media query */
+  display: none;
+  /* shown only on mobile via media query */
 }
 
 /* ── CTA buttons ── */
@@ -340,8 +347,15 @@
 }
 
 @keyframes hdr-dropdown-in {
-  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .hdr-dropdown-header {
@@ -419,11 +433,31 @@
   color: var(--color-danger);
 }
 
+/* Admin panel item — distinct purple accent */
+.hdr-dropdown-item--admin {
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+.hdr-dropdown-item--admin svg {
+  color: #7c3aed;
+}
+
+.hdr-dropdown-item--admin:hover {
+  background: #f5f3ff;
+  color: #6d28d9;
+}
+
+.hdr-dropdown-item--admin:hover svg {
+  color: #6d28d9;
+}
+
 /* ════════════════════════════════════════════════
    HAMBURGER BUTTON
 ════════════════════════════════════════════════ */
 .hdr-hamburger {
-  display: none; /* shown only on mobile */
+  display: none;
+  /* shown only on mobile */
   flex-direction: column;
   justify-content: center;
   gap: 5px;
@@ -450,18 +484,28 @@
   transform-origin: center;
 }
 
-.hdr-hamburger span:nth-child(1) { width: 22px; }
-.hdr-hamburger span:nth-child(2) { width: 16px; }
-.hdr-hamburger span:nth-child(3) { width: 22px; }
+.hdr-hamburger span:nth-child(1) {
+  width: 22px;
+}
+
+.hdr-hamburger span:nth-child(2) {
+  width: 16px;
+}
+
+.hdr-hamburger span:nth-child(3) {
+  width: 22px;
+}
 
 .hdr-hamburger--open span:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
   width: 22px;
 }
+
 .hdr-hamburger--open span:nth-child(2) {
   opacity: 0;
   transform: scaleX(0);
 }
+
 .hdr-hamburger--open span:nth-child(3) {
   transform: translateY(-7px) rotate(-45deg);
   width: 22px;
@@ -525,7 +569,10 @@
   padding: 2px;
 }
 
-.hdr-mobile-search-form button svg { width: 14px; height: 14px; }
+.hdr-mobile-search-form button svg {
+  width: 14px;
+  height: 14px;
+}
 
 /* ════════════════════════════════════════════════
    MOBILE OVERLAY
@@ -540,8 +587,13 @@
 }
 
 @keyframes hdr-fade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 /* ════════════════════════════════════════════════
@@ -597,7 +649,10 @@
   color: var(--text-primary);
 }
 
-.hdr-drawer-close svg { width: 16px; height: 16px; }
+.hdr-drawer-close svg {
+  width: 16px;
+  height: 16px;
+}
 
 /* User profile in drawer */
 .hdr-drawer-user {
@@ -697,7 +752,10 @@
   background: var(--color-danger-bg);
 }
 
-.hdr-drawer-logout svg { width: 18px; height: 18px; }
+.hdr-drawer-logout svg {
+  width: 18px;
+  height: 18px;
+}
 
 /* Drawer auth buttons */
 .hdr-drawer-auth {
@@ -810,7 +868,8 @@
   }
 
   .hdr-btn--primary {
-    display: none; /* use the drawer for signup on very small screens */
+    display: none;
+    /* use the drawer for signup on very small screens */
   }
 
   .hdr-actions {

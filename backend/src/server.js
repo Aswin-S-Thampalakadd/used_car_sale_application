@@ -14,6 +14,8 @@ import carImagesRouter from "./modules/car-images/car-images.routes.js";
 import usersRouter from "./modules/users/users.routes.js";
 import subscriptionsRouter from "./modules/subscriptions/subscriptions.routes.js";
 import uploadsRouter from "./modules/uploads/uploads.routes.js";
+import statsRouter from "./modules/stats/stats.routes.js";
+import adminRouter from "./modules/admin/admin.routes.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -34,6 +36,8 @@ app.use("/api/v1/dealers", dealersRouter);
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/subscriptions", subscriptionsRouter);
 app.use("/api/v1/uploads", uploadsRouter);
+app.use("/api/v1/stats",   statsRouter);
+app.use("/api/v1/admin",   adminRouter);
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });

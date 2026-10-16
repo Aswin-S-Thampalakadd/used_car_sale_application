@@ -6,6 +6,44 @@ import SubscriptionModal from "../../components/SubscriptionModal/SubscriptionMo
 import ImageUploader from "../../components/ImageUploader/ImageUploader";
 import "./AddCar.css";
 
+/* ── Success overlay shown after adding a car ── */
+function SuccessOverlay({ isEditing, onGoToDashboard }) {
+  return (
+    <div className="addcar-success-overlay" role="dialog" aria-modal="true" aria-label="Success">
+      <div className="addcar-success-card">
+        {/* Animated checkmark */}
+        <div className="addcar-success-icon">
+          <svg viewBox="0 0 52 52" aria-hidden="true">
+            <circle className="addcar-success-circle" cx="26" cy="26" r="25" fill="none" />
+            <path  className="addcar-success-check"  fill="none" d="M14 27 l8 8 16-16" />
+          </svg>
+        </div>
+
+        <h2 className="addcar-success-title">
+          {isEditing ? "Listing Updated!" : "Car Listed Successfully!"}
+        </h2>
+        <p className="addcar-success-sub">
+          {isEditing
+            ? "Your changes have been saved. Taking you back to the dashboard…"
+            : "Your car is now live on WheelzLoop. Redirecting to your dashboard…"}
+        </p>
+
+        {/* Progress bar that drains as the redirect timer ticks */}
+        <div className="addcar-success-bar">
+          <div className="addcar-success-bar-fill" />
+        </div>
+
+        <button className="addcar-success-btn" onClick={onGoToDashboard}>
+          Go to Dashboard now
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 const FUEL_TYPES = ["petrol", "diesel", "electric", "hybrid", "cng", "lpg"];
 const TRANSMISSIONS = ["manual", "automatic", "amt", "cvt", "dct"];
 const CONDITIONS = ["excellent", "good", "fair"];
@@ -31,7 +69,7 @@ const AddCar = () => {
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(isEditing);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // Subscription modal state
   const [showSubModal, setShowSubModal] = useState(false);
@@ -106,7 +144,6 @@ const AddCar = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
 
     const payload = {
       ...form,
@@ -125,12 +162,10 @@ const AddCar = () => {
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || "Failed to update car");
         carId = id;
-        setSuccess("Car updated successfully!");
       } else {
         const res = await carsAPI.create(payload);
         const data = await res.json();
         if (!res.ok) {
-          // Check if the dealer has hit their subscription limit
           if (res.status === 403 && data.message === "CAR_LIMIT_REACHED") {
             setCurrentPlan(data.planType || "free");
             setShowSubModal(true);
@@ -139,7 +174,6 @@ const AddCar = () => {
           throw new Error(data.message || "Failed to add car");
         }
         carId = data.car.id;
-        setSuccess("Car added successfully!");
       }
 
       // Upload images — only fully-uploaded ones (no uploading:true placeholders)
@@ -156,7 +190,9 @@ const AddCar = () => {
         );
       }
 
-      setTimeout(() => navigate("/dashboard"), 1200);
+      // Show success overlay — it auto-redirects after 2.6 s (CSS bar duration)
+      setShowSuccess(true);
+      setTimeout(() => navigate("/dashboard"), 2600);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -175,14 +211,19 @@ const AddCar = () => {
 
   const handleSubscriptionSuccess = (subscription, planType) => {
     setShowSubModal(false);
-    setSuccess(
-      `Successfully upgraded to ${planType.charAt(0).toUpperCase() + planType.slice(1)} plan! You can now add more cars.`
-    );
     setCurrentPlan(planType);
   };
 
   return (
     <div className="addcar-page">
+      {/* ── Success overlay ── */}
+      {showSuccess && (
+        <SuccessOverlay
+          isEditing={isEditing}
+          onGoToDashboard={() => navigate("/dashboard")}
+        />
+      )}
+
       {showSubModal && (
         <SubscriptionModal
           currentPlan={currentPlan}
@@ -202,7 +243,6 @@ const AddCar = () => {
         </div>
 
         {error && <div className="addcar-error" role="alert">{error}</div>}
-        {success && <div className="addcar-success" role="status">{success}</div>}
 
         <form className="addcar-form" onSubmit={handleSubmit} noValidate>
           <section className="addcar-section">

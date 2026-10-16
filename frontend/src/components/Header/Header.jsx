@@ -12,7 +12,7 @@ const UserAvatar = ({ name }) => {
 };
 
 function Header() {
-  const { isAuthenticated, isDealer, isCustomer, user, logout } = useAuth();
+  const { isAuthenticated, isDealer, isCustomer, isAdmin, user, logout } = useAuth();
   const navigate = useNavigate();
 
   const [mobileOpen, setMobileOpen]     = useState(false);
@@ -80,14 +80,17 @@ function Header() {
   const NAV_LINKS = [
     { to: "/",          label: "Home",       exact: true },
     { to: "/used-cars", label: "Browse Cars" },
-    ...(isAuthenticated && !isDealer
+    ...(isAuthenticated && !isDealer && !isAdmin
       ? [{ to: "/favourites", label: "Saved Cars" }]
       : []),
-    ...(isAuthenticated
+    ...(isAuthenticated && !isAdmin
       ? [{ to: "/enquiries", label: "Enquiries" }]
       : []),
     ...(isDealer
       ? [{ to: "/dashboard", label: "Dashboard", highlight: true }]
+      : []),
+    ...(isAdmin
+      ? [{ to: "/admin/dashboard", label: "Admin Panel", highlight: true }]
       : []),
   ];
 
@@ -164,7 +167,7 @@ function Header() {
             {isAuthenticated ? (
               <>
                 {/* Saved / Dashboard shortcut */}
-                {!isDealer && (
+                {!isDealer && !isAdmin && (
                   <Link to="/favourites" className="hdr-icon-btn" aria-label="Saved cars">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
@@ -198,12 +201,21 @@ function Header() {
                         <div>
                           <p className="hdr-dropdown-name">{user?.name}</p>
                           <p className="hdr-dropdown-role">
-                            {isDealer ? "Dealer Account" : "Customer Account"}
+                            {isAdmin ? "Administrator" : isDealer ? "Dealer Account" : "Customer Account"}
                           </p>
                         </div>
                       </div>
 
                       <div className="hdr-dropdown-divider" />
+
+                      {isAdmin && (
+                        <Link to="/admin/dashboard" className="hdr-dropdown-item hdr-dropdown-item--admin" onClick={() => setDropdownOpen(false)} role="menuitem">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                          </svg>
+                          Admin Panel
+                        </Link>
+                      )}
 
                       {isDealer && (
                         <Link to="/dashboard" className="hdr-dropdown-item" onClick={() => setDropdownOpen(false)} role="menuitem">
@@ -215,14 +227,16 @@ function Header() {
                         </Link>
                       )}
 
-                      <Link to="/enquiries" className="hdr-dropdown-item" onClick={() => setDropdownOpen(false)} role="menuitem">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                        </svg>
-                        Enquiries
-                      </Link>
+                      {!isAdmin && (
+                        <Link to="/enquiries" className="hdr-dropdown-item" onClick={() => setDropdownOpen(false)} role="menuitem">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                          </svg>
+                          Enquiries
+                        </Link>
+                      )}
 
-                      {!isDealer && (
+                      {!isDealer && !isAdmin && (
                         <Link to="/favourites" className="hdr-dropdown-item" onClick={() => setDropdownOpen(false)} role="menuitem">
                           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
@@ -324,7 +338,7 @@ function Header() {
               <div>
                 <p className="hdr-drawer-user-name">{user?.name}</p>
                 <p className="hdr-drawer-user-role">
-                  {isDealer ? "Dealer Account" : "Customer Account"}
+                  {isAdmin ? "Administrator" : isDealer ? "Dealer Account" : "Customer Account"}
                 </p>
               </div>
             </div>

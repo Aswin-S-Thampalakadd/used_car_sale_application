@@ -269,6 +269,12 @@ export const subscriptionsAPI = {
     }),
 };
 
+// ── Stats ─────────────────────────────────────────────────────────────────────
+export const statsAPI = {
+  /** GET /stats — live platform counts, public */
+  getPlatformStats: () => apiFetch("/stats"),
+};
+
 // ── Uploads ──────────────────────────────────────────────────────────────────
 export const uploadsAPI = {
   /**
@@ -303,3 +309,80 @@ export const uploadsAPI = {
 };
 
 export { setTokens, clearTokens, getAccessToken, getRefreshToken };
+
+// ── Admin ─────────────────────────────────────────────────────────────────────
+export const adminAPI = {
+  // Auth
+  login: (data) =>
+    apiFetch("/admin/login", { method: "POST", body: JSON.stringify(data) }),
+
+  // Dashboard
+  getDashboardStats: () => apiFetch("/admin/dashboard/stats"),
+
+  // Dealers
+  getDealers: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiFetch(`/admin/dealers${qs ? `?${qs}` : ""}`);
+  },
+  verifyDealer: (dealerProfileId, isVerified) =>
+    apiFetch(`/admin/dealers/${dealerProfileId}/verify`, {
+      method: "PATCH",
+      body: JSON.stringify({ isVerified }),
+    }),
+  activateDealer: (userId) =>
+    apiFetch(`/admin/dealers/${userId}/activate`, { method: "PATCH" }),
+  deactivateDealer: (userId) =>
+    apiFetch(`/admin/dealers/${userId}/deactivate`, { method: "PATCH" }),
+  deleteDealer: (userId) =>
+    apiFetch(`/admin/dealers/${userId}`, { method: "DELETE" }),
+
+  // Customers
+  getCustomers: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiFetch(`/admin/customers${qs ? `?${qs}` : ""}`);
+  },
+  activateCustomer: (userId) =>
+    apiFetch(`/admin/customers/${userId}/activate`, { method: "PATCH" }),
+  deactivateCustomer: (userId) =>
+    apiFetch(`/admin/customers/${userId}/deactivate`, { method: "PATCH" }),
+  deleteCustomer: (userId) =>
+    apiFetch(`/admin/customers/${userId}`, { method: "DELETE" }),
+
+  // Cars
+  getCars: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiFetch(`/admin/cars${qs ? `?${qs}` : ""}`);
+  },
+  updateCarStatus: (carId, status) =>
+    apiFetch(`/admin/cars/${carId}/status`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    }),
+  toggleCarFeatured: (carId, isFeatured) =>
+    apiFetch(`/admin/cars/${carId}/featured`, {
+      method: "PATCH",
+      body: JSON.stringify({ isFeatured }),
+    }),
+  deleteCar: (carId) =>
+    apiFetch(`/admin/cars/${carId}`, { method: "DELETE" }),
+
+  // Enquiries
+  getEnquiries: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiFetch(`/admin/enquiries${qs ? `?${qs}` : ""}`);
+  },
+
+  // Reviews
+  getReviews: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiFetch(`/admin/reviews${qs ? `?${qs}` : ""}`);
+  },
+  deleteReview: (reviewId) =>
+    apiFetch(`/admin/reviews/${reviewId}`, { method: "DELETE" }),
+
+  // Subscriptions
+  getSubscriptions: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiFetch(`/admin/subscriptions${qs ? `?${qs}` : ""}`);
+  },
+};

@@ -1,9 +1,142 @@
-.signup-page {
+/* ════════════════════════════════════════════════
+   SIGNUP  —  extensions on top of Login.css
+   ════════════════════════════════════════════════ */
+
+/* ── Right panel scrolls on long dealer form ── */
+.su-form-panel {
   align-items: flex-start;
-  padding-top: var(--space-xl);
-  padding-bottom: var(--space-xl);
+  /* don't stretch-center; let it scroll naturally */
+  padding-top: 48px;
+  padding-bottom: 56px;
 }
 
-.signup-card {
-  max-width: 560px;
+.su-form-wrap {
+  max-width: 480px;
+  /* dealer form is a bit wider */
+}
+
+/* ── Accent text in left-panel heading ── */
+.al-panel-heading-accent {
+  background: linear-gradient(90deg, #fbbf24 0%, #f97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Feature list on left panel ── */
+.al-panel-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.al-panel-features li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: rgba(203, 213, 225, 0.85);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.al-panel-feat-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.al-panel-feat-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.al-panel-feat-icon--green {
+  background: rgba(52, 211, 153, 0.15);
+  color: #34d399;
+}
+
+.al-panel-feat-icon--blue {
+  background: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
+}
+
+.al-panel-feat-icon--amber {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+}
+
+/* ── Account-type description chip ── */
+.su-tab-desc {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #475569;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.su-tab-desc svg {
+  width: 15px;
+  height: 15px;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+/* ── Input hint text ── */
+.al-hint {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* ── Optional label badge ── */
+.al-label-optional {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #94a3b8;
+  background: #f1f5f9;
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin-left: 6px;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+}
+
+/* ════════════════════════════════════════════════
+   RESPONSIVE  —  768px
+════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .su-form-panel {
+    padding-top: 40px;
+    padding-bottom: 56px;
+  }
+
+  .su-form-wrap {
+    max-width: 100%;
+  }
+}
+
+/* ════════════════════════════════════════════════
+   RESPONSIVE  —  480px
+════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+  .su-form-panel {
+    padding-top: 32px;
+  }
 }
