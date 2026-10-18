@@ -346,7 +346,7 @@ const Signup = () => {
 
         <div className="al-panel-content">
           <div className="al-panel-logo">
-            Wheelz<span>Loop</span>
+            <img src="/logo.svg" alt="VandiMart" style={{ height: "38px", width: "auto" }} />
           </div>
 
           <div className="al-panel-body">
@@ -355,7 +355,7 @@ const Signup = () => {
               <span className="al-panel-heading-accent">car marketplace.</span>
             </h2>
             <p className="al-panel-sub">
-              Whether you're buying your dream car or selling as a dealer — WheelzLoop makes it simple, fast, and trusted.
+              Whether you're buying your dream car or selling as a dealer — VandiMart makes it simple, fast, and trusted.
             </p>
 
             {/* Feature list */}
@@ -404,7 +404,7 @@ const Signup = () => {
 
           {/* Mobile logo */}
           <div className="al-mobile-logo">
-            Wheelz<span>Loop</span>
+            <img src="/logo.svg" alt="VandiMart" style={{ height: "34px", width: "auto" }} />
           </div>
 
           <div className="al-form-header">

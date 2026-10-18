@@ -191,7 +191,7 @@ const DealerDashboard = () => {
         {/* Brand */}
         <div className="dd-sidebar-brand">
           <span className="dd-sidebar-brand-text">
-            Wheelz<span>Loop</span>
+            <img src="/logo.svg" alt="VandiMart" className="dd-sidebar-brand-logo" />
           </span>
           <button
             className="dd-sidebar-close"

@@ -141,7 +141,7 @@ const ReviewModal = ({ onClose, onSubmitted }) => {
             rows={4}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Tell us about your experience with WheelzLoop…"
+            placeholder="Tell us about your experience with VandiMart…"
           />
 
           {error && <p className="t-modal-error">{error}</p>}
@@ -281,7 +281,7 @@ const Testimonials = () => {
           <span className="t-badge">Testimonials</span>
           <h2 className="t-title">What Our Customers Say</h2>
           <p className="t-subtitle">
-            Thousands of happy buyers and sellers trust WheelzLoop for their
+            Thousands of happy buyers and sellers trust VandiMart for their
             used-car needs.
           </p>
           {/* Write a Review CTA */}
@@ -333,7 +333,7 @@ const Testimonials = () => {
               </svg>
             </div>
             <h3 className="t-empty-title">No reviews yet</h3>
-            <p className="t-empty-sub">Be the first to share your WheelzLoop experience!</p>
+            <p className="t-empty-sub">Be the first to share your VandiMart experience!</p>
             {isAuthenticated && isCustomer && (
               <button className="t-write-btn t-write-btn--cta" onClick={() => setShowModal(true)}>
                 Write the first review
@@ -392,7 +392,7 @@ const Testimonials = () => {
                     <Stars rating={Number(item.rating)} />
 
                     <p className="t-comment">
-                      {item.comment || "Great experience with WheelzLoop!"}
+                      {item.comment || "Great experience with VandiMart!"}
                     </p>
 
                     <div className="t-author">

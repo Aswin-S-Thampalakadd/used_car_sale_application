@@ -25,7 +25,7 @@ function SuccessOverlay({ isEditing, onGoToDashboard }) {
         <p className="addcar-success-sub">
           {isEditing
             ? "Your changes have been saved. Taking you back to the dashboard…"
-            : "Your car is now live on WheelzLoop. Redirecting to your dashboard…"}
+            : "Your car is now live on VandiMart. Redirecting to your dashboard…"}
         </p>
 
         {/* Progress bar that drains as the redirect timer ticks */}

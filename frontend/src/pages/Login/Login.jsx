@@ -43,7 +43,7 @@ const Login = () => {
 
         <div className="al-panel-content">
           <div className="al-panel-logo">
-            Wheelz<span>Loop</span>
+            <img src="/logo.svg" alt="VandiMart" style={{ height: "38px", width: "auto" }} />
           </div>
 
           <div className="al-panel-body">
@@ -96,7 +96,7 @@ const Login = () => {
 
           {/* Mobile logo */}
           <div className="al-mobile-logo">
-            Wheelz<span>Loop</span>
+            <img src="/logo.svg" alt="VandiMart" style={{ height: "34px", width: "auto" }} />
           </div>
 
           <div className="al-form-header">

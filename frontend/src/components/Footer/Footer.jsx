@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./Footer.css";
 
 const Footer = () => {
@@ -82,10 +83,9 @@ const Footer = () => {
         <div className="footer-container">
           <div className="footer-grid">
             <div className="footer-brand">
-              <a href="/" className="footer-logo" aria-label="Home">
-                <span className="footer-logo-mark">UC</span>
-                <span className="footer-logo-text">UsedCars</span>
-              </a>
+              <Link to="/" className="footer-logo" aria-label="Home">
+                <img src="/logo.svg" alt="VandiMart" style={{ height: "40px", width: "auto" }} />
+              </Link>
               <p className="footer-brand-desc">
                 The trusted marketplace for buying and selling quality pre-owned
                 vehicles. Every car verified, every deal transparent.
@@ -106,7 +106,7 @@ const Footer = () => {
                   +1 (800) 555-1234
                 </a>
                 <a
-                  href="mailto:support@usedcars.com"
+                  href="mailto:vandimart.support@gmail.com"
                   className="footer-contact-item"
                 >
                   <svg
@@ -120,7 +120,7 @@ const Footer = () => {
                     <rect x="2" y="4" width="20" height="16" rx="2" />
                     <path d="m22 7-10 5L2 7" />
                   </svg>
-                  support@usedcars.com
+                  vandimart.support@gmail.com
                 </a>
                 <span className="footer-contact-item footer-contact-address">
                   <svg
@@ -144,105 +144,44 @@ const Footer = () => {
                 Buy
               </h4>
               <ul className="footer-links">
-                <li>
-                  <a href="/used-cars/all">All Used Cars</a>
-                </li>
-                <li>
-                  <a href="/used-cars/brands">Browse by Brand</a>
-                </li>
-                <li>
-                  <a href="/used-cars/cities">Browse by City</a>
-                </li>
-                <li>
-                  <a href="/used-cars/featured">Featured Listings</a>
-                </li>
-                <li>
-                  <a href="/used-cars/under-10k">Under $10,000</a>
-                </li>
-                <li>
-                  <a href="/financing">Financing Options</a>
-                </li>
+                <li><Link to="/used-cars">All Used Cars</Link></li>
+                <li><Link to="/used-cars">Browse by Brand</Link></li>
+                <li><Link to="/used-cars">Browse by City</Link></li>
+                <li><Link to="/used-cars">Featured Listings</Link></li>
               </ul>
             </nav>
 
-            <nav
-              className="footer-column"
-              aria-labelledby="footer-sell-heading"
-            >
+            <nav className="footer-column" aria-labelledby="footer-sell-heading">
               <h4 id="footer-sell-heading" className="footer-column-title">
                 Sell
               </h4>
               <ul className="footer-links">
-                <li>
-                  <a href="/sell">Sell Your Car</a>
-                </li>
-                <li>
-                  <a href="/sell/valuation">Instant Valuation</a>
-                </li>
-                <li>
-                  <a href="/sell/inspection">Free Inspection</a>
-                </li>
-                <li>
-                  <a href="/sell/dealer">Dealer Program</a>
-                </li>
-                <li>
-                  <a href="/sell/pricing">Pricing</a>
-                </li>
+                <li><Link to="/signup">List Your Car</Link></li>
+                <li><Link to="/rate-us">Rate Us</Link></li>
+                <li><Link to="/dashboard">Dealer Dashboard</Link></li>
               </ul>
             </nav>
 
-            <nav
-              className="footer-column"
-              aria-labelledby="footer-company-heading"
-            >
+            <nav className="footer-column" aria-labelledby="footer-company-heading">
               <h4 id="footer-company-heading" className="footer-column-title">
                 Company
               </h4>
               <ul className="footer-links">
-                <li>
-                  <a href="/about">About Us</a>
-                </li>
-                <li>
-                  <a href="/careers">Careers</a>
-                </li>
-                <li>
-                  <a href="/blog">Blog</a>
-                </li>
-                <li>
-                  <a href="/press">Press</a>
-                </li>
-                <li>
-                  <a href="/contact">Contact</a>
-                </li>
-                <li>
-                  <a href="/help">Help Center</a>
-                </li>
+                <li><Link to="/about">About Us</Link></li>
+                <li><Link to="/blog">Blog</Link></li>
+                <li><Link to="/contact">Contact</Link></li>
+                <li><Link to="/help">Help Center</Link></li>
               </ul>
             </nav>
 
-            <nav
-              className="footer-column"
-              aria-labelledby="footer-legal-heading"
-            >
+            <nav className="footer-column" aria-labelledby="footer-legal-heading">
               <h4 id="footer-legal-heading" className="footer-column-title">
                 Legal
               </h4>
               <ul className="footer-links">
-                <li>
-                  <a href="/terms">Terms of Service</a>
-                </li>
-                <li>
-                  <a href="/privacy">Privacy Policy</a>
-                </li>
-                <li>
-                  <a href="/cookies">Cookie Policy</a>
-                </li>
-                <li>
-                  <a href="/accessibility">Accessibility</a>
-                </li>
-                <li>
-                  <a href="/sitemap">Sitemap</a>
-                </li>
+                <li><Link to="/terms">Terms of Service</Link></li>
+                <li><Link to="/privacy">Privacy Policy</Link></li>
+                <li><Link to="/cookies">Cookie Policy</Link></li>
               </ul>
             </nav>
           </div>
@@ -253,7 +192,7 @@ const Footer = () => {
         <div className="footer-container">
           <div className="footer-bottom-inner">
             <p className="footer-copyright">
-              &copy; {currentYear} UsedCars Inc. All rights reserved.
+              &copy; {currentYear} VandiMart. All rights reserved.
             </p>
 
             <div className="footer-socials" aria-label="Follow us">
@@ -280,7 +219,7 @@ const Footer = () => {
                 </svg>
               </a>
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/vandimart.in"
                 className="footer-social"
                 aria-label="Instagram"
                 target="_blank"
@@ -323,10 +262,10 @@ const Footer = () => {
               </a>
             </div>
 
-            <div className="footer-badges">
+            {/* <div className="footer-badges">
               <span className="footer-badge">SSL Secured</span>
               <span className="footer-badge">Verified Dealers</span>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

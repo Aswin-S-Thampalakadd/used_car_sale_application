@@ -101,16 +101,7 @@ function Header() {
 
           {/* ── Logo ── */}
           <Link to="/" className="hdr-logo" onClick={close}>
-            <span className="hdr-logo-icon" aria-hidden="true">
-              <svg viewBox="0 0 36 36" fill="none">
-                <rect width="36" height="36" rx="10" fill="#1e40af"/>
-                <path d="M6 24l4-8h16l4 8H6z" fill="white" opacity=".9"/>
-                <circle cx="12" cy="25" r="3" fill="white"/>
-                <circle cx="24" cy="25" r="3" fill="white"/>
-                <path d="M10 20l2-5h12l2 5" stroke="#1e40af" strokeWidth="1.5" fill="none"/>
-              </svg>
-            </span>
-            Wheelz<span className="hdr-logo-accent">Loop</span>
+            <img src="/logo.svg" alt="VandiMart" className="hdr-logo-img" />
           </Link>
 
           {/* ── Desktop nav ── */}
@@ -314,15 +305,7 @@ function Header() {
           {/* drawer header */}
           <div className="hdr-drawer-top">
             <Link to="/" className="hdr-logo" onClick={close}>
-              <span className="hdr-logo-icon" aria-hidden="true">
-                <svg viewBox="0 0 36 36" fill="none">
-                  <rect width="36" height="36" rx="10" fill="#1e40af"/>
-                  <path d="M6 24l4-8h16l4 8H6z" fill="white" opacity=".9"/>
-                  <circle cx="12" cy="25" r="3" fill="white"/>
-                  <circle cx="24" cy="25" r="3" fill="white"/>
-                </svg>
-              </span>
-              Wheelz<span className="hdr-logo-accent">Loop</span>
+              <img src="/logo.svg" alt="VandiMart" className="hdr-logo-img" />
             </Link>
             <button className="hdr-drawer-close" onClick={close} aria-label="Close menu">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

@@ -76,7 +76,7 @@ export default function RateUs() {
           </div>
           <h1 className="ru-auth-title">Share your experience</h1>
           <p className="ru-auth-sub">
-            Sign in to rate WheelzLoop and help other buyers make confident decisions.
+            Sign in to rate VandiMart and help other buyers make confident decisions.
           </p>
           <div className="ru-auth-btns">
             <Link to="/login" className="ru-auth-btn ru-auth-btn--primary">Sign in</Link>
@@ -120,7 +120,7 @@ export default function RateUs() {
           </div>
           <h1 className="ru-success-title">Thank you for your review!</h1>
           <p className="ru-success-sub">
-            Your feedback helps thousands of car buyers trust WheelzLoop.
+            Your feedback helps thousands of car buyers trust VandiMart.
           </p>
           <div className="ru-success-rating">
             {[1,2,3,4,5].map((s) => (
@@ -146,7 +146,9 @@ export default function RateUs() {
       <div className="ru-panel" aria-hidden="true">
         <div className="ru-panel-bg" />
         <div className="ru-panel-content">
-          <div className="ru-panel-logo">Wheelz<span>Loop</span></div>
+          <div className="ru-panel-logo">
+            <img src="/logo.svg" alt="VandiMart" style={{ height: "36px", width: "auto", filter: "brightness(0) invert(1)" }} />
+          </div>
           <h2 className="ru-panel-heading">
             Your voice shapes<br/>our platform.
           </h2>
@@ -176,12 +178,14 @@ export default function RateUs() {
         <div className="ru-form-wrap">
 
           {/* Mobile logo */}
-          <div className="ru-mobile-logo">Wheelz<span>Loop</span></div>
+          <div className="ru-mobile-logo">
+            <img src="/logo.svg" alt="VandiMart" style={{ height: "34px", width: "auto" }} />
+          </div>
 
           <div className="ru-form-header">
             <h1 className="ru-form-title">Rate your experience</h1>
             <p className="ru-form-sub">
-              How was your experience with WheelzLoop? Your honest feedback matters.
+              How was your experience with VandiMart? Your honest feedback matters.
             </p>
           </div>
 

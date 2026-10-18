@@ -16,6 +16,14 @@ import Favourites from "./pages/Favourites/Favourites";
 import Enquiries from "./pages/Enquiries/Enquiries";
 
 import RateUs from "./pages/RateUs/RateUs";
+import About        from "./pages/Static/About";
+import Blog         from "./pages/Static/Blog";
+import Contact      from "./pages/Static/Contact";
+import HelpCenter   from "./pages/Static/HelpCenter";
+import Terms        from "./pages/Static/Terms";
+import Privacy      from "./pages/Static/Privacy";
+import CookiePolicy from "./pages/Static/CookiePolicy";
+import CookieBanner from "./components/CookieBanner/CookieBanner";
 import AdminLogin from "./pages/Admin/AdminLogin";
 import AdminLayout from "./pages/Admin/AdminLayout";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
@@ -103,6 +111,7 @@ function PublicLayout({ children }) {
       <Header />
       {children}
       <Footer />
+      <CookieBanner />
     </>
   );
 }
@@ -145,6 +154,13 @@ function App() {
               </PublicLayout>
             }
           />
+          <Route path="/about"   element={<PublicLayout><About /></PublicLayout>} />
+          <Route path="/blog"    element={<PublicLayout><Blog /></PublicLayout>} />
+          <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+          <Route path="/help"    element={<PublicLayout><HelpCenter /></PublicLayout>} />
+          <Route path="/terms"   element={<PublicLayout><Terms /></PublicLayout>} />
+          <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />
+          <Route path="/cookies" element={<PublicLayout><CookiePolicy /></PublicLayout>} />
           <Route
             path="/login"
             element={

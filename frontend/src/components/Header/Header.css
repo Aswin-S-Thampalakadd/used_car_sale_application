@@ -37,26 +37,13 @@
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  font-family: var(--font-heading);
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--text-primary);
-  letter-spacing: -0.03em;
   flex-shrink: 0;
 }
 
-.hdr-logo-icon {
-  display: flex;
-  align-items: center;
-}
-
-.hdr-logo-icon svg {
-  width: 34px;
-  height: 34px;
-}
-
-.hdr-logo-accent {
-  color: var(--color-primary);
+.hdr-logo-img {
+  height: 36px;
+  width: auto;
+  display: block;
 }
 
 /* ════════════════════════════════════════════════

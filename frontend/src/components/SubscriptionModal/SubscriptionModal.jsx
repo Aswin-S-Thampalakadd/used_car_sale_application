@@ -110,7 +110,7 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
           key: process.env.REACT_APP_RAZORPAY_KEY_ID,
           amount,
           currency,
-          name: "WheelzLoop",
+          name: "VandiMart",
           description: `${PLAN_META[planType].label} Plan — Monthly Subscription`,
           order_id: orderId,
           handler: async (response) => {
