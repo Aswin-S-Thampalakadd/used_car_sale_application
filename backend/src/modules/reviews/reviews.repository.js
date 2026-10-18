@@ -135,7 +135,13 @@ export const dealerDeleteReviewDB = async (reviewId, dealerId) => {
 export const createAppReviewDB = async ({ customerId, rating, comment }) => {
   const result = await db
     .insert(reviews)
-    .values({ reviewType: "app", customerId, rating, comment })
+    .values({
+      reviewType: "app",
+      customerId,
+      rating,
+      comment,
+      isApproved: false,   // must be approved by admin before appearing publicly
+    })
     .returning();
   return result[0];
 };
@@ -151,7 +157,11 @@ export const getAppReviewByCustomerDB = async (customerId) => {
 
 export const getTopAppReviewsDB = async (limit = 5) => {
   return await db.query.reviews.findMany({
-    where: and(eq(reviews.reviewType, "app"), isNull(reviews.carId)),
+    where: and(
+      eq(reviews.reviewType, "app"),
+      isNull(reviews.carId),
+      eq(reviews.isApproved, true),   // only admin-approved reviews shown publicly
+    ),
     with: {
       customer: { columns: { id: true, name: true, profileImage: true } },
     },
@@ -162,10 +172,24 @@ export const getTopAppReviewsDB = async (limit = 5) => {
 
 export const getAllAppReviewsDB = async () => {
   return await db.query.reviews.findMany({
-    where: and(eq(reviews.reviewType, "app"), isNull(reviews.carId)),
+    where: and(
+      eq(reviews.reviewType, "app"),
+      isNull(reviews.carId),
+      eq(reviews.isApproved, true),   // only admin-approved reviews shown publicly
+    ),
     with: {
       customer: { columns: { id: true, name: true, profileImage: true } },
     },
     orderBy: desc(reviews.createdAt),
   });
+};
+
+/** Admin only — approve or un-approve an app review */
+export const approveReviewDB = async (reviewId, isApproved) => {
+  const result = await db
+    .update(reviews)
+    .set({ isApproved, updatedAt: new Date() })
+    .where(eq(reviews.id, reviewId))
+    .returning({ id: reviews.id, isApproved: reviews.isApproved });
+  return result[0] || null;
 };

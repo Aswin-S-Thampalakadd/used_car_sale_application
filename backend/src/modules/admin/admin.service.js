@@ -20,6 +20,8 @@ import {
   getAllSubscriptionsAdmin,
 } from "./admin.repository.js";
 
+import { approveReviewDB } from "../reviews/reviews.repository.js";
+
 const ADMIN_USER_TYPE_ID = 1;
 
 // ─── AUTH ────────────────────────────────────────────────────────────────────
@@ -151,12 +153,21 @@ export const getAllReviewsService = async (query) => {
   const page = Math.max(1, parseInt(query.page) || 1);
   const limit = Math.min(100, parseInt(query.limit) || 20);
   const reviewType = query.reviewType || "";
+  const isApproved =
+    query.isApproved === "true"  ? true  :
+    query.isApproved === "false" ? false : undefined;
 
-  return getAllReviewsAdmin({ page, limit, reviewType: reviewType || undefined });
+  return getAllReviewsAdmin({ page, limit, reviewType: reviewType || undefined, isApproved });
 };
 
 export const deleteReviewService = async (reviewId) => {
   const result = await adminDeleteReview(reviewId);
+  if (!result) throw new Error("REVIEW_NOT_FOUND");
+  return result;
+};
+
+export const approveReviewService = async (reviewId, isApproved) => {
+  const result = await approveReviewDB(reviewId, isApproved);
   if (!result) throw new Error("REVIEW_NOT_FOUND");
   return result;
 };

@@ -380,6 +380,12 @@ export const adminAPI = {
   deleteReview: (reviewId) =>
     apiFetch(`/admin/reviews/${reviewId}`, { method: "DELETE" }),
 
+  approveReview: (reviewId, isApproved) =>
+    apiFetch(`/admin/reviews/${reviewId}/approve`, {
+      method: "PATCH",
+      body: JSON.stringify({ isApproved }),
+    }),
+
   // Subscriptions
   getSubscriptions: (params = {}) => {
     const qs = new URLSearchParams(params).toString();

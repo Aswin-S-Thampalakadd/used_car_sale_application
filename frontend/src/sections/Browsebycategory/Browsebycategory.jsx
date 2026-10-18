@@ -204,14 +204,62 @@ const ConvertibleIcon = () => (
 
 // Each category links to /used-cars with the relevant filter pre-applied
 const categories = [
-  { id: "suv",         name: "SUV",         icon: SuvIcon,         href: "/used-cars?search=suv",          badge: null },
-  { id: "sedan",       name: "Sedan",       icon: SedanIcon,       href: "/used-cars?search=sedan",        badge: null },
-  { id: "hatchback",   name: "Hatchback",   icon: HatchbackIcon,   href: "/used-cars?search=hatchback",    badge: null },
-  { id: "pickup",      name: "Pickup / MUV", icon: PickupIcon,     href: "/used-cars?search=innova",       badge: null },
-  { id: "coupe",       name: "Coupe",       icon: CoupeIcon,       href: "/used-cars?search=coupe",        badge: null },
-  { id: "van",         name: "Van & MPV",   icon: VanIcon,         href: "/used-cars?search=mpv",          badge: null },
-  { id: "electric",    name: "Electric",    icon: ElectricIcon,    href: "/used-cars?fuelType=electric",   badge: "EV" },
-  { id: "convertible", name: "Convertible", icon: ConvertibleIcon, href: "/used-cars?search=convertible",  badge: null },
+  {
+    id: "suv",
+    name: "SUV",
+    icon: SuvIcon,
+    href: "/used-cars?search=suv",
+    badge: null,
+  },
+  {
+    id: "sedan",
+    name: "Sedan",
+    icon: SedanIcon,
+    href: "/used-cars?search=sedan",
+    badge: null,
+  },
+  {
+    id: "hatchback",
+    name: "Hatchback",
+    icon: HatchbackIcon,
+    href: "/used-cars?search=hatchback",
+    badge: null,
+  },
+  {
+    id: "pickup",
+    name: "Pickup / MUV",
+    icon: PickupIcon,
+    href: "/used-cars?search=innova",
+    badge: null,
+  },
+  {
+    id: "coupe",
+    name: "Coupe",
+    icon: CoupeIcon,
+    href: "/used-cars?search=coupe",
+    badge: null,
+  },
+  {
+    id: "van",
+    name: "Van & MPV",
+    icon: VanIcon,
+    href: "/used-cars?search=mpv",
+    badge: null,
+  },
+  {
+    id: "electric",
+    name: "Electric",
+    icon: ElectricIcon,
+    href: "/used-cars?fuelType=electric",
+    badge: "EV",
+  },
+  {
+    id: "convertible",
+    name: "Convertible",
+    icon: ConvertibleIcon,
+    href: "/used-cars?search=convertible",
+    badge: null,
+  },
 ];
 
 export default function BrowseByCategory() {
@@ -224,7 +272,8 @@ export default function BrowseByCategory() {
               Browse by category
             </h2>
             <p className="categories__subtitle">
-              Every listing is inspected and history-checked before it goes live.
+              Every listing is inspected and history-checked before it goes
+              live.
             </p>
           </div>
           <a className="categories__all" href="/used-cars">
@@ -243,9 +292,13 @@ export default function BrowseByCategory() {
                   aria-label={`Browse ${category.name} cars`}
                 >
                   {category.badge && (
-                    <span className="category-card__badge">{category.badge}</span>
+                    <span className="category-card__badge">
+                      {category.badge}
+                    </span>
                   )}
-                  <span className="category-card__icon"><Icon /></span>
+                  <span className="category-card__icon">
+                    <Icon />
+                  </span>
                   <span className="category-card__name">{category.name}</span>
                 </a>
               </li>

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { favouritesAPI } from "../../api/api";
+import { carSlug } from "../../utils/carSlug";
 import "./Favourites.css";
 
 const formatPrice = (v) =>
@@ -95,7 +96,7 @@ const Favourites = () => {
                 car.carImages?.find((i) => i.isPrimary) || car.carImages?.[0];
               return (
                 <article key={car.id} className="fav-card">
-                  <Link to={`/used-cars/${car.id}`} className="fav-card-image-link">
+                  <Link to={carSlug(car)} className="fav-card-image-link">
                     {img ? (
                       <img src={img.imageUrl} alt={`${car.make} ${car.model}`} loading="lazy" />
                     ) : (
@@ -109,7 +110,7 @@ const Favourites = () => {
                   <div className="fav-card-body">
                     <div className="fav-card-top">
                       <div>
-                        <Link to={`/used-cars/${car.id}`} className="fav-card-title">
+                        <Link to={carSlug(car)} className="fav-card-title">
                           {car.year} {car.make} {car.model}
                         </Link>
                         <p className="fav-card-variant">{car.variant}</p>
@@ -140,7 +141,7 @@ const Favourites = () => {
                       )}
                     </div>
 
-                    <Link to={`/used-cars/${car.id}`} className="fav-view-btn">
+                    <Link to={carSlug(car)} className="fav-view-btn">
                       View Details
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <polyline points="9 18 15 12 9 6" />

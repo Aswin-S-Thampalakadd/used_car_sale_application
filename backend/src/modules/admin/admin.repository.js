@@ -328,11 +328,12 @@ export const getAllEnquiriesAdmin = async ({ page = 1, limit = 20, status }) => 
 
 // ─── REVIEWS ─────────────────────────────────────────────────────────────────
 
-export const getAllReviewsAdmin = async ({ page = 1, limit = 20, reviewType }) => {
+export const getAllReviewsAdmin = async ({ page = 1, limit = 20, reviewType, isApproved }) => {
   const offset = (page - 1) * limit;
 
   const conditions = [];
   if (reviewType) conditions.push(eq(reviews.reviewType, reviewType));
+  if (isApproved !== undefined) conditions.push(eq(reviews.isApproved, isApproved));
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
   const [rows, totalRes] = await Promise.all([
@@ -343,6 +344,7 @@ export const getAllReviewsAdmin = async ({ page = 1, limit = 20, reviewType }) =
         rating: reviews.rating,
         comment: reviews.comment,
         replyText: reviews.replyText,
+        isApproved: reviews.isApproved,
         createdAt: reviews.createdAt,
         customerId: reviews.customerId,
         customerName: users.name,

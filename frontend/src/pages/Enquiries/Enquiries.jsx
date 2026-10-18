@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { enquiriesAPI } from "../../api/api";
+import { carSlug } from "../../utils/carSlug";
 import "./Enquiries.css";
 
 const STATUS_LABELS = { new: "New", contacted: "Contacted", closed: "Closed" };
@@ -177,7 +178,7 @@ const Enquiries = () => {
                     <div className="enq-car-info">
                       {car ? (
                         <>
-                          <Link to={`/used-cars/${car.id}`} className="enq-car-name">
+                          <Link to={carSlug(car)} className="enq-car-name">
                             {car.year} {car.make} {car.model}
                           </Link>
                           <p className="enq-car-variant">{car.variant}</p>
@@ -260,7 +261,7 @@ const Enquiries = () => {
                       )}
 
                       {car && (
-                        <Link to={`/used-cars/${car.id}`} className="enq-view-car-btn">
+                        <Link to={carSlug(car)} className="enq-view-car-btn">
                           View Car
                           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                             <polyline points="9 18 15 12 9 6" />

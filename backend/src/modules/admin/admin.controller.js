@@ -13,6 +13,7 @@ import {
   getAllEnquiriesService,
   getAllReviewsService,
   deleteReviewService,
+  approveReviewService,
   getAllSubscriptionsService,
 } from "./admin.service.js";
 
@@ -244,6 +245,27 @@ export const deleteReview = async (req, res) => {
     }
     console.error(error);
     return res.status(500).json({ message: "Failed to delete review" });
+  }
+};
+
+export const approveReview = async (req, res) => {
+  try {
+    const reviewId = Number(req.params.reviewId);
+    if (isNaN(reviewId)) return res.status(400).json({ message: "Invalid review ID" });
+
+    const { isApproved } = req.body;
+    if (typeof isApproved !== "boolean") {
+      return res.status(400).json({ message: "isApproved must be a boolean" });
+    }
+
+    const result = await approveReviewService(reviewId, isApproved);
+    return res.json({ success: true, review: result });
+  } catch (error) {
+    if (error.message === "REVIEW_NOT_FOUND") {
+      return res.status(404).json({ message: "Review not found" });
+    }
+    console.error(error);
+    return res.status(500).json({ message: "Failed to update review approval" });
   }
 };
 

@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1789747054990,
-      "tag": "0000_tricky_marrow",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1789895730568,
-      "tag": "0001_youthful_doctor_octopus",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1790851387766,
-      "tag": "0002_solid_falcon",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1791000000000,
-      "tag": "0003_subscriptions",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1791100000000,
-      "tag": "0004_reviews_v2",
+      "when": 1792339072973,
+      "tag": "0000_fuzzy_shriek",
       "breakpoints": true
     }
   ]

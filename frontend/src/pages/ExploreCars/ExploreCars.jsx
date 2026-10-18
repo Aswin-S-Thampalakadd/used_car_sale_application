@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { carsAPI } from "../../api/api";
+import { carSlug } from "../../utils/carSlug";
 import "./ExploreCars.css";
 
 const ITEMS_PER_PAGE = 9;
@@ -402,7 +403,7 @@ const ExploreCars = () => {
                     return (
                       <article className="car-card" key={car.id}>
                         <a
-                          href={`/used-cars/${car.id}`}
+                          href={carSlug(car)}
                           className="car-card-link"
                           aria-label={`View ${car.year} ${car.make} ${car.model}`}
                         >

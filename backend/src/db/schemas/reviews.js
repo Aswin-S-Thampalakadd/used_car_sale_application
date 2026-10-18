@@ -1,5 +1,6 @@
 import {
   bigint,
+  boolean,
   integer,
   pgEnum,
   pgTable,
@@ -50,6 +51,9 @@ export const reviews = pgTable(
     // Dealer reply
     replyText: text("reply_text"),
     replyAt: timestamp("reply_at"),
+
+    // Admin moderation — app reviews must be approved before showing publicly
+    isApproved: boolean("is_approved").notNull().default(false),
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),

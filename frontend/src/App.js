@@ -15,7 +15,7 @@ import AddCar from "./pages/AddCar/AddCar";
 import Favourites from "./pages/Favourites/Favourites";
 import Enquiries from "./pages/Enquiries/Enquiries";
 
-// Admin pages
+import RateUs from "./pages/RateUs/RateUs";
 import AdminLogin from "./pages/Admin/AdminLogin";
 import AdminLayout from "./pages/Admin/AdminLayout";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
@@ -130,10 +130,18 @@ function App() {
             }
           />
           <Route
-            path="/used-cars/:id"
+            path="/used-cars/:slug"
             element={
               <PublicLayout>
                 <CarDetails />
+              </PublicLayout>
+            }
+          />
+          <Route
+            path="/rate-us"
+            element={
+              <PublicLayout>
+                <RateUs />
               </PublicLayout>
             }
           />

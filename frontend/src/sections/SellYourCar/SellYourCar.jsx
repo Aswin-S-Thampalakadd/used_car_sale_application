@@ -1,8 +1,37 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { statsAPI } from "../../api/api";
 import "./SellYourCar.css";
+
+/* ── format a raw number as "12.4K+" / "50K+" / "500+" etc. ── */
+function formatStat(n) {
+  if (n === null || n === undefined) return "—";
+  const num = Number(n);
+  if (num >= 1000) {
+    const k = num / 1000;
+    return `${k % 1 === 0 ? k : k.toFixed(1)}K+`;
+  }
+  return `${num.toLocaleString("en-IN")}+`;
+}
 
 export default function SellYourCar() {
   const navigate = useNavigate();
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    statsAPI
+      .getPlatformStats()
+      .then((r) => r.json())
+      .then((data) => { if (data.success) setStats(data.stats); })
+      .catch(() => {}); // keep null — fallback values used in render
+  }, []);
+
+  /* derived display values — show "—" while loading, real data once fetched */
+  const carsListed   = stats ? formatStat(stats.totalCars)      : "—";
+  const activeBuyers = stats ? formatStat(stats.totalCustomers)  : "—";
+  const dealerRating = stats?.averageRating != null
+    ? `${Number(stats.averageRating).toFixed(1)}/5`
+    : "—";
 
   return (
     <section className="sell-car" id="sell-your-car">
@@ -62,17 +91,17 @@ export default function SellYourCar() {
 
         <div className="sell-car-stats">
           <div className="sell-car-stat">
-            <span className="sell-car-stat-value">12,400+</span>
+            <span className="sell-car-stat-value">{carsListed}</span>
             <span className="sell-car-stat-label">Cars listed</span>
           </div>
           <div className="sell-car-stat">
-            <span className="sell-car-stat-value">50K+</span>
+            <span className="sell-car-stat-value">{activeBuyers}</span>
             <span className="sell-car-stat-label">Active buyers</span>
           </div>
-          <div className="sell-car-stat">
-            <span className="sell-car-stat-value">4.8/5</span>
+          {/* <div className="sell-car-stat">
+            <span className="sell-car-stat-value">{dealerRating}</span>
             <span className="sell-car-stat-label">Dealer rating</span>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

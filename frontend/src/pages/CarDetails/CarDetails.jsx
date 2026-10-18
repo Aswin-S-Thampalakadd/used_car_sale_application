@@ -82,9 +82,15 @@ const ReviewCard = ({ review }) => (
    MAIN
 ═══════════════════════════════════════════════════════════ */
 const CarDetails = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const { isAuthenticated, isCustomer } = useAuth();
   const navigate = useNavigate();
+
+  // Extract numeric ID from slug like "2021-honda-city-petrol-8"
+  // Falls back gracefully for plain numeric IDs ("8")
+  const slugSegments = (slug || "").split("-");
+  const numericId = slugSegments[slugSegments.length - 1];
+  const id = numericId; // used for API calls (backend parses the full slug OR plain id)
 
   /* ── car data ── */
   const [car, setCar] = useState(null);
@@ -122,16 +128,16 @@ const CarDetails = () => {
   const loadCar = useCallback(async () => {
     setLoading(true); setError("");
     try {
-      const res = await carsAPI.getById(id);
+      const res = await carsAPI.getById(slug);   // backend extracts ID from slug
       if (!res.ok) throw new Error("Car not found");
       setCar(await res.json());
     } catch (err) { setError(err.message); }
     finally { setLoading(false); }
-  }, [id]);
+  }, [slug]);
 
   const loadReviews = useCallback(async () => {
     try {
-      const res = await reviewsAPI.getByCar(id);
+      const res = await reviewsAPI.getByCar(numericId);
       if (res.ok) {
         const data = await res.json();
         setReviews(data.reviews || []);
@@ -139,15 +145,15 @@ const CarDetails = () => {
         setTotalReviews(data.totalReviews);
       }
     } catch { /* non-critical */ }
-  }, [id]);
+  }, [numericId]);
 
   const checkFavourite = useCallback(async () => {
     if (!isAuthenticated) return;
     try {
-      const res = await favouritesAPI.check(id);
+      const res = await favouritesAPI.check(numericId);
       if (res.ok) setIsFavourite((await res.json()).isFavourite);
     } catch { /* non-critical */ }
-  }, [id, isAuthenticated]);
+  }, [numericId, isAuthenticated]);
 
   useEffect(() => {
     loadCar(); loadReviews(); checkFavourite();
@@ -176,7 +182,7 @@ const CarDetails = () => {
     if (!isAuthenticated) { navigate("/login"); return; }
     setFavLoading(true);
     try {
-      isFavourite ? await favouritesAPI.remove(id) : await favouritesAPI.add(id);
+      isFavourite ? await favouritesAPI.remove(numericId) : await favouritesAPI.add(numericId);
       setIsFavourite(!isFavourite);
     } catch { }
     setFavLoading(false);

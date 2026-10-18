@@ -1,51 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { reviewsAPI } from "../../api/api";
+import { reviewsAPI, statsAPI } from "../../api/api";
 import { useAuth } from "../../context/AuthContext";
 import "./Testimonials.css";
 
-/* ── static fallback (shown while loading or if API returns < 3) ── */
-const STATIC = [
-  {
-    id: "s1",
-    customer: { name: "Rahul Sharma" },
-    rating: 5,
-    comment:
-      "Found my dream car within a week. The verification process gave me total peace of mind. No hidden fees, zero pressure.",
-    createdAt: "2024-10-01",
-  },
-  {
-    id: "s2",
-    customer: { name: "Priya Menon" },
-    rating: 5,
-    comment:
-      "Sold my car in just 3 days at a fair price. Payment was transferred instantly. Best selling experience I've ever had.",
-    createdAt: "2024-09-18",
-  },
-  {
-    id: "s3",
-    customer: { name: "Arjun Nair" },
-    rating: 5,
-    comment:
-      "Detailed history reports and 200-point inspection made all the difference. The car was exactly as described.",
-    createdAt: "2024-09-05",
-  },
-  {
-    id: "s4",
-    customer: { name: "Sneha Pillai" },
-    rating: 4,
-    comment:
-      "Great selection and transparent pricing. Financing options were competitive and delivery was on time.",
-    createdAt: "2024-08-22",
-  },
-  {
-    id: "s5",
-    customer: { name: "Kiran Das" },
-    rating: 5,
-    comment:
-      "The instant valuation tool was spot on. Got a better offer than any dealership quoted me. Truly hassle-free.",
-    createdAt: "2024-08-10",
-  },
-];
+/* No static fallback — show real reviews only */
 
 const StarIcon = ({ filled }) => (
   <svg
@@ -203,33 +161,47 @@ const ReviewModal = ({ onClose, onSubmitted }) => {
 const Testimonials = () => {
   const { isAuthenticated, isCustomer } = useAuth();
 
-  const [items, setItems] = useState(STATIC);
+  const [items, setItems] = useState([]);
   const [loadingReviews, setLoadingReviews] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [visibleCount, setVisibleCount] = useState(3);
   const [showModal, setShowModal] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [platformStats, setPlatformStats] = useState(null);
 
   const autoPlayRef = useRef(null);
 
-  /* fetch top 5 app reviews */
+  /* fetch top app reviews */
   const fetchReviews = async () => {
     try {
       const res = await reviewsAPI.getTopAppReviews();
       if (res.ok) {
         const data = await res.json();
-        if (data.reviews?.length >= 1) setItems(data.reviews);
+        setItems(data.reviews || []);
       }
     } catch {
-      /* keep static fallback */
+      /* keep empty — empty state shown */
     } finally {
       setLoadingReviews(false);
     }
   };
 
+  const fetchPlatformStats = async () => {
+    try {
+      const res = await statsAPI.getPlatformStats();
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) setPlatformStats(data.stats);
+      }
+    } catch {
+      /* keep null — fallback values used in render */
+    }
+  };
+
   useEffect(() => {
     fetchReviews();
+    fetchPlatformStats();
   }, []);
 
   /* responsive visible count */
@@ -283,6 +255,24 @@ const Testimonials = () => {
         ).toFixed(1)
       : "4.9";
 
+  /* ── format totalCustomers as "12K+" style ── */
+  const formatCustomers = (n) => {
+    if (n === null || n === undefined) return "—";
+    if (n >= 1000) {
+      const k = n / 1000;
+      return `${k % 1 === 0 ? k : k.toFixed(1)}K+`;
+    }
+    return `${n.toLocaleString("en-IN")}+`;
+  };
+
+  const happyCustomers = platformStats?.totalCustomers != null
+    ? formatCustomers(platformStats.totalCustomers)
+    : "—";
+
+  const recommendRate = platformStats?.recommendRate != null
+    ? `${platformStats.recommendRate}%`
+    : "—";
+
   return (
     <section className="t-section">
       <div className="t-container">
@@ -316,7 +306,45 @@ const Testimonials = () => {
           )}
         </div>
 
+        {/* ── Loading skeleton ── */}
+        {loadingReviews && (
+          <div className="t-skeleton-row">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="t-skeleton-card">
+                <div className="t-skeleton-line t-skeleton-line--short" />
+                <div className="t-skeleton-line" />
+                <div className="t-skeleton-line" />
+                <div className="t-skeleton-line t-skeleton-line--medium" />
+                <div className="t-skeleton-author">
+                  <div className="t-skeleton-avatar" />
+                  <div className="t-skeleton-line t-skeleton-line--short" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ── Empty state — invite users to be first ── */}
+        {!loadingReviews && items.length === 0 && (
+          <div className="t-empty">
+            <div className="t-empty-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </div>
+            <h3 className="t-empty-title">No reviews yet</h3>
+            <p className="t-empty-sub">Be the first to share your WheelzLoop experience!</p>
+            {isAuthenticated && isCustomer && (
+              <button className="t-write-btn t-write-btn--cta" onClick={() => setShowModal(true)}>
+                Write the first review
+              </button>
+            )}
+          </div>
+        )}
+
         {/* ── Carousel ── */}
+        {!loadingReviews && items.length > 0 && (
+        <>
         <div
           className="t-carousel"
           onMouseEnter={() => setIsPaused(true)}
@@ -414,6 +442,8 @@ const Testimonials = () => {
             />
           ))}
         </div>
+        </>
+        )}
 
         {/* ── Stats strip ── */}
         <div className="t-stats">
@@ -423,12 +453,12 @@ const Testimonials = () => {
           </div>
           <div className="t-stat-divider" />
           <div className="t-stat">
-            <span className="t-stat-value">12K+</span>
+            <span className="t-stat-value">{happyCustomers}</span>
             <span className="t-stat-label">Happy Customers</span>
           </div>
           <div className="t-stat-divider" />
           <div className="t-stat">
-            <span className="t-stat-value">98%</span>
+            <span className="t-stat-value">{recommendRate}</span>
             <span className="t-stat-label">Would Recommend</span>
           </div>
         </div>

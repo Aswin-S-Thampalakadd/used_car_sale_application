@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { carsAPI } from "../../api/api";
+import { carSlug } from "../../utils/carSlug";
 import "./Featuredlistings.css";
 
 const formatPrice = (value) => {
@@ -130,7 +131,7 @@ function ListingCard({ car, saved, onToggleSave }) {
           <button
             type="button"
             className="listing__cta"
-            onClick={() => navigate(`/used-cars/${car.id}`)}
+            onClick={() => navigate(carSlug(car))}
             disabled={car.status === "sold"}
           >
             {car.status === "sold" ? "Sold" : "View details"}
@@ -162,15 +163,28 @@ export default function FeaturedListings() {
   const [saved, setSaved] = useState([]);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+  const [isFeaturedMode, setIsFeaturedMode] = useState(true);
 
-  // Fetch featured cars from real API
+  // Fetch: try featured first, fall back to latest 8 if empty
   useEffect(() => {
-    carsAPI.getFeatured(10)
+    carsAPI.getFeatured(8)
       .then((r) => r.json())
       .then((data) => {
-        const list = data.cars || (Array.isArray(data) ? data : []);
-        setItems(list);
-        setLoading(false);
+        const featured = data.cars || (Array.isArray(data) ? data : []);
+        if (featured.length > 0) {
+          setItems(featured);
+          setIsFeaturedMode(true);
+          setLoading(false);
+        } else {
+          // No featured cars — show latest 8 active listings instead
+          return carsAPI.getRecent(8)
+            .then((r) => r.json())
+            .then((d) => {
+              setItems(d.cars || []);
+              setIsFeaturedMode(false);
+              setLoading(false);
+            });
+        }
       })
       .catch(() => setLoading(false));
   }, []);
@@ -208,10 +222,12 @@ export default function FeaturedListings() {
         <header className="featured__header">
           <div>
             <h2 className="featured__title" id="featured-heading">
-              Featured cars this week
+              {isFeaturedMode ? "Featured cars this week" : "Latest listings"}
             </h2>
             <p className="featured__subtitle">
-              Hand-picked listings with a full service history and a 200-point inspection report.
+              {isFeaturedMode
+                ? "Hand-picked listings with a full service history and a 200-point inspection report."
+                : "The most recently added certified pre-owned cars from verified dealers."}
             </p>
           </div>
 
@@ -248,8 +264,8 @@ export default function FeaturedListings() {
                 ))}
         </div>
 
-        <a className="featured__more" href="/used-cars?isFeatured=true">
-          Browse all featured cars →
+        <a className="featured__more" href={isFeaturedMode ? "/used-cars?isFeatured=true" : "/used-cars"}>
+          {isFeaturedMode ? "Browse all featured cars →" : "Browse all cars →"}
         </a>
       </div>
     </section>

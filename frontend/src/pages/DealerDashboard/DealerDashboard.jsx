@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { carsAPI, dealersAPI, subscriptionsAPI } from "../../api/api";
+import { carSlug } from "../../utils/carSlug";
 import SubscriptionModal from "../../components/SubscriptionModal/SubscriptionModal";
 import DealerReviews from "../../components/DealerReviews/DealerReviews";
 import "./DealerDashboard.css";
@@ -488,7 +489,7 @@ const DealerDashboard = () => {
                             </Link>
 
                             <Link
-                              to={`/used-cars/${car.id}`}
+                              to={carSlug(car)}
                               className="dd-icon-btn dd-icon-btn--view"
                               title="View public listing"
                               target="_blank"

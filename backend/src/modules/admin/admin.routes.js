@@ -17,6 +17,7 @@ import {
   getAllEnquiries,
   getAllReviews,
   deleteReview,
+  approveReview,
   getAllSubscriptions,
 } from "./admin.controller.js";
 
@@ -55,6 +56,7 @@ router.get("/enquiries", getAllEnquiries);
 
 // Reviews
 router.get("/reviews", getAllReviews);
+router.patch("/reviews/:reviewId/approve", approveReview);
 router.delete("/reviews/:reviewId", deleteReview);
 
 // Subscriptions

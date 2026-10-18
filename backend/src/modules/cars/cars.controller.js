@@ -73,7 +73,11 @@ export const getAllCars = async (req, res) => {
 export const getCarById = async (req, res) => {
   try {
     const { id } = req.params;
-    const carId = parseInt(id);
+
+    // Accept both plain numeric IDs ("8") and SEO slugs ("2021-honda-city-8")
+    // Always use the last hyphen-segment as the numeric ID
+    const segments = id.split("-");
+    const carId = parseInt(segments[segments.length - 1], 10);
 
     if (isNaN(carId)) {
       return res.status(400).json({ message: "Invalid car ID" });

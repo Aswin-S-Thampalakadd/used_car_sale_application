@@ -3,6 +3,10 @@ CREATE TYPE "public"."car_status" AS ENUM('draft', 'active', 'sold', 'reserved',
 CREATE TYPE "public"."fuel_type" AS ENUM('petrol', 'diesel', 'electric', 'hybrid', 'cng', 'lpg');--> statement-breakpoint
 CREATE TYPE "public"."transmission" AS ENUM('manual', 'automatic', 'amt', 'cvt', 'dct');--> statement-breakpoint
 CREATE TYPE "public"."enquiry_status" AS ENUM('new', 'contacted', 'closed');--> statement-breakpoint
+CREATE TYPE "public"."review_type" AS ENUM('app', 'dealer');--> statement-breakpoint
+CREATE TYPE "public"."payment_status" AS ENUM('pending', 'completed', 'failed');--> statement-breakpoint
+CREATE TYPE "public"."plan_type" AS ENUM('free', 'elite', 'pro');--> statement-breakpoint
+CREATE TYPE "public"."subscription_status" AS ENUM('active', 'expired', 'cancelled');--> statement-breakpoint
 CREATE TABLE "car_feature_mappings" (
 	"car_id" bigint NOT NULL,
 	"feature_id" bigint NOT NULL,
@@ -112,6 +116,50 @@ CREATE TABLE "user_types" (
 	CONSTRAINT "uq_user_types_name" UNIQUE("name")
 );
 --> statement-breakpoint
+CREATE TABLE "refresh_tokens" (
+	"id" bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "refresh_tokens_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 CACHE 1),
+	"user_id" bigint NOT NULL,
+	"token_hash" varchar(255) NOT NULL,
+	"expires_at" timestamp NOT NULL,
+	"revoked_at" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "refresh_tokens_token_hash_unique" UNIQUE("token_hash")
+);
+--> statement-breakpoint
+CREATE TABLE "reviews" (
+	"id" bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "reviews_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 CACHE 1),
+	"review_type" "review_type" DEFAULT 'dealer' NOT NULL,
+	"car_id" bigint,
+	"dealer_id" bigint,
+	"customer_id" bigint NOT NULL,
+	"rating" integer NOT NULL,
+	"comment" text,
+	"reply_text" text,
+	"reply_at" timestamp,
+	"is_approved" boolean DEFAULT false NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "uq_reviews_car_customer" UNIQUE("car_id","customer_id")
+);
+--> statement-breakpoint
+CREATE TABLE "subscriptions" (
+	"id" bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "subscriptions_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 CACHE 1),
+	"user_id" bigint NOT NULL,
+	"plan_type" "plan_type" DEFAULT 'free' NOT NULL,
+	"car_limit" integer DEFAULT 5 NOT NULL,
+	"price" numeric(10, 2) DEFAULT '0' NOT NULL,
+	"start_date" timestamp DEFAULT now() NOT NULL,
+	"end_date" timestamp,
+	"status" "subscription_status" DEFAULT 'active' NOT NULL,
+	"razorpay_order_id" varchar(100),
+	"razorpay_payment_id" varchar(100),
+	"razorpay_signature" varchar(255),
+	"payment_status" "payment_status" DEFAULT 'completed' NOT NULL,
+	"is_auto_renewal" boolean DEFAULT false NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 ALTER TABLE "car_feature_mappings" ADD CONSTRAINT "car_feature_mappings_car_id_cars_id_fk" FOREIGN KEY ("car_id") REFERENCES "public"."cars"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "car_feature_mappings" ADD CONSTRAINT "car_feature_mappings_feature_id_car_features_id_fk" FOREIGN KEY ("feature_id") REFERENCES "public"."car_features"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "car_images" ADD CONSTRAINT "car_images_car_id_cars_id_fk" FOREIGN KEY ("car_id") REFERENCES "public"."cars"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -122,4 +170,9 @@ ALTER TABLE "enquiries" ADD CONSTRAINT "enquiries_customer_id_users_id_fk" FOREI
 ALTER TABLE "enquiries" ADD CONSTRAINT "enquiries_dealer_id_users_id_fk" FOREIGN KEY ("dealer_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "favourites" ADD CONSTRAINT "favourites_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "favourites" ADD CONSTRAINT "favourites_car_id_cars_id_fk" FOREIGN KEY ("car_id") REFERENCES "public"."cars"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "users" ADD CONSTRAINT "users_user_type_id_user_types_id_fk" FOREIGN KEY ("user_type_id") REFERENCES "public"."user_types"("id") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "users" ADD CONSTRAINT "users_user_type_id_user_types_id_fk" FOREIGN KEY ("user_type_id") REFERENCES "public"."user_types"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "refresh_tokens" ADD CONSTRAINT "refresh_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "reviews" ADD CONSTRAINT "reviews_car_id_cars_id_fk" FOREIGN KEY ("car_id") REFERENCES "public"."cars"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "reviews" ADD CONSTRAINT "reviews_dealer_id_dealers_id_fk" FOREIGN KEY ("dealer_id") REFERENCES "public"."dealers"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "reviews" ADD CONSTRAINT "reviews_customer_id_users_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
