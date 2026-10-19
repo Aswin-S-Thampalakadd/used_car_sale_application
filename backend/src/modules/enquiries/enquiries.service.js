@@ -9,14 +9,15 @@ import {
   getEnquiryByIdDB,
   updateEnquiryStatusDB,
 } from "./enquiries.repository.js";
+import { notifyNewEnquiry } from "../notifications/notifications.service.js";
 
 const VALID_STATUSES = ["new", "contacted", "closed"];
 
 export const createEnquiryService = async (customerId, { carId, message }) => {
-  // Fetch car to get the dealerId
+  // Fetch car + customer name to build notification
   const car = await db.query.cars.findFirst({
     where: eq(cars.id, carId),
-    columns: { id: true, dealerId: true, status: true },
+    columns: { id: true, dealerId: true, status: true, make: true, model: true, year: true },
   });
 
   if (!car) throw new Error("CAR_NOT_FOUND");
@@ -29,12 +30,21 @@ export const createEnquiryService = async (customerId, { carId, message }) => {
     message: message || null,
   });
 
+  // Fire-and-forget notification to dealer
+  notifyNewEnquiry(
+    car.dealerId,
+    { ...enquiry, customer: null },
+    car
+  ).catch(() => {});
+
   return { message: "Enquiry sent successfully", enquiry };
 };
 
+const CUSTOMER_USER_TYPE_ID = 2;
+const DEALER_USER_TYPE_ID   = 3;
+
 export const getMyEnquiriesService = async (userId, userTypeId) => {
-  // 1 = customer, 2 = dealer
-  if (userTypeId === 2) {
+  if (userTypeId === DEALER_USER_TYPE_ID) {
     return await getEnquiriesByDealerDB(userId);
   }
   return await getEnquiriesByCustomerDB(userId);

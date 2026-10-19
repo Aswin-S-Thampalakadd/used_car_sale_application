@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { carsAPI, dealersAPI, subscriptionsAPI } from "../../api/api";
+import { carsAPI, dealersAPI, subscriptionsAPI, enquiriesAPI } from "../../api/api";
 import { carSlug } from "../../utils/carSlug";
 import SubscriptionModal from "../../components/SubscriptionModal/SubscriptionModal";
 import DealerReviews from "../../components/DealerReviews/DealerReviews";
@@ -64,6 +64,7 @@ const DealerDashboard = () => {
 
   const [profile,        setProfile]        = useState(null);
   const [cars,           setCars]           = useState([]);
+  const [enquiries,      setEnquiries]      = useState([]);
   const [filterStatus,   setFilterStatus]   = useState("all");
   const [loading,        setLoading]        = useState(true);
   const [error,          setError]          = useState("");
@@ -85,10 +86,11 @@ const DealerDashboard = () => {
     setLoading(true);
     setError("");
     try {
-      const [profileRes, carsRes, subRes] = await Promise.all([
+      const [profileRes, carsRes, subRes, enqRes] = await Promise.all([
         dealersAPI.getMyProfile(),
         dealersAPI.getMyCars(),
         subscriptionsAPI.getMyPlan(),
+        enquiriesAPI.getMine(),
       ]);
       if (profileRes.ok) setProfile(await profileRes.json());
       if (carsRes.ok) {
@@ -98,6 +100,10 @@ const DealerDashboard = () => {
       if (subRes.ok) {
         const d = await subRes.json();
         setSubscription(d.subscription ?? null);
+      }
+      if (enqRes.ok) {
+        const d = await enqRes.json();
+        setEnquiries(d.enquiries ?? []);
       }
     } catch {
       setError("Failed to load dashboard data.");
@@ -133,6 +139,17 @@ const DealerDashboard = () => {
       setError("Failed to update status.");
     } finally {
       setUpdatingStatus(null);
+    }
+  };
+
+  const handleEnquiryStatus = async (enqId, newStatus) => {
+    try {
+      const res = await enquiriesAPI.updateStatus(enqId, newStatus);
+      if (res.ok) {
+        setEnquiries((p) => p.map((e) => e.id === enqId ? { ...e, status: newStatus } : e));
+      }
+    } catch {
+      setError("Failed to update enquiry.");
     }
   };
 
@@ -254,6 +271,21 @@ const DealerDashboard = () => {
           </button>
 
           <button
+            className={`dd-nav-item ${activeTab === "enquiries" ? "dd-nav-item--active" : ""}`}
+            onClick={() => { setActiveTab("enquiries"); setSidebarOpen(false); }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            Enquiries
+            {enquiries.filter((e) => e.status === "new").length > 0 && (
+              <span className="dd-nav-badge" style={{ background: "#fef3c7", color: "#b45309" }}>
+                {enquiries.filter((e) => e.status === "new").length}
+              </span>
+            )}
+          </button>
+
+          <button
             className={`dd-nav-item ${activeTab === "reviews" ? "dd-nav-item--active" : ""}`}
             onClick={() => { setActiveTab("reviews"); setSidebarOpen(false); }}
           >
@@ -305,11 +337,13 @@ const DealerDashboard = () => {
             </button>
             <div>
               <h1 className="dd-page-title">
-                {activeTab === "listings" ? "My Listings" : "Customer Reviews"}
+                {activeTab === "listings" ? "My Listings" : activeTab === "enquiries" ? "Customer Enquiries" : "Customer Reviews"}
               </h1>
               <p className="dd-page-sub">
                 {activeTab === "listings"
                   ? `${cars.length} total · ${stats.active} active`
+                  : activeTab === "enquiries"
+                  ? `${enquiries.length} total · ${enquiries.filter(e => e.status === "new").length} new`
                   : "What customers say about you"}
               </p>
             </div>
@@ -527,6 +561,96 @@ const DealerDashboard = () => {
                 </div>
               )}
             </>
+          )}
+
+          {/* ════ ENQUIRIES TAB ════ */}
+          {activeTab === "enquiries" && (
+            <div className="dd-enquiries-wrap">
+              {enquiries.length === 0 ? (
+                <div className="dd-empty">
+                  <div className="dd-empty-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                  </div>
+                  <h3>No enquiries yet</h3>
+                  <p>When customers enquire about your listings, they'll appear here.</p>
+                </div>
+              ) : (
+                <div className="dd-enq-list">
+                  {enquiries.map((enq) => {
+                    const car = enq.car;
+                    const img = car?.carImages?.find((i) => i.isPrimary) ?? car?.carImages?.[0];
+                    const isNew = enq.status === "new";
+                    return (
+                      <div key={enq.id} className={`dd-enq-card ${isNew ? "dd-enq-card--new" : ""}`}>
+                        {/* Car image */}
+                        <div className="dd-enq-img">
+                          {img
+                            ? <img src={img.imageUrl} alt="" loading="lazy" />
+                            : <div className="dd-enq-img-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                                  <polyline points="21 15 16 10 5 21"/>
+                                </svg>
+                              </div>
+                          }
+                        </div>
+
+                        {/* Details */}
+                        <div className="dd-enq-details">
+                          <div className="dd-enq-top">
+                            <div>
+                              <p className="dd-enq-car-name">
+                                {car ? `${car.year} ${car.make} ${car.model}` : "Car removed"}
+                              </p>
+                              <p className="dd-enq-date">
+                                {new Date(enq.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                              </p>
+                            </div>
+                            <span className={`dd-enq-status dd-enq-status--${enq.status}`}>
+                              {enq.status === "new" ? "New" : enq.status === "contacted" ? "Contacted" : "Closed"}
+                            </span>
+                          </div>
+
+                          {/* Customer info */}
+                          {enq.customer && (
+                            <div className="dd-enq-customer">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                              </svg>
+                              <div>
+                                <span className="dd-enq-customer-name">{enq.customer.name}</span>
+                                <span className="dd-enq-customer-contact">
+                                  {enq.customer.phone && <a href={`tel:${enq.customer.phone}`}>{enq.customer.phone}</a>}
+                                  {enq.customer.email && <a href={`mailto:${enq.customer.email}`}>{enq.customer.email}</a>}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+
+                          {enq.message && (
+                            <p className="dd-enq-message">"{enq.message}"</p>
+                          )}
+
+                          {/* Status update */}
+                          <select
+                            className="dd-status-select"
+                            value={enq.status}
+                            onChange={(e) => handleEnquiryStatus(enq.id, e.target.value)}
+                          >
+                            <option value="new">New</option>
+                            <option value="contacted">Contacted</option>
+                            <option value="closed">Closed</option>
+                          </select>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           )}
 
           {/* ════ REVIEWS TAB ════ */}

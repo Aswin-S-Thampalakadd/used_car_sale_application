@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, gte, ilike, lte, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { cars } from "../../db/schemas/cars.js";
 import { dealerProfiles } from "../../db/schemas/dealers.js";
@@ -403,4 +403,12 @@ export const countDealerCarsDB = async (dealerId) => {
     .where(eq(cars.dealerId, dealerId));
 
   return Number(result[0]?.count ?? 0);
+};
+
+/** Atomically increment viewsCount for a car. Fire-and-forget safe. */
+export const incrementViewsDB = async (carId) => {
+  await db
+    .update(cars)
+    .set({ viewsCount: sql`${cars.viewsCount} + 1`, updatedAt: new Date() })
+    .where(eq(cars.id, carId));
 };

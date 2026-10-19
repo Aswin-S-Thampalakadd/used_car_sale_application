@@ -13,6 +13,7 @@ import {
   updateCar,
   updateCarStatus,
   countDealerCarsDB,
+  incrementViewsDB,
 } from "./cars.repository.js";
 import { checkCarLimitService } from "../subscriptions/subscriptions.service.js";
 
@@ -41,7 +42,11 @@ export const getAllCarsService = async (page, limit, filters) => {
 };
 
 export const fetchCarById = async (carId) => {
-  let car = await getCarByIdDB(carId);
+  const car = await getCarByIdDB(carId);
+  if (car) {
+    // Fire-and-forget — don't block the response
+    incrementViewsDB(carId).catch(() => {});
+  }
   return car;
 };
 

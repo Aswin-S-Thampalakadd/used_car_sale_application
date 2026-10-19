@@ -6,10 +6,10 @@ import { reviews } from "../../db/schemas/reviews.js";
    CAR  REVIEWS  (reviewType = "dealer", carId set)
 ───────────────────────────────────────────────────────────── */
 
-export const createReviewDB = async ({ carId, customerId, rating, comment }) => {
+export const createReviewDB = async ({ carId, dealerId, customerId, rating, comment }) => {
   const result = await db
     .insert(reviews)
-    .values({ reviewType: "dealer", carId, customerId, rating, comment })
+    .values({ reviewType: "dealer", carId, dealerId, customerId, rating, comment })
     .returning();
   return result[0];
 };
