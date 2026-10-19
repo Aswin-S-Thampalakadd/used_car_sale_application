@@ -337,27 +337,41 @@ export default function Banner() {
             </button>
           </form>
         ) : (
-          /* Sell CTA */
+          /* Sell CTA → dealer signup */
           <div className="bn-sell-cta">
-            <p className="bn-sell-text">
-              Get the best price for your car. Free inspection. Fast sale.
-            </p>
-            <button
-              className="bn-sell-btn"
-              onClick={() => navigate("/sell")}
-              type="button"
-            >
-              Get Free Valuation
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                aria-hidden="true"
+            <div className="bn-sell-cta-left">
+              <div className="bn-sell-cta-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="2" y="7" width="20" height="14" rx="2"/>
+                  <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+                </svg>
+              </div>
+              <div>
+                <p className="bn-sell-title">Create a Dealer Account</p>
+                <p className="bn-sell-text">
+                  List your inventory, reach thousands of buyers, and grow your dealership — all from one dashboard.
+                </p>
+              </div>
+            </div>
+            <div className="bn-sell-actions">
+              <button
+                className="bn-sell-btn"
+                onClick={() => navigate("/signup")}
+                type="button"
               >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </button>
+                Register as Dealer
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </button>
+              <button
+                className="bn-sell-btn-ghost"
+                onClick={() => navigate("/login")}
+                type="button"
+              >
+                Already have an account? Sign in
+              </button>
+            </div>
           </div>
         )}
 

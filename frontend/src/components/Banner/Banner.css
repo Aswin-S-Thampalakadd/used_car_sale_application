@@ -341,7 +341,7 @@
   max-width: 680px;
   background: #ffffff;
   border-radius: 0 0 16px 16px;
-  padding: 28px 32px;
+  padding: 24px 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -350,24 +350,64 @@
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35);
 }
 
-.bn-sell-text {
+.bn-sell-cta-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.bn-sell-cta-icon {
+  width: 44px;
+  height: 44px;
+  background: #eff6ff;
+  color: #1e40af;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bn-sell-cta-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.bn-sell-title {
+  font-family: var(--font-heading);
   font-size: 15px;
-  color: #374151;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.bn-sell-text {
+  font-size: 13px;
+  color: #64748b;
   line-height: 1.5;
   font-weight: 400;
-  text-align: left;
+}
+
+.bn-sell-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+  flex-shrink: 0;
 }
 
 .bn-sell-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
   color: #fff;
   border: none;
   border-radius: 10px;
-  padding: 13px 24px;
-  font-size: 14px;
+  padding: 12px 20px;
+  font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
@@ -377,13 +417,30 @@
 }
 
 .bn-sell-btn:hover {
-  filter: brightness(1.08);
+  filter: brightness(1.1);
   transform: translateY(-1px);
 }
 
 .bn-sell-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
+}
+
+.bn-sell-btn-ghost {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  color: #64748b;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  white-space: nowrap;
+  text-decoration: underline;
+  transition: color 150ms;
+}
+
+.bn-sell-btn-ghost:hover {
+  color: #1e40af;
 }
 
 /* ════════════════════════════════════════════════════════
@@ -598,10 +655,23 @@
 
   .bn-sell-cta {
     flex-direction: column;
-    text-align: center;
+    align-items: stretch;
+    gap: 16px;
   }
 
-  .bn-sell-text {
+  .bn-sell-cta-left {
+    align-items: flex-start;
+  }
+
+  .bn-sell-actions {
+    align-items: stretch;
+  }
+
+  .bn-sell-btn {
+    justify-content: center;
+  }
+
+  .bn-sell-btn-ghost {
     text-align: center;
   }
 }
@@ -664,7 +734,7 @@
   }
 
   .bn-sell-cta {
-    padding: 20px;
+    padding: 16px;
   }
 }
 
