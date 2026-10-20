@@ -373,6 +373,7 @@
   border: 1px solid transparent;
   transition: all var(--transition-fast);
   white-space: nowrap;
+
 }
 
 .car-btn svg {
@@ -537,6 +538,10 @@
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  /* prevent children from breaking out */
+  min-width: 0;
+  /* allow flex children to shrink */
 }
 
 .car-dealer-head {
@@ -833,10 +838,6 @@
 
   .car-quick-specs {
     grid-template-columns: 1fr 1fr;
-  }
-
-  .car-actions {
-    grid-template-columns: 1fr;
   }
 
   .car-btn-secondary {
@@ -1248,12 +1249,17 @@
   color: #fff;
   border: none;
   border-radius: var(--radius-md);
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
   transition: background var(--transition-fast), transform var(--transition-fast);
   font-family: var(--font-sans);
+  width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .car-btn-call:hover {
@@ -1278,11 +1284,16 @@
   background: #16a34a;
   color: #fff;
   border-radius: var(--radius-md);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 700;
   text-decoration: none;
   margin: 12px 0;
   transition: background var(--transition-fast);
+  box-sizing: border-box;
+  /* include padding in width calculation */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .car-dealer-call-btn:hover {
