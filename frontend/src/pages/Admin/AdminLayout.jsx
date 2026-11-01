@@ -9,6 +9,7 @@ import {
   MdQuestionAnswer,
   MdStar,
   MdSubscriptions,
+  MdMail,
   MdMenu,
   MdClose,
   MdLogout,
@@ -24,6 +25,7 @@ const navItems = [
   { to: "/admin/enquiries", label: "Enquiries", icon: <MdQuestionAnswer /> },
   { to: "/admin/reviews",   label: "Reviews",   icon: <MdStar /> },
   { to: "/admin/subscriptions", label: "Subscriptions", icon: <MdSubscriptions /> },
+  { to: "/admin/newsletter", label: "Newsletter", icon: <MdMail /> },
 ];
 
 export default function AdminLayout() {

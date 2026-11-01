@@ -13,3 +13,4 @@ export * from "./favourites.js";
 export * from "./reviews.js";
 export * from "./subscriptions.js";
 export * from "./notifications.js";
+export * from "./newsletter.js";

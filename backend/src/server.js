@@ -17,6 +17,7 @@ import uploadsRouter from "./modules/uploads/uploads.routes.js";
 import statsRouter from "./modules/stats/stats.routes.js";
 import adminRouter from "./modules/admin/admin.routes.js";
 import notificationsRouter from "./modules/notifications/notifications.routes.js";
+import newsletterRouter from "./modules/newsletter/newsletter.routes.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -29,7 +30,7 @@ app.use(cors());
 // Routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/cars", carRouter);
-app.use("/api/v1/cars", carImagesRouter);   // image sub-routes on /cars/:carId/images
+app.use("/api/v1/cars", carImagesRouter); // image sub-routes on /cars/:carId/images
 app.use("/api/v1/enquiries", enquiriesRouter);
 app.use("/api/v1/favourites", favouritesRouter);
 app.use("/api/v1/reviews", reviewsRouter);
@@ -37,9 +38,10 @@ app.use("/api/v1/dealers", dealersRouter);
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/subscriptions", subscriptionsRouter);
 app.use("/api/v1/uploads", uploadsRouter);
-app.use("/api/v1/stats",         statsRouter);
-app.use("/api/v1/admin",         adminRouter);
+app.use("/api/v1/stats", statsRouter);
+app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/notifications", notificationsRouter);
+app.use("/api/v1/newsletter", newsletterRouter);
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });

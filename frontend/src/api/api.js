@@ -310,6 +310,20 @@ export const uploadsAPI = {
 
 export { setTokens, clearTokens, getAccessToken, getRefreshToken };
 
+// ── Newsletter ────────────────────────────────────────────────────────────────
+export const newsletterAPI = {
+  subscribe: (email, name) =>
+    apiFetch("/newsletter/subscribe", {
+      method: "POST",
+      body: JSON.stringify({ email, name }),
+    }),
+
+  getSubscribers: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiFetch(`/newsletter/subscribers${qs ? `?${qs}` : ""}`);
+  },
+};
+
 // ── Admin ─────────────────────────────────────────────────────────────────────
 export const adminAPI = {
   // Auth

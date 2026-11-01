@@ -1,17 +1,33 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { newsletterAPI } from "../../api/api";
 import "./Footer.css";
 
 const Footer = () => {
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
+  const [email, setEmail]       = useState("");
+  const [subLoading, setSubLoading] = useState(false);
+  const [subStatus, setSubStatus]   = useState(null); // null | "ok" | "error"
+  const [subMsg, setSubMsg]         = useState("");
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!email.trim()) return;
-    setSubscribed(true);
-    setEmail("");
-    setTimeout(() => setSubscribed(false), 3500);
+    setSubLoading(true);
+    setSubStatus(null);
+    try {
+      const res  = await newsletterAPI.subscribe(email.trim());
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to subscribe.");
+      setSubStatus("ok");
+      setSubMsg(data.message || "Check your inbox to confirm!");
+      setEmail("");
+    } catch (err) {
+      setSubStatus("error");
+      setSubMsg(err.message);
+    } finally {
+      setSubLoading(false);
+      setTimeout(() => { setSubStatus(null); setSubMsg(""); }, 6000);
+    }
   };
 
   const currentYear = new Date().getFullYear();
@@ -55,24 +71,22 @@ const Footer = () => {
                   aria-label="Email address"
                 />
               </div>
-              <button type="submit" className="footer-newsletter-btn">
-                Subscribe
+              <button type="submit" className="footer-newsletter-btn" disabled={subLoading}>
+                {subLoading ? "Subscribing…" : "Subscribe"}
               </button>
             </form>
 
-            {subscribed && (
+            {subStatus === "ok" && (
               <p className="footer-newsletter-success">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
-                Thanks for subscribing!
+                {subMsg}
+              </p>
+            )}
+            {subStatus === "error" && (
+              <p className="footer-newsletter-error">
+                {subMsg}
               </p>
             )}
           </div>

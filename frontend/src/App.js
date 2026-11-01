@@ -34,6 +34,8 @@ import AdminCars from "./pages/Admin/AdminCars";
 import AdminEnquiries from "./pages/Admin/AdminEnquiries";
 import AdminReviews from "./pages/Admin/AdminReviews";
 import AdminSubscriptions from "./pages/Admin/AdminSubscriptions";
+import AdminNewsletterSubscribers from "./pages/Admin/AdminNewsletterSubscribers";
+import NewsletterConfirmed from "./pages/Static/NewsletterConfirmed";
 
 /** Redirects to /admin/login if the user is not an authenticated admin */
 function ProtectedAdminRoute({ children }) {
@@ -163,6 +165,7 @@ function App() {
           <Route path="/terms"   element={<PublicLayout><Terms /></PublicLayout>} />
           <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />
           <Route path="/cookies" element={<PublicLayout><CookiePolicy /></PublicLayout>} />
+          <Route path="/newsletter/confirmed" element={<PublicLayout><NewsletterConfirmed /></PublicLayout>} />
           <Route
             path="/login"
             element={
@@ -250,6 +253,7 @@ function App() {
             <Route path="enquiries"     element={<AdminEnquiries />} />
             <Route path="reviews"       element={<AdminReviews />} />
             <Route path="subscriptions" element={<AdminSubscriptions />} />
+            <Route path="newsletter" element={<AdminNewsletterSubscribers />} />
           </Route>
         </Routes>
       </AuthProvider>
