@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { carsAPI, statsAPI } from "../../api/api";
 import "./Banner.css";
+import SearchBox from "../SearchBox/SearchBox";
 
 const BUDGET_OPTIONS = [
   { label: "Any Budget", min: "", max: "" },
@@ -195,29 +196,19 @@ export default function Banner() {
             role="search"
             aria-label="Search cars"
           >
-            {/* Keyword */}
+            {/* Keyword — autocomplete search */}
             <div className="bn-search-field bn-search-field--keyword">
-              <label className="bn-search-label" htmlFor="bn-kw">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
+              <label className="bn-search-label" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="11" cy="11" r="8" />
                   <path d="m21 21-4.35-4.35" />
                 </svg>
                 What are you looking for?
               </label>
-              <input
-                id="bn-kw"
-                type="text"
-                className="bn-search-input"
+              <SearchBox
                 placeholder='e.g. "Honda City 2021"'
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-                aria-label="Keyword"
+                variant="banner"
+                onSearch={(q) => setKeyword(q)}
               />
             </div>
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import SearchBox from "../SearchBox/SearchBox";
 import "./Header.css";
 
 /* ── initials avatar ── */
@@ -12,17 +13,15 @@ const UserAvatar = ({ name }) => {
 };
 
 function Header() {
-  const { isAuthenticated, isDealer, isCustomer, isAdmin, user, logout } = useAuth();
+  const { isAuthenticated, isDealer, isAdmin, user, logout } = useAuth();
   const navigate = useNavigate();
 
   const [mobileOpen, setMobileOpen]     = useState(false);
   const [searchOpen, setSearchOpen]     = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [query, setQuery]               = useState("");
   const [scrolled, setScrolled]         = useState(false);
 
   const dropdownRef = useRef(null);
-  const searchInputRef = useRef(null);
 
   /* ── shadow on scroll ── */
   useEffect(() => {
@@ -43,11 +42,6 @@ function Header() {
     return () => document.removeEventListener("mousedown", handler);
   }, [dropdownOpen]);
 
-  /* ── focus search input when opened ── */
-  useEffect(() => {
-    if (searchOpen) setTimeout(() => searchInputRef.current?.focus(), 60);
-  }, [searchOpen]);
-
   /* ── lock body scroll when mobile drawer is open ── */
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -62,13 +56,6 @@ function Header() {
   }, []);
 
   const close = () => { setMobileOpen(false); setDropdownOpen(false); };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-    navigate(`/used-cars?search=${encodeURIComponent(query.trim())}`);
-    setQuery(""); setSearchOpen(false); setMobileOpen(false);
-  };
 
   const handleLogout = async () => {
     close();
@@ -120,27 +107,13 @@ function Header() {
             ))}
           </nav>
 
-          {/* ── Desktop search bar ── */}
-          <form className="hdr-search" onSubmit={handleSearch} role="search" aria-label="Search cars">
-            <svg className="hdr-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-            <input
-              type="text"
-              className="hdr-search-input"
-              placeholder="Make, model or keyword…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              aria-label="Search cars"
-            />
-            {query && (
-              <button type="button" className="hdr-search-clear" onClick={() => setQuery("")} aria-label="Clear">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-              </button>
-            )}
-          </form>
+          {/* ── Desktop search (autocomplete) ── */}
+          <SearchBox
+            placeholder="Make, model or keyword…"
+            variant="header"
+            className="hdr-search-box"
+            onSearch={(q) => { navigate(`/used-cars?search=${encodeURIComponent(q)}`); setMobileOpen(false); }}
+          />
 
           {/* ── Right-side actions ── */}
           <div className="hdr-actions">
@@ -271,26 +244,16 @@ function Header() {
 
         {/* ── Mobile search bar (slides down) ── */}
         <div className={`hdr-mobile-search ${searchOpen ? "hdr-mobile-search--open" : ""}`}>
-          <form onSubmit={handleSearch} role="search" className="hdr-mobile-search-form">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-            <input
-              ref={searchInputRef}
-              type="text"
-              placeholder="Search make, model or keyword…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              aria-label="Search cars"
-            />
-            {query && (
-              <button type="button" onClick={() => setQuery("")} aria-label="Clear">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-              </button>
-            )}
-          </form>
+          <SearchBox
+            placeholder="Search make, model or keyword…"
+            variant="header"
+            className="hdr-mobile-search-form"
+            onSearch={(q) => {
+              navigate(`/used-cars?search=${encodeURIComponent(q)}`);
+              setSearchOpen(false);
+              setMobileOpen(false);
+            }}
+          />
         </div>
       </header>
 
