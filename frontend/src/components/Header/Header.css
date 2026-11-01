@@ -27,6 +27,9 @@
   display: flex;
   align-items: center;
   gap: 32px;
+  /* prevent inner flex items from overflowing the viewport */
+  min-width: 0;
+  overflow: hidden;
 }
 
 /* ════════════════════════════════════════════════
@@ -41,7 +44,7 @@
 }
 
 .hdr-logo-img {
-  height: 60px;
+  height: 36px;
   width: auto;
   display: block;
 }
@@ -108,9 +111,11 @@
 /* ════════════════════════════════════════════════
    SEARCH BAR (desktop)
 ════════════════════════════════════════════════ */
-.hdr-search {
+.hdr-search,
+.hdr-search-box {
   flex: 1;
   max-width: 360px;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -780,6 +785,7 @@
 @media (max-width: 860px) {
   .hdr-inner {
     gap: 12px;
+    padding: 0 16px;
   }
 
   .hdr-nav {
@@ -839,19 +845,13 @@
 
 @media (max-width: 480px) {
   .hdr-inner {
-    height: 60px;
-    padding: 0 14px;
-    gap: 8px;
-  }
-
-  .hdr-logo {
-    font-size: 19px;
+    height: 56px;
+    padding: 0 12px;
     gap: 6px;
   }
 
-  .hdr-logo-icon svg {
-    width: 28px;
-    height: 28px;
+  .hdr-logo-img {
+    height: 30px;
   }
 
   .hdr-btn--primary {
