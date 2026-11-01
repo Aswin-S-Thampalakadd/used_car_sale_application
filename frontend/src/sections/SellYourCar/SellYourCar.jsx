@@ -22,16 +22,19 @@ export default function SellYourCar() {
     statsAPI
       .getPlatformStats()
       .then((r) => r.json())
-      .then((data) => { if (data.success) setStats(data.stats); })
+      .then((data) => {
+        if (data.success) setStats(data.stats);
+      })
       .catch(() => {}); // keep null — fallback values used in render
   }, []);
 
   /* derived display values — show "—" while loading, real data once fetched */
-  const carsListed   = stats ? formatStat(stats.totalCars)      : "—";
-  const activeBuyers = stats ? formatStat(stats.totalCustomers)  : "—";
-  const dealerRating = stats?.averageRating != null
-    ? `${Number(stats.averageRating).toFixed(1)}/5`
-    : "—";
+  const carsListed = stats ? formatStat(stats.totalCars) : "—";
+  const activeBuyers = stats ? formatStat(stats.totalCustomers) : "—";
+  const dealerRating =
+    stats?.averageRating != null
+      ? `${Number(stats.averageRating).toFixed(1)}/5`
+      : "—";
 
   return (
     <section className="sell-car" id="sell-your-car">
@@ -98,10 +101,6 @@ export default function SellYourCar() {
             <span className="sell-car-stat-value">{activeBuyers}</span>
             <span className="sell-car-stat-label">Active buyers</span>
           </div>
-          {/* <div className="sell-car-stat">
-            <span className="sell-car-stat-value">{dealerRating}</span>
-            <span className="sell-car-stat-label">Dealer rating</span>
-          </div> */}
         </div>
       </div>
     </section>

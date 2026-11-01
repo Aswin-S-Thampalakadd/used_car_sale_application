@@ -76,7 +76,9 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
 
   // Close on Escape key
   useEffect(() => {
-    const handler = (e) => { if (e.key === "Escape") onClose(); };
+    const handler = (e) => {
+      if (e.key === "Escape") onClose();
+    };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, [onClose]);
@@ -90,7 +92,9 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
       // 1. Load Razorpay SDK
       const sdkLoaded = await loadRazorpay();
       if (!sdkLoaded) {
-        setError("Failed to load payment gateway. Please check your connection.");
+        setError(
+          "Failed to load payment gateway. Please check your connection.",
+        );
         return;
       }
 
@@ -119,12 +123,16 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
               const verifyRes = await subscriptionsAPI.verifyPayment(
                 response.razorpay_order_id,
                 response.razorpay_payment_id,
-                response.razorpay_signature
+                response.razorpay_signature,
               );
               const verifyData = await verifyRes.json();
 
               if (!verifyRes.ok || !verifyData.success) {
-                reject(new Error(verifyData.message || "Payment verification failed"));
+                reject(
+                  new Error(
+                    verifyData.message || "Payment verification failed",
+                  ),
+                );
                 return;
               }
 
@@ -171,14 +179,20 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
       role="dialog"
       aria-modal="true"
       aria-labelledby="sub-modal-title"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       <div className="sub-modal">
-        {/* Header */}
         <div className="sub-modal-header">
           <div className="sub-modal-header-text">
             <div className="sub-modal-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
               </svg>
             </div>
@@ -187,7 +201,8 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
                 Upgrade Your Plan
               </h2>
               <p className="sub-modal-subtitle">
-                You've reached your <strong>5-car limit</strong> on the Free plan. Upgrade to list more cars.
+                You've reached your <strong>5-car limit</strong> on the Free
+                plan. Upgrade to list more cars.
               </p>
             </div>
           </div>
@@ -196,7 +211,12 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
             onClick={onClose}
             aria-label="Close"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -205,7 +225,12 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
 
         {error && (
           <div className="sub-error" role="alert">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <circle cx="12" cy="12" r="10" />
               <line x1="12" y1="8" x2="12" y2="12" />
               <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -214,7 +239,6 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
           </div>
         )}
 
-        {/* Plans grid */}
         {loading ? (
           <div className="sub-loading">
             <div className="sub-spinner" />
@@ -232,7 +256,10 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
                 <div
                   key={plan.planType}
                   className={`sub-plan-card ${plan.planType === "elite" ? "sub-plan-card--featured" : ""} ${isCurrent ? "sub-plan-card--current" : ""}`}
-                  style={{ "--plan-color": meta.color, "--plan-accent": meta.accent }}
+                  style={{
+                    "--plan-color": meta.color,
+                    "--plan-accent": meta.accent,
+                  }}
                 >
                   {meta.badge && (
                     <span className="sub-plan-badge">{meta.badge}</span>
@@ -252,7 +279,12 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
                       )}
                     </div>
                     <p className="sub-plan-limit">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
                         <rect x="3" y="3" width="18" height="18" rx="2" />
                         <path d="M3 9h18M9 21V9" />
                       </svg>
@@ -263,7 +295,12 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
                   <ul className="sub-plan-features">
                     {meta.features?.map((f) => (
                       <li key={f}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                        >
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                         {f}

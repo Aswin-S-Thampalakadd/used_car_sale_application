@@ -38,8 +38,12 @@ const ReviewCard = ({ review, onDelete, onReply }) => {
 
   const handleReply = async (e) => {
     e.preventDefault();
-    if (!replyText.trim()) { setErr("Reply cannot be empty."); return; }
-    setSaving(true); setErr("");
+    if (!replyText.trim()) {
+      setErr("Reply cannot be empty.");
+      return;
+    }
+    setSaving(true);
+    setErr("");
     try {
       await onReply(review.id, replyText.trim());
       setShowReplyForm(false);
@@ -52,7 +56,6 @@ const ReviewCard = ({ review, onDelete, onReply }) => {
 
   return (
     <div className="dr-card">
-      {/* ── top row ── */}
       <div className="dr-card-top">
         <div className="dr-avatar">
           {review.customer?.name?.charAt(0)?.toUpperCase() || "?"}
@@ -64,7 +67,12 @@ const ReviewCard = ({ review, onDelete, onReply }) => {
           <StarRow value={review.rating} />
           {review.car && (
             <p className="dr-car-label">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <rect x="1" y="3" width="15" height="13" rx="2" />
                 <path d="M16 8h4l3 3v5h-7V8z" />
                 <circle cx="5.5" cy="18.5" r="2.5" />
@@ -77,15 +85,17 @@ const ReviewCard = ({ review, onDelete, onReply }) => {
         <span className="dr-date">{formatDate(review.createdAt)}</span>
       </div>
 
-      {review.comment && (
-        <p className="dr-comment">{review.comment}</p>
-      )}
+      {review.comment && <p className="dr-comment">{review.comment}</p>}
 
-      {/* ── existing reply ── */}
       {review.replyText && !showReplyForm && (
         <div className="dr-reply-bubble">
           <div className="dr-reply-label">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
             Your reply · {formatDate(review.replyAt)}
@@ -94,7 +104,6 @@ const ReviewCard = ({ review, onDelete, onReply }) => {
         </div>
       )}
 
-      {/* ── reply form ── */}
       {showReplyForm && (
         <form className="dr-reply-form" onSubmit={handleReply}>
           <textarea
@@ -110,25 +119,44 @@ const ReviewCard = ({ review, onDelete, onReply }) => {
             <button
               type="button"
               className="dr-btn dr-btn--ghost"
-              onClick={() => { setShowReplyForm(false); setReplyText(review.replyText || ""); setErr(""); }}
+              onClick={() => {
+                setShowReplyForm(false);
+                setReplyText(review.replyText || "");
+                setErr("");
+              }}
             >
               Cancel
             </button>
-            <button type="submit" className="dr-btn dr-btn--primary" disabled={saving}>
-              {saving ? "Posting…" : review.replyText ? "Update Reply" : "Post Reply"}
+            <button
+              type="submit"
+              className="dr-btn dr-btn--primary"
+              disabled={saving}
+            >
+              {saving
+                ? "Posting…"
+                : review.replyText
+                  ? "Update Reply"
+                  : "Post Reply"}
             </button>
           </div>
         </form>
       )}
 
-      {/* ── card actions ── */}
       <div className="dr-card-actions">
         <button
           type="button"
           className="dr-btn dr-btn--outline"
-          onClick={() => { setShowReplyForm((v) => !v); setErr(""); }}
+          onClick={() => {
+            setShowReplyForm((v) => !v);
+            setErr("");
+          }}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
           {review.replyText ? "Edit Reply" : "Reply"}
@@ -139,7 +167,12 @@ const ReviewCard = ({ review, onDelete, onReply }) => {
           className="dr-btn dr-btn--danger"
           onClick={() => onDelete(review.id)}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <polyline points="3 6 5 6 21 6" />
             <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
             <path d="M10 11v6M14 11v6" />
@@ -152,24 +185,28 @@ const ReviewCard = ({ review, onDelete, onReply }) => {
   );
 };
 
-/* ═══════════════════════════════════════════════════════════
-   MAIN  COMPONENT
-═══════════════════════════════════════════════════════════ */
 const DealerReviews = () => {
   const [reviews, setReviews] = useState([]);
-  const [summary, setSummary] = useState({ averageRating: null, totalReviews: 0 });
+  const [summary, setSummary] = useState({
+    averageRating: null,
+    totalReviews: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [filter, setFilter] = useState("all"); // all | replied | pending
+  const [filter, setFilter] = useState("all");
 
   const load = async () => {
-    setLoading(true); setError("");
+    setLoading(true);
+    setError("");
     try {
       const res = await reviewsAPI.getDealerReviews();
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to load reviews");
       setReviews(data.reviews || []);
-      setSummary({ averageRating: data.averageRating, totalReviews: data.totalReviews });
+      setSummary({
+        averageRating: data.averageRating,
+        totalReviews: data.totalReviews,
+      });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -177,9 +214,10 @@ const DealerReviews = () => {
     }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
-  /* ── reply handler ── */
   const handleReply = async (reviewId, replyText) => {
     const res = await reviewsAPI.replyToReview(reviewId, replyText);
     const data = await res.json();
@@ -188,13 +226,16 @@ const DealerReviews = () => {
     setReviews((prev) =>
       prev.map((r) =>
         r.id === reviewId
-          ? { ...r, replyText: data.review.replyText, replyAt: data.review.replyAt }
-          : r
-      )
+          ? {
+              ...r,
+              replyText: data.review.replyText,
+              replyAt: data.review.replyAt,
+            }
+          : r,
+      ),
     );
   };
 
-  /* ── delete handler ── */
   const handleDelete = async (reviewId) => {
     if (!window.confirm("Remove this review from your profile?")) return;
     try {
@@ -213,57 +254,63 @@ const DealerReviews = () => {
     }
   };
 
-  /* ── filtered list ── */
   const filtered = reviews.filter((r) => {
     if (filter === "replied") return !!r.replyText;
     if (filter === "pending") return !r.replyText;
     return true;
   });
 
-  /* ── rating distribution ── */
   const dist = [5, 4, 3, 2, 1].map((star) => ({
     star,
     count: reviews.filter((r) => r.rating === star).length,
   }));
 
-  if (loading) return (
-    <div className="dr-loading">
-      <div className="dash-spinner" />
-      <span>Loading reviews…</span>
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="dr-loading">
+        <div className="dash-spinner" />
+        <span>Loading reviews…</span>
+      </div>
+    );
 
-  if (error) return (
-    <div className="dr-error" role="alert">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="10" />
-        <line x1="12" y1="8" x2="12" y2="12" />
-        <line x1="12" y1="16" x2="12.01" y2="16" />
-      </svg>
-      {error}
-      <button onClick={load}>Retry</button>
-    </div>
-  );
+  if (error)
+    return (
+      <div className="dr-error" role="alert">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        {error}
+        <button onClick={load}>Retry</button>
+      </div>
+    );
 
   return (
     <div className="dr-root">
-      {/* ── Summary strip ── */}
       <div className="dr-summary">
         <div className="dr-summary-score">
           <span className="dr-score-big">
-            {summary.averageRating ? Number(summary.averageRating).toFixed(1) : "—"}
+            {summary.averageRating
+              ? Number(summary.averageRating).toFixed(1)
+              : "—"}
           </span>
           <div className="dr-score-right">
             {summary.averageRating && (
               <StarRow value={Math.round(summary.averageRating)} />
             )}
             <span className="dr-score-count">
-              {summary.totalReviews} review{summary.totalReviews !== 1 ? "s" : ""}
+              {summary.totalReviews} review
+              {summary.totalReviews !== 1 ? "s" : ""}
             </span>
           </div>
         </div>
 
-        {/* rating distribution bars */}
         {reviews.length > 0 && (
           <div className="dr-dist">
             {dist.map(({ star, count }) => (
@@ -272,7 +319,11 @@ const DealerReviews = () => {
                 <div className="dr-dist-bar">
                   <div
                     className="dr-dist-fill"
-                    style={{ width: reviews.length ? `${(count / reviews.length) * 100}%` : "0%" }}
+                    style={{
+                      width: reviews.length
+                        ? `${(count / reviews.length) * 100}%`
+                        : "0%",
+                    }}
                   />
                 </div>
                 <span className="dr-dist-count">{count}</span>
@@ -282,12 +333,19 @@ const DealerReviews = () => {
         )}
       </div>
 
-      {/* ── Filter tabs ── */}
       <div className="dr-filter-tabs">
         {[
-          { key: "all",     label: "All",           count: reviews.length },
-          { key: "pending", label: "Needs Reply",    count: reviews.filter((r) => !r.replyText).length },
-          { key: "replied", label: "Replied",        count: reviews.filter((r) => !!r.replyText).length },
+          { key: "all", label: "All", count: reviews.length },
+          {
+            key: "pending",
+            label: "Needs Reply",
+            count: reviews.filter((r) => !r.replyText).length,
+          },
+          {
+            key: "replied",
+            label: "Replied",
+            count: reviews.filter((r) => !!r.replyText).length,
+          },
         ].map(({ key, label, count }) => (
           <button
             key={key}
@@ -300,18 +358,22 @@ const DealerReviews = () => {
         ))}
       </div>
 
-      {/* ── Review list ── */}
       {filtered.length === 0 ? (
         <div className="dr-empty">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
           <p>
             {filter === "pending"
               ? "No reviews waiting for a reply."
               : filter === "replied"
-              ? "You haven't replied to any reviews yet."
-              : "No reviews yet. They'll appear here once customers leave feedback."}
+                ? "You haven't replied to any reviews yet."
+                : "No reviews yet. They'll appear here once customers leave feedback."}
           </p>
         </div>
       ) : (

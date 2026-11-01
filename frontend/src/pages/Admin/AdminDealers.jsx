@@ -107,7 +107,10 @@ export default function AdminDealers() {
       message: `${isVerified ? "Verify" : "Unverify"} dealer "${dealer.dealershipName || dealer.name}"?`,
       onConfirm: () =>
         runAction(async () => {
-          const res = await adminAPI.verifyDealer(dealer.dealerProfileId, isVerified);
+          const res = await adminAPI.verifyDealer(
+            dealer.dealerProfileId,
+            isVerified,
+          );
           if (!res.ok) throw new Error("Action failed");
         }),
     });
@@ -157,7 +160,11 @@ export default function AdminDealers() {
           <h1 className="admin-page-title">Dealers</h1>
           <p className="admin-page-subtitle">{total} dealers total</p>
         </div>
-        <button className="btn-sm btn-sm--gray" onClick={fetchDealers} title="Refresh">
+        <button
+          className="btn-sm btn-sm--gray"
+          onClick={fetchDealers}
+          title="Refresh"
+        >
           <MdRefresh /> Refresh
         </button>
       </div>
@@ -215,7 +222,9 @@ export default function AdminDealers() {
                     <td>{d.email}</td>
                     <td>{d.dealershipName || "—"}</td>
                     <td>
-                      {d.city && d.state ? `${d.city}, ${d.state}` : d.city || d.state || "—"}
+                      {d.city && d.state
+                        ? `${d.city}, ${d.state}`
+                        : d.city || d.state || "—"}
                     </td>
                     <td>{verifyBadge(d.isVerified)}</td>
                     <td>{statusBadge(d.isActive)}</td>
@@ -224,7 +233,6 @@ export default function AdminDealers() {
                     </td>
                     <td>
                       <div className="admin-actions">
-                        {/* Verify / Unverify */}
                         {d.dealerProfileId && (
                           <button
                             className={`btn-icon ${d.isVerified ? "btn-icon--warning" : "btn-icon--success"}`}
@@ -234,7 +242,7 @@ export default function AdminDealers() {
                             {d.isVerified ? <MdBlock /> : <MdVerified />}
                           </button>
                         )}
-                        {/* Activate / Deactivate */}
+
                         <button
                           className={`btn-icon ${d.isActive ? "btn-icon--warning" : "btn-icon--success"}`}
                           title={d.isActive ? "Deactivate" : "Activate"}
@@ -242,7 +250,7 @@ export default function AdminDealers() {
                         >
                           {d.isActive ? <MdBlock /> : <MdCheckCircle />}
                         </button>
-                        {/* Delete */}
+
                         <button
                           className="btn-icon btn-icon--danger"
                           title="Delete dealer"

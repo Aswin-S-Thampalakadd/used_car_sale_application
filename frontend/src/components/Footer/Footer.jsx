@@ -4,10 +4,10 @@ import { newsletterAPI } from "../../api/api";
 import "./Footer.css";
 
 const Footer = () => {
-  const [email, setEmail]       = useState("");
+  const [email, setEmail] = useState("");
   const [subLoading, setSubLoading] = useState(false);
-  const [subStatus, setSubStatus]   = useState(null); // null | "ok" | "error"
-  const [subMsg, setSubMsg]         = useState("");
+  const [subStatus, setSubStatus] = useState(null); // null | "ok" | "error"
+  const [subMsg, setSubMsg] = useState("");
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -15,7 +15,7 @@ const Footer = () => {
     setSubLoading(true);
     setSubStatus(null);
     try {
-      const res  = await newsletterAPI.subscribe(email.trim());
+      const res = await newsletterAPI.subscribe(email.trim());
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to subscribe.");
       setSubStatus("ok");
@@ -26,7 +26,10 @@ const Footer = () => {
       setSubMsg(err.message);
     } finally {
       setSubLoading(false);
-      setTimeout(() => { setSubStatus(null); setSubMsg(""); }, 6000);
+      setTimeout(() => {
+        setSubStatus(null);
+        setSubMsg("");
+      }, 6000);
     }
   };
 
@@ -71,23 +74,32 @@ const Footer = () => {
                   aria-label="Email address"
                 />
               </div>
-              <button type="submit" className="footer-newsletter-btn" disabled={subLoading}>
+              <button
+                type="submit"
+                className="footer-newsletter-btn"
+                disabled={subLoading}
+              >
                 {subLoading ? "Subscribing…" : "Subscribe"}
               </button>
             </form>
 
             {subStatus === "ok" && (
               <p className="footer-newsletter-success">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
                 {subMsg}
               </p>
             )}
             {subStatus === "error" && (
-              <p className="footer-newsletter-error">
-                {subMsg}
-              </p>
+              <p className="footer-newsletter-error">{subMsg}</p>
             )}
           </div>
         </div>
@@ -98,7 +110,11 @@ const Footer = () => {
           <div className="footer-grid">
             <div className="footer-brand">
               <Link to="/" className="footer-logo" aria-label="Home">
-                <img src="/logo.svg" alt="VandiMart" style={{ height: "40px", width: "auto" }} />
+                <img
+                  src="/logo.svg"
+                  alt="VandiMart"
+                  style={{ height: "40px", width: "auto" }}
+                />
               </Link>
               <p className="footer-brand-desc">
                 The trusted marketplace for buying and selling quality pre-owned
@@ -106,19 +122,6 @@ const Footer = () => {
               </p>
 
               <div className="footer-contact">
-                {/* <a href="tel:+18005551234" className="footer-contact-item">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
-                  </svg>
-                  +1 (800) 555-1234
-                </a> */}
                 <a
                   href="mailto:vandimart.support@gmail.com"
                   className="footer-contact-item"
@@ -136,20 +139,6 @@ const Footer = () => {
                   </svg>
                   vandimart.support@gmail.com
                 </a>
-                {/* <span className="footer-contact-item footer-contact-address">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
-                  500 Market St, San Francisco, CA
-                </span> */}
               </div>
             </div>
 
@@ -158,44 +147,81 @@ const Footer = () => {
                 Buy
               </h4>
               <ul className="footer-links">
-                <li><Link to="/used-cars">All Used Cars</Link></li>
-                <li><Link to="/used-cars">Browse by Brand</Link></li>
-                <li><Link to="/used-cars">Browse by City</Link></li>
-                <li><Link to="/used-cars">Featured Listings</Link></li>
+                <li>
+                  <Link to="/used-cars">All Used Cars</Link>
+                </li>
+                <li>
+                  <Link to="/used-cars">Browse by Brand</Link>
+                </li>
+                <li>
+                  <Link to="/used-cars">Browse by City</Link>
+                </li>
+                <li>
+                  <Link to="/used-cars">Featured Listings</Link>
+                </li>
               </ul>
             </nav>
 
-            <nav className="footer-column" aria-labelledby="footer-sell-heading">
+            <nav
+              className="footer-column"
+              aria-labelledby="footer-sell-heading"
+            >
               <h4 id="footer-sell-heading" className="footer-column-title">
                 Sell
               </h4>
               <ul className="footer-links">
-                <li><Link to="/signup">List Your Car</Link></li>
-                <li><Link to="/rate-us">Rate Us</Link></li>
-                <li><Link to="/dashboard">Dealer Dashboard</Link></li>
+                <li>
+                  <Link to="/signup">List Your Car</Link>
+                </li>
+                <li>
+                  <Link to="/rate-us">Rate Us</Link>
+                </li>
+                <li>
+                  <Link to="/dashboard">Dealer Dashboard</Link>
+                </li>
               </ul>
             </nav>
 
-            <nav className="footer-column" aria-labelledby="footer-company-heading">
+            <nav
+              className="footer-column"
+              aria-labelledby="footer-company-heading"
+            >
               <h4 id="footer-company-heading" className="footer-column-title">
                 Company
               </h4>
               <ul className="footer-links">
-                <li><Link to="/about">About Us</Link></li>
-                <li><Link to="/blog">Blog</Link></li>
-                <li><Link to="/contact">Contact</Link></li>
-                <li><Link to="/help">Help Center</Link></li>
+                <li>
+                  <Link to="/about">About Us</Link>
+                </li>
+                <li>
+                  <Link to="/blog">Blog</Link>
+                </li>
+                <li>
+                  <Link to="/contact">Contact</Link>
+                </li>
+                <li>
+                  <Link to="/help">Help Center</Link>
+                </li>
               </ul>
             </nav>
 
-            <nav className="footer-column" aria-labelledby="footer-legal-heading">
+            <nav
+              className="footer-column"
+              aria-labelledby="footer-legal-heading"
+            >
               <h4 id="footer-legal-heading" className="footer-column-title">
                 Legal
               </h4>
               <ul className="footer-links">
-                <li><Link to="/terms">Terms of Service</Link></li>
-                <li><Link to="/privacy">Privacy Policy</Link></li>
-                <li><Link to="/cookies">Cookie Policy</Link></li>
+                <li>
+                  <Link to="/terms">Terms of Service</Link>
+                </li>
+                <li>
+                  <Link to="/privacy">Privacy Policy</Link>
+                </li>
+                <li>
+                  <Link to="/cookies">Cookie Policy</Link>
+                </li>
               </ul>
             </nav>
           </div>
@@ -275,11 +301,6 @@ const Footer = () => {
                 </svg>
               </a>
             </div>
-
-            {/* <div className="footer-badges">
-              <span className="footer-badge">SSL Secured</span>
-              <span className="footer-badge">Verified Dealers</span>
-            </div> */}
           </div>
         </div>
       </div>

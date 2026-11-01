@@ -71,13 +71,16 @@ function Accordion({ items }) {
             onClick={() => setOpen(open === i ? null : i)}
           >
             {item.q}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <polyline points="6 9 12 15 18 9"/>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
+              <polyline points="6 9 12 15 18 9" />
             </svg>
           </button>
-          {open === i && (
-            <div className="sp-accordion-body">{item.a}</div>
-          )}
+          {open === i && <div className="sp-accordion-body">{item.a}</div>}
         </div>
       ))}
     </div>
@@ -91,12 +94,12 @@ export default function HelpCenter() {
         <span className="sp-hero-eyebrow">Help Center</span>
         <h1 className="sp-hero-title">How Can We Help You?</h1>
         <p className="sp-hero-sub">
-          Find answers to common questions about buying, selling, and using VandiMart.
+          Find answers to common questions about buying, selling, and using
+          VandiMart.
         </p>
       </div>
 
       <div className="sp-body">
-
         {FAQS.map((section) => (
           <section key={section.category} className="sp-section">
             <h2 className="sp-section-title">{section.category}</h2>
@@ -104,35 +107,64 @@ export default function HelpCenter() {
           </section>
         ))}
 
-        {/* Still need help */}
         <section className="sp-section" style={{ textAlign: "center" }}>
-          <h2 className="sp-section-title" style={{ borderBottom: "none", textAlign: "center" }}>
+          <h2
+            className="sp-section-title"
+            style={{ borderBottom: "none", textAlign: "center" }}
+          >
             Still have questions?
           </h2>
           <p className="sp-text" style={{ textAlign: "center" }}>
             Our support team is available Monday–Saturday, 9 AM–6 PM IST.
           </p>
-          <div style={{ marginTop: 20, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link to="/contact" style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              background: "linear-gradient(135deg,#1e40af,#2563eb)", color: "#fff",
-              padding: "13px 28px", borderRadius: 10, fontWeight: 700,
-              fontSize: 14, textDecoration: "none", fontFamily: "var(--font-sans)",
-            }}>
+          <div
+            style={{
+              marginTop: 20,
+              display: "flex",
+              gap: 12,
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            <Link
+              to="/contact"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: "linear-gradient(135deg,#1e40af,#2563eb)",
+                color: "#fff",
+                padding: "13px 28px",
+                borderRadius: 10,
+                fontWeight: 700,
+                fontSize: 14,
+                textDecoration: "none",
+                fontFamily: "var(--font-sans)",
+              }}
+            >
               Contact Support
             </Link>
-            <a href="mailto:vandimart.support@gmail.com" style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              background: "#f1f5f9", color: "#0f172a",
-              padding: "13px 28px", borderRadius: 10, fontWeight: 700,
-              fontSize: 14, textDecoration: "none", fontFamily: "var(--font-sans)",
-              border: "1.5px solid #e2e8f0",
-            }}>
+            <a
+              href="mailto:vandimart.support@gmail.com"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: "#f1f5f9",
+                color: "#0f172a",
+                padding: "13px 28px",
+                borderRadius: 10,
+                fontWeight: 700,
+                fontSize: 14,
+                textDecoration: "none",
+                fontFamily: "var(--font-sans)",
+                border: "1.5px solid #e2e8f0",
+              }}
+            >
               Email Us
             </a>
           </div>
         </section>
-
       </div>
     </>
   );

@@ -19,12 +19,16 @@ import "./Admin.css";
 
 const navItems = [
   { to: "/admin/dashboard", label: "Dashboard", icon: <MdDashboard /> },
-  { to: "/admin/dealers",   label: "Dealers",   icon: <MdVerifiedUser /> },
+  { to: "/admin/dealers", label: "Dealers", icon: <MdVerifiedUser /> },
   { to: "/admin/customers", label: "Customers", icon: <MdPeople /> },
-  { to: "/admin/cars",      label: "Cars",      icon: <MdDirectionsCar /> },
+  { to: "/admin/cars", label: "Cars", icon: <MdDirectionsCar /> },
   { to: "/admin/enquiries", label: "Enquiries", icon: <MdQuestionAnswer /> },
-  { to: "/admin/reviews",   label: "Reviews",   icon: <MdStar /> },
-  { to: "/admin/subscriptions", label: "Subscriptions", icon: <MdSubscriptions /> },
+  { to: "/admin/reviews", label: "Reviews", icon: <MdStar /> },
+  {
+    to: "/admin/subscriptions",
+    label: "Subscriptions",
+    icon: <MdSubscriptions />,
+  },
   { to: "/admin/newsletter", label: "Newsletter", icon: <MdMail /> },
 ];
 
@@ -40,16 +44,13 @@ export default function AdminLayout() {
 
   return (
     <div className="admin-shell">
-      {/* ── Mobile overlay ── */}
       {sidebarOpen && (
-        <div
-          className="admin-overlay"
-          onClick={() => setSidebarOpen(false)}
-        />
+        <div className="admin-overlay" onClick={() => setSidebarOpen(false)} />
       )}
 
-      {/* ── Sidebar ── */}
-      <aside className={`admin-sidebar ${sidebarOpen ? "admin-sidebar--open" : ""}`}>
+      <aside
+        className={`admin-sidebar ${sidebarOpen ? "admin-sidebar--open" : ""}`}
+      >
         <div className="admin-sidebar__brand">
           <MdAdminPanelSettings size={26} />
           <span>Admin Panel</span>
@@ -98,9 +99,7 @@ export default function AdminLayout() {
         </div>
       </aside>
 
-      {/* ── Main content ── */}
       <div className="admin-main">
-        {/* Topbar */}
         <header className="admin-topbar">
           <button
             className="admin-topbar__menu"
@@ -116,7 +115,6 @@ export default function AdminLayout() {
           </button>
         </header>
 
-        {/* Page content */}
         <main className="admin-content">
           <Outlet />
         </main>

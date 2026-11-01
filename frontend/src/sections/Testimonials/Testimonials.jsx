@@ -265,18 +265,19 @@ const Testimonials = () => {
     return `${n.toLocaleString("en-IN")}+`;
   };
 
-  const happyCustomers = platformStats?.totalCustomers != null
-    ? formatCustomers(platformStats.totalCustomers)
-    : "—";
+  const happyCustomers =
+    platformStats?.totalCustomers != null
+      ? formatCustomers(platformStats.totalCustomers)
+      : "—";
 
-  const recommendRate = platformStats?.recommendRate != null
-    ? `${platformStats.recommendRate}%`
-    : "—";
+  const recommendRate =
+    platformStats?.recommendRate != null
+      ? `${platformStats.recommendRate}%`
+      : "—";
 
   return (
     <section className="t-section">
       <div className="t-container">
-        {/* ── Header ── */}
         <div className="t-header">
           <span className="t-badge">Testimonials</span>
           <h2 className="t-title">What Our Customers Say</h2>
@@ -284,7 +285,7 @@ const Testimonials = () => {
             Thousands of happy buyers and sellers trust VandiMart for their
             used-car needs.
           </p>
-          {/* Write a Review CTA */}
+
           {isAuthenticated && isCustomer && (
             <button className="t-write-btn" onClick={() => setShowModal(true)}>
               <svg
@@ -306,7 +307,6 @@ const Testimonials = () => {
           )}
         </div>
 
-        {/* ── Loading skeleton ── */}
         {loadingReviews && (
           <div className="t-skeleton-row">
             {[1, 2, 3].map((i) => (
@@ -324,128 +324,133 @@ const Testimonials = () => {
           </div>
         )}
 
-        {/* ── Empty state — invite users to be first ── */}
         {!loadingReviews && items.length === 0 && (
           <div className="t-empty">
             <div className="t-empty-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
               </svg>
             </div>
             <h3 className="t-empty-title">No reviews yet</h3>
-            <p className="t-empty-sub">Be the first to share your VandiMart experience!</p>
+            <p className="t-empty-sub">
+              Be the first to share your VandiMart experience!
+            </p>
             {isAuthenticated && isCustomer && (
-              <button className="t-write-btn t-write-btn--cta" onClick={() => setShowModal(true)}>
+              <button
+                className="t-write-btn t-write-btn--cta"
+                onClick={() => setShowModal(true)}
+              >
                 Write the first review
               </button>
             )}
           </div>
         )}
 
-        {/* ── Carousel ── */}
         {!loadingReviews && items.length > 0 && (
-        <>
-        <div
-          className="t-carousel"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          <button
-            className="t-nav t-nav--prev"
-            onClick={() => goTo(currentIndex - 1)}
-            aria-label="Previous"
-            disabled={currentIndex === 0}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-          </button>
-
-          <div className="t-viewport">
+          <>
             <div
-              className="t-track"
-              style={{
-                transform: `translateX(-${
-                  currentIndex * (100 / visibleCount)
-                }%)`,
-              }}
+              className="t-carousel"
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
             >
-              {items.map((item) => (
-                <div
-                  key={item.id}
-                  className="t-card"
-                  style={{ flex: `0 0 ${100 / visibleCount}%` }}
+              <button
+                className="t-nav t-nav--prev"
+                onClick={() => goTo(currentIndex - 1)}
+                aria-label="Previous"
+                disabled={currentIndex === 0}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
                 >
-                  <div className="t-card-inner">
-                    {/* quote icon */}
-                    <div className="t-quote-icon" aria-hidden="true">
-                      <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z" />
-                      </svg>
-                    </div>
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </button>
 
-                    <Stars rating={Number(item.rating)} />
+              <div className="t-viewport">
+                <div
+                  className="t-track"
+                  style={{
+                    transform: `translateX(-${
+                      currentIndex * (100 / visibleCount)
+                    }%)`,
+                  }}
+                >
+                  {items.map((item) => (
+                    <div
+                      key={item.id}
+                      className="t-card"
+                      style={{ flex: `0 0 ${100 / visibleCount}%` }}
+                    >
+                      <div className="t-card-inner">
+                        <div className="t-quote-icon" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z" />
+                          </svg>
+                        </div>
 
-                    <p className="t-comment">
-                      {item.comment || "Great experience with VandiMart!"}
-                    </p>
+                        <Stars rating={Number(item.rating)} />
 
-                    <div className="t-author">
-                      <Avatar name={item.customer?.name} />
-                      <div className="t-author-info">
-                        <span className="t-author-name">
-                          {item.customer?.name || "Anonymous"}
-                        </span>
-                        {item.createdAt && (
-                          <span className="t-author-date">
-                            {formatDate(item.createdAt)}
-                          </span>
-                        )}
+                        <p className="t-comment">
+                          {item.comment || "Great experience with VandiMart!"}
+                        </p>
+
+                        <div className="t-author">
+                          <Avatar name={item.customer?.name} />
+                          <div className="t-author-info">
+                            <span className="t-author-name">
+                              {item.customer?.name || "Anonymous"}
+                            </span>
+                            {item.createdAt && (
+                              <span className="t-author-date">
+                                {formatDate(item.createdAt)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
+              </div>
+
+              <button
+                className="t-nav t-nav--next"
+                onClick={() => goTo(currentIndex + 1)}
+                aria-label="Next"
+                disabled={currentIndex === maxIndex}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="t-dots">
+              {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+                <button
+                  key={i}
+                  className={`t-dot ${i === currentIndex ? "t-dot--active" : ""}`}
+                  onClick={() => goTo(i)}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
               ))}
             </div>
-          </div>
-
-          <button
-            className="t-nav t-nav--next"
-            onClick={() => goTo(currentIndex + 1)}
-            aria-label="Next"
-            disabled={currentIndex === maxIndex}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </button>
-        </div>
-
-        {/* ── Dots ── */}
-        <div className="t-dots">
-          {Array.from({ length: maxIndex + 1 }).map((_, i) => (
-            <button
-              key={i}
-              className={`t-dot ${i === currentIndex ? "t-dot--active" : ""}`}
-              onClick={() => goTo(i)}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
-        </div>
-        </>
+          </>
         )}
 
-        {/* ── Stats strip ── */}
         <div className="t-stats">
           <div className="t-stat">
             <span className="t-stat-value">{avgRating}</span>
@@ -464,7 +469,6 @@ const Testimonials = () => {
         </div>
       </div>
 
-      {/* ── Write a Review Modal ── */}
       {showModal && (
         <ReviewModal
           onClose={() => setShowModal(false)}

@@ -119,7 +119,7 @@ export default function Banner() {
       ([e]) => {
         if (e.isIntersecting) setStatsVisible(true);
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -139,7 +139,6 @@ export default function Banner() {
 
   return (
     <section className="bn" aria-label="Hero">
-      {/* ── Full-bleed background image ── */}
       <div className="bn-bg" aria-hidden="true">
         <img
           src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=90&w=1920&auto=format&fit=crop"
@@ -148,16 +147,12 @@ export default function Banner() {
           loading="eager"
           fetchpriority="high"
         />
-        {/* layered overlays */}
+
         <div className="bn-bg-overlay" />
         <div className="bn-bg-vignette" />
       </div>
 
-      {/* ── Hero content ── */}
       <div className="bn-content">
-        {/* Label */}
-
-        {/* Heading */}
         <h1 className="bn-heading">
           Find Your Perfect
           <br />
@@ -168,7 +163,6 @@ export default function Banner() {
           Thousands of certified cars. Verified sellers. Unbeatable prices.
         </p>
 
-        {/* ── Buy / Sell tabs ── */}
         <div className="bn-tabs" role="tablist" aria-label="Mode">
           <button
             role="tab"
@@ -188,7 +182,6 @@ export default function Banner() {
           </button>
         </div>
 
-        {/* ── Search box ── */}
         {activeTab === "buy" ? (
           <form
             className="bn-search"
@@ -196,10 +189,14 @@ export default function Banner() {
             role="search"
             aria-label="Search cars"
           >
-            {/* Keyword — autocomplete search */}
             <div className="bn-search-field bn-search-field--keyword">
               <label className="bn-search-label" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <circle cx="11" cy="11" r="8" />
                   <path d="m21 21-4.35-4.35" />
                 </svg>
@@ -214,7 +211,6 @@ export default function Banner() {
 
             <div className="bn-search-sep" aria-hidden="true" />
 
-            {/* Brand */}
             <div className="bn-search-field">
               <label className="bn-search-label" htmlFor="bn-brand">
                 <svg
@@ -247,7 +243,6 @@ export default function Banner() {
 
             <div className="bn-search-sep" aria-hidden="true" />
 
-            {/* Fuel */}
             <div className="bn-search-field">
               <label className="bn-search-label" htmlFor="bn-fuel">
                 <svg
@@ -279,7 +274,6 @@ export default function Banner() {
 
             <div className="bn-search-sep" aria-hidden="true" />
 
-            {/* Budget */}
             <div className="bn-search-field">
               <label className="bn-search-label" htmlFor="bn-budget">
                 <svg
@@ -308,7 +302,6 @@ export default function Banner() {
               </select>
             </div>
 
-            {/* Submit */}
             <button
               className="bn-search-btn"
               type="submit"
@@ -328,19 +321,24 @@ export default function Banner() {
             </button>
           </form>
         ) : (
-          /* Sell CTA → dealer signup */
           <div className="bn-sell-cta">
             <div className="bn-sell-cta-left">
               <div className="bn-sell-cta-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="2" y="7" width="20" height="14" rx="2"/>
-                  <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <rect x="2" y="7" width="20" height="14" rx="2" />
+                  <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
                 </svg>
               </div>
               <div>
                 <p className="bn-sell-title">Create a Dealer Account</p>
                 <p className="bn-sell-text">
-                  List your inventory, reach thousands of buyers, and grow your dealership — all from one dashboard.
+                  List your inventory, reach thousands of buyers, and grow your
+                  dealership — all from one dashboard.
                 </p>
               </div>
             </div>
@@ -351,8 +349,14 @@ export default function Banner() {
                 type="button"
               >
                 Register as Dealer
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </button>
               <button
@@ -366,7 +370,6 @@ export default function Banner() {
           </div>
         )}
 
-        {/* ── Quick filters ── */}
         <div className="bn-quick" aria-label="Popular brands">
           <span className="bn-quick-label">Popular:</span>
           {QUICK_TAGS.map((tag) => (
@@ -381,7 +384,6 @@ export default function Banner() {
           ))}
         </div>
 
-        {/* ── Stats ── */}
         <div className="bn-stats" ref={statsRef} aria-label="Platform stats">
           {STAT_DEFS.map((def, i) => (
             <React.Fragment key={def.key}>
@@ -399,7 +401,6 @@ export default function Banner() {
         </div>
       </div>
 
-      {/* ── Bottom scroll cue ── */}
       <div className="bn-scroll-cue" aria-hidden="true">
         <div className="bn-scroll-mouse">
           <div className="bn-scroll-wheel" />

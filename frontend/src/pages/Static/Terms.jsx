@@ -73,7 +73,6 @@ export default function Terms() {
       <div className="sp-body">
         <p className="sp-last-updated">Last updated: October 1, 2024</p>
 
-        {/* Table of contents */}
         <div className="sp-toc">
           <div className="sp-toc-title">Contents</div>
           <ul className="sp-toc-list">
