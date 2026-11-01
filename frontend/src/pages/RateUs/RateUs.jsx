@@ -72,7 +72,6 @@ export default function RateUs() {
     }
   };
 
-  /* ── Not logged in ── */
   if (!isAuthenticated) {
     return (
       <div className="ru-page">
@@ -105,7 +104,6 @@ export default function RateUs() {
     );
   }
 
-  /* ── Not a customer (dealer/admin) ── */
   if (!isCustomer) {
     return (
       <div className="ru-page">
@@ -134,7 +132,6 @@ export default function RateUs() {
     );
   }
 
-  /* ── Success state ── */
   if (submitted) {
     return (
       <div className="ru-page">

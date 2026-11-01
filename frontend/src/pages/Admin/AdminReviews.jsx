@@ -11,7 +11,6 @@ import "./Admin.css";
 
 const LIMIT = 20;
 
-/* ── Confirm modal ── */
 function ConfirmModal({ message, onConfirm, onCancel, loading }) {
   return (
     <div className="admin-modal-backdrop">
@@ -35,7 +34,6 @@ function ConfirmModal({ message, onConfirm, onCancel, loading }) {
   );
 }
 
-/* ── Star display ── */
 function StarRating({ rating }) {
   return (
     <span
@@ -59,7 +57,6 @@ function StarRating({ rating }) {
   );
 }
 
-/* ── Approval badge ── */
 function ApprovalBadge({ isApproved }) {
   return isApproved ? (
     <span
@@ -117,7 +114,6 @@ export default function AdminReviews() {
     setPage(1);
   }, [filterType, filterStatus]);
 
-  /* ── Approve / revoke ── */
   const handleApprove = async (review) => {
     const next = !review.isApproved;
     setApproving(review.id);
@@ -125,7 +121,7 @@ export default function AdminReviews() {
       const res = await adminAPI.approveReview(review.id, next);
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to update");
-      // Optimistically update the row in state
+  
       setReviews((prev) =>
         prev.map((r) => (r.id === review.id ? { ...r, isApproved: next } : r)),
       );
@@ -136,7 +132,6 @@ export default function AdminReviews() {
     }
   };
 
-  /* ── Delete ── */
   const handleDelete = (review) => {
     setConfirm({
       message: `Delete this ${review.reviewType} review by "${review.customerName || `User #${review.customerId}`}" (${review.rating} stars)?`,

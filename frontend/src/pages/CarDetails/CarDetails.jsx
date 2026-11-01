@@ -9,7 +9,6 @@ import {
 } from "../../api/api";
 import "./CarDetails.css";
 
-/* ── helpers ──────────────────────────────────────────────── */
 const formatPrice = (v) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -28,7 +27,6 @@ const formatDate = (iso) =>
 
 const conditionLabel = { excellent: "Excellent", good: "Good", fair: "Fair" };
 
-/* ── star rating component ─────────────────────────────────── */
 const StarRating = ({ value, onChange, readonly = false, size = 20 }) => (
   <div className="cd-stars" aria-label={`${value} out of 5 stars`}>
     {[1, 2, 3, 4, 5].map((s) => (
@@ -97,42 +95,32 @@ const ReviewCard = ({ review }) => (
   </li>
 );
 
-/* ═══════════════════════════════════════════════════════════
-   MAIN
-═══════════════════════════════════════════════════════════ */
 const CarDetails = () => {
   const { slug } = useParams();
   const { isAuthenticated, isCustomer } = useAuth();
   const navigate = useNavigate();
 
-  // Extract numeric ID from slug like "2021-honda-city-petrol-8"
-  // Falls back gracefully for plain numeric IDs ("8")
   const slugSegments = (slug || "").split("-");
   const numericId = slugSegments[slugSegments.length - 1];
-  const id = numericId; // used for API calls (backend parses the full slug OR plain id)
+  const id = numericId;
 
-  /* ── car data ── */
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  /* ── gallery ── */
   const [activeImage, setActiveImage] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  /* ── favourite ── */
   const [isFavourite, setIsFavourite] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
 
-  /* ── enquiry ── */
   const [enquiryMessage, setEnquiryMessage] = useState("");
   const [enquiryLoading, setEnquiryLoading] = useState(false);
   const [enquirySuccess, setEnquirySuccess] = useState("");
   const [enquiryError, setEnquiryError] = useState("");
   const [showEnquiryForm, setShowEnquiryForm] = useState(false);
 
-  /* ── reviews ── */
   const [reviews, setReviews] = useState([]);
   const [avgRating, setAvgRating] = useState(null);
   const [totalReviews, setTotalReviews] = useState(0);
@@ -143,12 +131,11 @@ const CarDetails = () => {
   const [reviewSuccess, setReviewSuccess] = useState("");
   const [showReviewForm, setShowReviewForm] = useState(false);
 
-  /* ── data loaders ── */
   const loadCar = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const res = await carsAPI.getById(slug); // backend extracts ID from slug
+      const res = await carsAPI.getById(slug);
       if (!res.ok) throw new Error("Car not found");
       setCar(await res.json());
     } catch (err) {
@@ -167,9 +154,7 @@ const CarDetails = () => {
         setAvgRating(data.averageRating);
         setTotalReviews(data.totalReviews);
       }
-    } catch {
-      /* non-critical */
-    }
+    } catch {}
   }, [numericId]);
 
   const checkFavourite = useCallback(async () => {
@@ -177,9 +162,7 @@ const CarDetails = () => {
     try {
       const res = await favouritesAPI.check(numericId);
       if (res.ok) setIsFavourite((await res.json()).isFavourite);
-    } catch {
-      /* non-critical */
-    }
+    } catch {}
   }, [numericId, isAuthenticated]);
 
   useEffect(() => {
@@ -188,7 +171,6 @@ const CarDetails = () => {
     checkFavourite();
   }, [loadCar, loadReviews, checkFavourite]);
 
-  /* ── derived ── */
   const images = useMemo(
     () =>
       car?.carImages
@@ -204,7 +186,6 @@ const CarDetails = () => {
     [car],
   );
 
-  /* ── gallery handlers ── */
   const nextImage = () => setActiveImage((p) => (p + 1) % images.length);
   const prevImage = () =>
     setActiveImage((p) => (p - 1 + images.length) % images.length);
@@ -217,7 +198,6 @@ const CarDetails = () => {
     } catch {}
   };
 
-  /* ── favourite ── */
   const handleFavourite = async () => {
     if (!isAuthenticated) {
       navigate("/login");
@@ -233,7 +213,6 @@ const CarDetails = () => {
     setFavLoading(false);
   };
 
-  /* ── enquiry ── */
   const handleEnquiry = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
@@ -260,7 +239,6 @@ const CarDetails = () => {
     }
   };
 
-  /* ── review submit ── */
   const handleReview = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
@@ -294,7 +272,6 @@ const CarDetails = () => {
     }
   };
 
-  /* ── loading / error states ── */
   if (loading)
     return (
       <div className="car-details-loading">

@@ -1,14 +1,9 @@
-/* ════════════════════════════════════════════════
-   DEALER  REVIEWS  component
-════════════════════════════════════════════════ */
-
 .dr-root {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* ── Loading / Error states ── */
 .dr-loading,
 .dr-error {
   display: flex;
@@ -42,7 +37,6 @@
   margin-top: 8px;
 }
 
-/* ── Summary strip ── */
 .dr-summary {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
@@ -79,7 +73,6 @@
   color: var(--text-secondary);
 }
 
-/* Stars */
 .dr-stars {
   display: flex;
   gap: 2px;
@@ -95,7 +88,6 @@
   color: var(--color-accent);
 }
 
-/* Distribution bars */
 .dr-dist {
   flex: 1;
   display: flex;
@@ -140,7 +132,6 @@
   text-align: right;
 }
 
-/* ── Filter tabs ── */
 .dr-filter-tabs {
   display: flex;
   gap: 8px;
@@ -188,7 +179,6 @@
   color: var(--color-primary);
 }
 
-/* ── Empty state ── */
 .dr-empty {
   display: flex;
   flex-direction: column;
@@ -212,14 +202,12 @@
   max-width: 360px;
 }
 
-/* ── Review list ── */
 .dr-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-/* ── Review card ── */
 .dr-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
@@ -236,7 +224,6 @@
   box-shadow: var(--shadow-md);
 }
 
-/* Top row */
 .dr-card-top {
   display: flex;
   align-items: flex-start;
@@ -290,7 +277,6 @@
   flex-shrink: 0;
 }
 
-/* Comment */
 .dr-comment {
   font-size: 0.9rem;
   line-height: 1.6;
@@ -298,7 +284,6 @@
   margin: 0;
 }
 
-/* Reply bubble */
 .dr-reply-bubble {
   background: var(--color-primary-subtle);
   border-left: 3px solid var(--color-primary);
@@ -331,7 +316,6 @@
   margin: 0;
 }
 
-/* Reply form */
 .dr-reply-form {
   display: flex;
   flex-direction: column;
@@ -373,7 +357,6 @@
   gap: 10px;
 }
 
-/* Card actions */
 .dr-card-actions {
   display: flex;
   gap: 10px;
@@ -382,7 +365,6 @@
   flex-wrap: wrap;
 }
 
-/* ── Buttons ── */
 .dr-btn {
   display: inline-flex;
   align-items: center;
@@ -451,7 +433,6 @@
   cursor: not-allowed;
 }
 
-/* ── Responsive ── */
 @media (max-width: 640px) {
   .dr-summary {
     flex-direction: column;

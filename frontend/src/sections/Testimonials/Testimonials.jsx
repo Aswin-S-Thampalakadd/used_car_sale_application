@@ -3,8 +3,6 @@ import { reviewsAPI, statsAPI } from "../../api/api";
 import { useAuth } from "../../context/AuthContext";
 import "./Testimonials.css";
 
-/* No static fallback — show real reviews only */
-
 const StarIcon = ({ filled }) => (
   <svg
     className={`t-star ${filled ? "t-star--filled" : ""}`}
@@ -25,7 +23,6 @@ const Stars = ({ rating }) => (
   </div>
 );
 
-/* ── initials avatar ── */
 const Avatar = ({ name }) => {
   const initials = name
     ? name
@@ -38,7 +35,6 @@ const Avatar = ({ name }) => {
   return <div className="t-avatar">{initials}</div>;
 };
 
-/* ── Write-a-Review modal ── */
 const ReviewModal = ({ onClose, onSubmitted }) => {
   const [rating, setRating] = useState(0);
   const [hovered, setHovered] = useState(0);
@@ -66,7 +62,6 @@ const ReviewModal = ({ onClose, onSubmitted }) => {
     }
   };
 
-  /* close on Escape */
   useEffect(() => {
     const h = (e) => {
       if (e.key === "Escape") onClose();
@@ -155,9 +150,6 @@ const ReviewModal = ({ onClose, onSubmitted }) => {
   );
 };
 
-/* ═══════════════════════════════════════════════════════════
-   MAIN COMPONENT
-═══════════════════════════════════════════════════════════ */
 const Testimonials = () => {
   const { isAuthenticated, isCustomer } = useAuth();
 
@@ -172,7 +164,6 @@ const Testimonials = () => {
 
   const autoPlayRef = useRef(null);
 
-  /* fetch top app reviews */
   const fetchReviews = async () => {
     try {
       const res = await reviewsAPI.getTopAppReviews();
@@ -181,7 +172,6 @@ const Testimonials = () => {
         setItems(data.reviews || []);
       }
     } catch {
-      /* keep empty — empty state shown */
     } finally {
       setLoadingReviews(false);
     }
@@ -194,9 +184,7 @@ const Testimonials = () => {
         const data = await res.json();
         if (data.success) setPlatformStats(data.stats);
       }
-    } catch {
-      /* keep null — fallback values used in render */
-    }
+    } catch {}
   };
 
   useEffect(() => {
@@ -204,7 +192,6 @@ const Testimonials = () => {
     fetchPlatformStats();
   }, []);
 
-  /* responsive visible count */
   useEffect(() => {
     const onResize = () => {
       const w = window.innerWidth;
@@ -221,7 +208,6 @@ const Testimonials = () => {
     if (currentIndex > maxIndex) setCurrentIndex(maxIndex);
   }, [visibleCount, maxIndex, currentIndex]);
 
-  /* autoplay */
   useEffect(() => {
     if (isPaused) return;
     autoPlayRef.current = setInterval(() => {
@@ -247,7 +233,6 @@ const Testimonials = () => {
     });
   };
 
-  /* avg rating from current items */
   const avgRating =
     items.length > 0
       ? (
@@ -255,7 +240,6 @@ const Testimonials = () => {
         ).toFixed(1)
       : "4.9";
 
-  /* ── format totalCustomers as "12K+" style ── */
   const formatCustomers = (n) => {
     if (n === null || n === undefined) return "—";
     if (n >= 1000) {

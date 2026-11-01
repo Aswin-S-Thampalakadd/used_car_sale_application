@@ -256,11 +256,6 @@
   border-color: var(--color-primary-light);
 }
 
-/* "Copied!" state — turns green */
-.car-share-btn:has(span:last-child:empty) {
-  /* fallback handled by the copied state already */
-}
-
 .car-meta-row {
   display: flex;
   flex-wrap: wrap;
@@ -539,9 +534,7 @@
   padding: var(--space-lg);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
-  /* prevent children from breaking out */
   min-width: 0;
-  /* allow flex children to shrink */
 }
 
 .car-dealer-head {
@@ -884,7 +877,6 @@
   }
 }
 
-/* ── Loading / Error states ─────────────────────────────── */
 .car-details-loading,
 .car-details-error {
   display: flex;
@@ -926,14 +918,12 @@
   font-size: 14px;
 }
 
-/* ── Saved button state ──────────────────────────────────── */
 .car-btn-saved {
   background: var(--color-danger-bg) !important;
   color: var(--color-danger) !important;
   border-color: var(--color-danger-bg) !important;
 }
 
-/* ── Rating summary ─────────────────────────────────────── */
 .car-rating-summary {
   display: flex;
   align-items: center;
@@ -952,7 +942,6 @@
   color: var(--text-secondary);
 }
 
-/* ── Enquiry form ───────────────────────────────────────── */
 .car-enquiry-success {
   background: var(--color-success-bg);
   color: var(--color-success);
@@ -1022,7 +1011,6 @@
   cursor: not-allowed;
 }
 
-/* ── Reviews section ────────────────────────────────────── */
 .car-reviews-header {
   display: flex;
   align-items: center;
@@ -1053,7 +1041,6 @@
   color: var(--text-inverse);
 }
 
-/* Star Rating */
 .star-rating {
   display: flex;
   gap: 2px;
@@ -1081,7 +1068,6 @@
   display: block;
 }
 
-/* Review form */
 .car-review-form {
   display: flex;
   flex-direction: column;
@@ -1152,7 +1138,6 @@
   cursor: not-allowed;
 }
 
-/* Review list */
 .car-no-reviews {
   font-size: 14px;
   color: var(--text-secondary);
@@ -1213,11 +1198,6 @@
   line-height: 1.5;
 }
 
-/* ════════════════════════════════════════════════
-   CARDETAILS  v2 additions
-════════════════════════════════════════════════ */
-
-/* ── Star rating ── */
 .cd-stars {
   display: flex;
   gap: 2px;
@@ -1238,7 +1218,6 @@
   color: var(--color-accent);
 }
 
-/* ── Call Dealer button (in action row) ── */
 .car-btn-call {
   display: inline-flex;
   align-items: center;
@@ -1273,7 +1252,6 @@
   flex-shrink: 0;
 }
 
-/* ── Dealer call button (sidebar) ── */
 .car-dealer-call-btn {
   display: flex;
   align-items: center;
@@ -1290,7 +1268,6 @@
   margin: 12px 0;
   transition: background var(--transition-fast);
   box-sizing: border-box;
-  /* include padding in width calculation */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1305,7 +1282,6 @@
   height: 18px;
 }
 
-/* ── Rating summary bar ── */
 .car-rating-bar {
   display: flex;
   align-items: center;
@@ -1334,7 +1310,6 @@
   color: var(--text-secondary);
 }
 
-/* ── Review card ── */
 .car-review-item {
   list-style: none;
   padding: 16px 0;
@@ -1391,7 +1366,6 @@
   margin: 0;
 }
 
-/* ── Dealer reply bubble ── */
 .cd-review-reply {
   margin-top: 10px;
   margin-left: 50px;
@@ -1432,7 +1406,6 @@
   display: block;
 }
 
-/* ── Mobile sticky call bar ── */
 .car-mobile-call-bar {
   display: none;
   position: fixed;
@@ -1494,8 +1467,7 @@
   .car-mobile-call-bar {
     display: flex;
   }
-
-  /* push content up so it's not hidden behind the bar */
+  
   .car-details {
     padding-bottom: 80px;
   }

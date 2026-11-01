@@ -12,7 +12,6 @@ import SubscriptionModal from "../../components/SubscriptionModal/SubscriptionMo
 import DealerReviews from "../../components/DealerReviews/DealerReviews";
 import "./DealerDashboard.css";
 
-/* ─── constants ─────────────────────────────────────── */
 const STATUS_LABELS = {
   active: "Active",
   draft: "Draft",
@@ -36,9 +35,6 @@ const PLAN_META = {
   pro: { label: "Pro", color: "#7c3aed", bg: "#f5f3ff", border: "#ddd6fe" },
 };
 
-/* ─── small sub-components ──────────────────────────── */
-
-/* Status pill */
 function StatusPill({ status }) {
   return (
     <span className={`dd-status-pill dd-status-pill--${status}`}>
@@ -48,7 +44,6 @@ function StatusPill({ status }) {
   );
 }
 
-/* Stat card */
 function StatCard({ value, label, icon, accent }) {
   return (
     <div className="dd-stat-card" style={{ "--accent": accent }}>
@@ -61,7 +56,6 @@ function StatCard({ value, label, icon, accent }) {
   );
 }
 
-/* ─── main component ─────────────────────────────────── */
 const DealerDashboard = () => {
   const { isAuthenticated, isDealer, user, logout } = useAuth();
   const navigate = useNavigate();
@@ -79,7 +73,6 @@ const DealerDashboard = () => {
   const [activeTab, setActiveTab] = useState("listings");
   const [sidebarOpen, setSidebarOpen] = useState(false); // mobile drawer
 
-  /* auth guard */
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
@@ -91,7 +84,6 @@ const DealerDashboard = () => {
     }
   }, [isAuthenticated, isDealer, navigate]);
 
-  /* data fetch */
   const loadData = useCallback(async () => {
     setLoading(true);
     setError("");
@@ -126,7 +118,6 @@ const DealerDashboard = () => {
     loadData();
   }, [loadData]);
 
-  /* actions */
   const handleDelete = async (carId) => {
     if (!window.confirm("Delete this listing permanently?")) return;
     setDeletingId(carId);
@@ -170,7 +161,6 @@ const DealerDashboard = () => {
     }
   };
 
-  /* derived */
   const filtered =
     filterStatus === "all"
       ? cars

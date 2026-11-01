@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { reviewsAPI } from "../../api/api";
 import "./DealerReviews.css";
 
-/* ── helpers ── */
 const formatDate = (iso) =>
   iso
     ? new Date(iso).toLocaleDateString("en-IN", {
@@ -29,7 +28,6 @@ const StarRow = ({ value }) => (
   </div>
 );
 
-/* ── single review card ── */
 const ReviewCard = ({ review, onDelete, onReply }) => {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyText, setReplyText] = useState(review.replyText || "");

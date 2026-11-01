@@ -314,7 +314,6 @@
     }
   }
 
-/* ── Added for real-API version ─────────────────────────── */
 .sell-car-ctas {
   display: flex;
   gap: var(--space-sm);

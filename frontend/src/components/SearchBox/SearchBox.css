@@ -1,13 +1,8 @@
-/* ══════════════════════════════════════════════
-   SEARCH BOX  —  autocomplete
-══════════════════════════════════════════════ */
-
 .sb-wrap {
   position: relative;
   width: 100%;
 }
 
-/* ── Form row ── */
 .sb-form {
   display: flex;
   align-items: center;
@@ -16,7 +11,6 @@
   box-sizing: border-box;
 }
 
-/* Header variant — matches existing hdr-search look */
 .sb-wrap--header .sb-form {
   flex: 1;
   max-width: 360px;
@@ -33,14 +27,12 @@
   background: #fff;
 }
 
-/* Banner variant — transparent, no border (sits inside .bn-search-field) */
 .sb-wrap--banner .sb-form {
   background: transparent;
   padding: 0;
   height: auto;
 }
 
-/* ── Icon ── */
 .sb-icon {
   width: 16px;
   height: 16px;
@@ -50,10 +42,9 @@
 }
 
 .sb-wrap--banner .sb-icon {
-  display: none;   /* Banner already has its own label icon */
+  display: none; 
 }
 
-/* ── Input ── */
 .sb-input {
   flex: 1;
   border: none;
@@ -73,7 +64,6 @@
   font-weight: 500;
 }
 
-/* ── Spinner ── */
 .sb-spinner {
   width: 14px;
   height: 14px;
@@ -86,7 +76,6 @@
 
 @keyframes sb-spin { to { transform: rotate(360deg); } }
 
-/* ── Clear button ── */
 .sb-clear {
   background: none;
   border: none;
@@ -101,10 +90,6 @@
 }
 .sb-clear:hover { color: var(--text-primary); }
 .sb-clear svg  { width: 13px; height: 13px; }
-
-/* ══════════════════════════════════════════════
-   DROPDOWN
-══════════════════════════════════════════════ */
 
 .sb-dropdown {
   position: absolute;
@@ -125,13 +110,11 @@
   animation: sb-drop-in 160ms ease both;
 }
 
-/* Header: dropdown anchors to the left of the search bar */
 .sb-wrap--header .sb-dropdown {
   left: 0;
   min-width: 400px;
 }
 
-/* Banner: full width of the banner search card */
 .sb-wrap--banner .sb-dropdown {
   left: 0;
   right: 0;
@@ -143,7 +126,6 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Result item ── */
 .sb-item {
   display: flex;
   align-items: center;
@@ -160,7 +142,6 @@
   background: #f8fafc;
 }
 
-/* Thumbnail */
 .sb-item-img {
   width: 56px;
   height: 42px;
@@ -187,7 +168,6 @@
 }
 .sb-item-img-placeholder svg { width: 20px; height: 20px; }
 
-/* Body */
 .sb-item-body {
   flex: 1;
   min-width: 0;
@@ -228,7 +208,6 @@
   color: #cbd5e1;
 }
 
-/* Arrow */
 .sb-item-arrow {
   width: 14px;
   height: 14px;
@@ -244,7 +223,6 @@
   color: #64748b;
 }
 
-/* ── Footer "see all" row ── */
 .sb-footer {
   display: flex;
   align-items: center;
@@ -273,9 +251,6 @@
   font-weight: 700;
 }
 
-/* ══════════════════════════════════════════════
-   RESPONSIVE
-══════════════════════════════════════════════ */
 @media (max-width: 600px) {
   .sb-wrap--header .sb-dropdown {
     min-width: 0;

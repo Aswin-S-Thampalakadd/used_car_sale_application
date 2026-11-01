@@ -1,7 +1,3 @@
-/* ═══════════════════════════════════════════════
-   STATIC PAGES  —  About, Blog, Contact, Legal…
-═══════════════════════════════════════════════ */
-
 .sp-hero {
   background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #1e40af 100%);
   padding: 72px 24px 80px;
@@ -57,7 +53,6 @@
   z-index: 1;
 }
 
-/* ── Page body ── */
 .sp-body {
   max-width: 860px;
   margin: 0 auto;
@@ -68,7 +63,6 @@
   max-width: 1100px;
 }
 
-/* ── Section ── */
 .sp-section {
   margin-bottom: 52px;
 }
@@ -107,7 +101,6 @@
   margin-bottom: 0;
 }
 
-/* ── Highlight box ── */
 .sp-highlight {
   background: #eff6ff;
   border-left: 4px solid #2563eb;
@@ -119,7 +112,6 @@
   line-height: 1.7;
 }
 
-/* ── List ── */
 .sp-list {
   list-style: none;
   display: flex;
@@ -147,7 +139,6 @@
   margin-top: 8px;
 }
 
-/* ── Card grid ── */
 .sp-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -200,7 +191,6 @@
   line-height: 1.6;
 }
 
-/* ── Stat strip (About page) ── */
 .sp-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -237,7 +227,6 @@
   letter-spacing: 0.06em;
 }
 
-/* ── Team grid (About page) ── */
 .sp-team {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -278,7 +267,6 @@
   color: #64748b;
 }
 
-/* ── Contact form ── */
 .sp-contact-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -391,7 +379,6 @@
   flex-shrink: 0;
 }
 
-/* ── Contact info blocks ── */
 .sp-contact-info {
   display: flex;
   flex-direction: column;
@@ -448,7 +435,6 @@
   text-decoration: underline;
 }
 
-/* ── Blog grid ── */
 .sp-blog-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -536,7 +522,6 @@
   gap: 12px;
 }
 
-/* ── Help accordion ── */
 .sp-accordion {
   display: flex;
   flex-direction: column;
@@ -599,7 +584,6 @@
   padding-top: 14px;
 }
 
-/* ── Legal page ── */
 .sp-toc {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
@@ -657,7 +641,6 @@
   font-size: 14px;
 }
 
-/* ── Responsive ── */
 @media (max-width: 768px) {
   .sp-stats {
     grid-template-columns: 1fr 1fr;
@@ -683,7 +666,6 @@
   }
 }
 
-/* ── Blog card as link ── */
 .sp-blog-card--link {
   text-decoration: none;
   color: inherit;

@@ -692,7 +692,6 @@
     .explore-sort select { padding-top: 10px; padding-bottom: 10px; }
   }
 
-/* ── Loading / Error / No-image states ───────────────────── */
 .explore-loading-state,
 .explore-error-state {
   grid-column: 1 / -1;

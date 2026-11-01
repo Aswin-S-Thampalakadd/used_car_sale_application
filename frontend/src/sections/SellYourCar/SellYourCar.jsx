@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { statsAPI } from "../../api/api";
 import "./SellYourCar.css";
 
-/* ── format a raw number as "12.4K+" / "50K+" / "500+" etc. ── */
 function formatStat(n) {
   if (n === null || n === undefined) return "—";
   const num = Number(n);
@@ -25,10 +24,9 @@ export default function SellYourCar() {
       .then((data) => {
         if (data.success) setStats(data.stats);
       })
-      .catch(() => {}); // keep null — fallback values used in render
+      .catch(() => {});
   }, []);
 
-  /* derived display values — show "—" while loading, real data once fetched */
   const carsListed = stats ? formatStat(stats.totalCars) : "—";
   const activeBuyers = stats ? formatStat(stats.totalCustomers) : "—";
   const dealerRating =

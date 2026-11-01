@@ -355,7 +355,6 @@
   overflow: hidden;
   padding: var(--space-sm) var(--space-xs);
   margin: 0 calc(-1 * var(--space-xs));
-  /* ADD THIS: allow vertical overflow room so hover lift + shadow aren't clipped */
   padding-bottom: var(--space-lg);
   margin-bottom: calc(-1 * var(--space-lg));
 }
@@ -364,7 +363,6 @@
   display: flex;
   transition: transform var(--transition-slow);
   will-change: transform;
-  /* ADD THIS: stretch all cards to equal height */
   align-items: stretch;
 }
 
@@ -372,9 +370,7 @@
   padding: 0 var(--space-sm);
   box-sizing: border-box;
   display: flex;
-  /* ADD */
   height: auto;
-  /* ADD */
 }
 
 .testimonial-card-inner {
@@ -384,21 +380,14 @@
   padding: var(--space-lg);
   height: 100%;
   width: 100%;
-  /* ADD */
   display: flex;
   flex-direction: column;
   position: relative;
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--transition-base), transform var(--transition-base), border-color var(--transition-base);
   box-sizing: border-box;
-  /* ADD */
 }
 
-/* ════════════════════════════════════════════════
-   NEW  t-*  class styles (Testimonials v2)
-════════════════════════════════════════════════ */
-
-/* ── Section shell ── */
 .t-section {
   padding: var(--space-2xl) var(--space-md);
   background: linear-gradient(180deg, var(--bg-body) 0%, var(--color-primary-subtle) 100%);
@@ -411,7 +400,6 @@
   padding: 0 var(--space-md);
 }
 
-/* ── Header ── */
 .t-header {
   text-align: center;
   margin-bottom: var(--space-2xl);
@@ -447,7 +435,6 @@
   line-height: 1.6;
 }
 
-/* Write a Review button */
 .t-write-btn {
   display: inline-flex;
   align-items: center;
@@ -482,7 +469,6 @@
   font-weight: 600;
 }
 
-/* ── Carousel ── */
 .t-carousel {
   position: relative;
   display: flex;
@@ -504,7 +490,6 @@
   will-change: transform;
 }
 
-/* ── Card ── */
 .t-card {
   padding: 0 var(--space-sm);
   box-sizing: border-box;
@@ -547,7 +532,6 @@
   height: 100%;
 }
 
-/* Stars */
 .t-stars {
   display: flex;
   gap: 2px;
@@ -564,7 +548,6 @@
   color: var(--color-accent);
 }
 
-/* Comment */
 .t-comment {
   font-size: 0.9375rem;
   line-height: 1.7;
@@ -573,7 +556,6 @@
   margin-bottom: var(--space-lg);
 }
 
-/* Author */
 .t-author {
   display: flex;
   align-items: center;
@@ -614,7 +596,6 @@
   color: var(--text-secondary);
 }
 
-/* ── Nav buttons ── */
 .t-nav {
   width: 44px;
   height: 44px;
@@ -647,7 +628,6 @@
   height: 20px;
 }
 
-/* ── Dots ── */
 .t-dots {
   display: flex;
   justify-content: center;
@@ -671,7 +651,6 @@
   width: 28px;
 }
 
-/* ── Stats strip ── */
 .t-stats {
   display: flex;
   align-items: center;
@@ -713,10 +692,6 @@
   height: 40px;
   background: var(--border-color);
 }
-
-/* ════════════════════════════════════════════════
-   WRITE-A-REVIEW MODAL
-════════════════════════════════════════════════ */
 
 .t-modal-overlay {
   position: fixed;
@@ -892,7 +867,6 @@
   cursor: not-allowed;
 }
 
-/* ── Responsive ── */
 @media (max-width: 639px) {
   .t-section {
     padding: var(--space-xl) var(--space-sm);
@@ -921,7 +895,6 @@
   }
 }
 
-/* ── Loading skeleton ── */
 .t-skeleton-row {
   display: flex;
   gap: 20px;
@@ -995,7 +968,6 @@
   }
 }
 
-/* ── Empty state ── */
 .t-empty {
   display: flex;
   flex-direction: column;

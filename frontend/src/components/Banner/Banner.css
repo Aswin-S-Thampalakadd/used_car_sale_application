@@ -1,23 +1,13 @@
-/* ════════════════════════════════════════════════════════
-   BANNER  —  Full-viewport cinematic hero
-   ════════════════════════════════════════════════════════ */
-
-/* ── Section shell ── */
 .bn {
   position: relative;
   width: 100%;
   min-height: 100svh;
-  /* fill the viewport */
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   isolation: isolate;
 }
-
-/* ════════════════════════════════════════════════════════
-   BACKGROUND
-════════════════════════════════════════════════════════ */
 
 .bn-bg {
   position: absolute;
@@ -31,7 +21,6 @@
   object-fit: cover;
   object-position: center 40%;
   transform: scale(1.04);
-  /* slight zoom; animates on load */
   animation: bn-kenburns 20s ease-out forwards;
   display: block;
 }
@@ -46,7 +35,6 @@
   }
 }
 
-/* Dark gradient — bottom-heavy so text pops */
 .bn-bg-overlay {
   position: absolute;
   inset: 0;
@@ -57,7 +45,6 @@
       rgba(5, 10, 24, 0.96) 100%);
 }
 
-/* Soft radial vignette on edges */
 .bn-bg-vignette {
   position: absolute;
   inset: 0;
@@ -65,10 +52,6 @@
       transparent 40%,
       rgba(5, 10, 24, 0.5) 100%);
 }
-
-/* ════════════════════════════════════════════════════════
-   CONTENT  —  centred column
-════════════════════════════════════════════════════════ */
 
 .bn-content {
   position: relative;
@@ -83,7 +66,6 @@
   text-align: center;
 }
 
-/* ── Eyebrow label ── */
 .bn-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -123,7 +105,6 @@
   }
 }
 
-/* ── Heading ── */
 .bn-heading {
   font-family: var(--font-heading);
   font-size: clamp(36px, 6vw, 72px);
@@ -135,7 +116,6 @@
 }
 
 .bn-heading-highlight {
-  /* gradient text */
   background: linear-gradient(90deg, #fbbf24 0%, #f97316 60%, #fb923c 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -143,7 +123,6 @@
   display: inline-block;
 }
 
-/* ── Subtext ── */
 .bn-subtext {
   font-size: clamp(14px, 1.8vw, 17px);
   color: rgba(203, 213, 225, 0.85);
@@ -152,10 +131,6 @@
   margin-bottom: 32px;
   font-weight: 400;
 }
-
-/* ════════════════════════════════════════════════════════
-   BUY / SELL TABS
-════════════════════════════════════════════════════════ */
 
 .bn-tabs {
   display: flex;
@@ -193,10 +168,6 @@
   color: #f1f5f9;
 }
 
-/* ════════════════════════════════════════════════════════
-   SEARCH BOX
-════════════════════════════════════════════════════════ */
-
 .bn-search {
   width: 100%;
   max-width: 680px;
@@ -212,7 +183,6 @@
   overflow: hidden;
 }
 
-/* individual field */
 .bn-search-field {
   flex: 1;
   display: flex;
@@ -230,7 +200,6 @@
 
 .bn-search-field--keyword {
   flex: 1.6;
-  /* keyword gets more width */
 }
 
 .bn-search-label {
@@ -290,7 +259,6 @@
   color: #1e40af;
 }
 
-/* vertical separator between fields */
 .bn-search-sep {
   width: 1px;
   background: #e2e8f0;
@@ -298,7 +266,6 @@
   flex-shrink: 0;
 }
 
-/* Search button */
 .bn-search-btn {
   display: flex;
   align-items: center;
@@ -331,10 +298,6 @@
   width: 16px;
   height: 16px;
 }
-
-/* ════════════════════════════════════════════════════════
-   SELL CTA  (shown when "Sell a Car" tab active)
-════════════════════════════════════════════════════════ */
 
 .bn-sell-cta {
   width: 100%;
@@ -443,10 +406,6 @@
   color: #1e40af;
 }
 
-/* ════════════════════════════════════════════════════════
-   QUICK TAGS
-════════════════════════════════════════════════════════ */
-
 .bn-quick {
   display: flex;
   align-items: center;
@@ -484,10 +443,6 @@
   border-color: rgba(251, 191, 36, 0.35);
   transform: translateY(-2px);
 }
-
-/* ════════════════════════════════════════════════════════
-   STATS ROW
-════════════════════════════════════════════════════════ */
 
 .bn-stats {
   display: flex;
@@ -527,10 +482,6 @@
   background: rgba(255, 255, 255, 0.1);
   flex-shrink: 0;
 }
-
-/* ════════════════════════════════════════════════════════
-   SCROLL CUE
-════════════════════════════════════════════════════════ */
 
 .bn-scroll-cue {
   position: absolute;
@@ -587,26 +538,17 @@
   }
 }
 
-/* ════════════════════════════════════════════════════════
-   RESPONSIVE  —  1024px
-════════════════════════════════════════════════════════ */
-
 @media (max-width: 1024px) {
   .bn-content {
     padding: 100px 24px 90px;
   }
 }
 
-/* ════════════════════════════════════════════════════════
-   RESPONSIVE  —  768px
-════════════════════════════════════════════════════════ */
-
 @media (max-width: 768px) {
   .bn-content {
     padding: 90px 20px 80px;
   }
 
-  /* Search: stack fields 2-up */
   .bn-search {
     flex-wrap: wrap;
     border-radius: 0 0 16px 16px;
@@ -623,12 +565,10 @@
     border-bottom: 1px solid #e2e8f0;
   }
 
-  /* hide separators between fields when wrapping */
   .bn-search-sep {
     display: none;
   }
 
-  /* add light borders between wrapped fields */
   .bn-search-field:not(.bn-search-field--keyword):nth-child(4) {
     border-right: 1px solid #e2e8f0;
   }
@@ -676,9 +616,6 @@
   }
 }
 
-/* ════════════════════════════════════════════════════════
-   RESPONSIVE  —  540px
-════════════════════════════════════════════════════════ */
 
 @media (max-width: 540px) {
   .bn {
@@ -697,7 +634,6 @@
     border-top: 1px solid #f1f5f9;
   }
 
-  /* Stats: 2×2 grid */
   .bn-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -728,7 +664,6 @@
     padding: 4px 12px;
   }
 
-  /* scroll cue hidden on small phones */
   .bn-scroll-cue {
     display: none;
   }
@@ -738,9 +673,6 @@
   }
 }
 
-/* ════════════════════════════════════════════════════════
-   RESPONSIVE  —  380px
-════════════════════════════════════════════════════════ */
 
 @media (max-width: 380px) {
   .bn-content {

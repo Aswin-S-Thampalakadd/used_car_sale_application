@@ -1,8 +1,3 @@
-/* ════════════════════════════════════════════════
-   HEADER  —  redesigned
-   ════════════════════════════════════════════════ */
-
-/* ── Shell ── */
 .hdr {
   position: sticky;
   top: 0;
@@ -18,7 +13,6 @@
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* ── Inner layout ── */
 .hdr-inner {
   max-width: 1400px;
   margin: 0 auto;
@@ -27,14 +21,10 @@
   display: flex;
   align-items: center;
   gap: 32px;
-  /* prevent inner flex items from overflowing the viewport */
   min-width: 0;
   overflow: hidden;
 }
 
-/* ════════════════════════════════════════════════
-   LOGO
-════════════════════════════════════════════════ */
 .hdr-logo {
   display: flex;
   align-items: center;
@@ -49,9 +39,6 @@
   display: block;
 }
 
-/* ════════════════════════════════════════════════
-   DESKTOP NAV
-════════════════════════════════════════════════ */
 .hdr-nav {
   display: flex;
   align-items: center;
@@ -108,9 +95,6 @@
   background: #fde68a;
 }
 
-/* ════════════════════════════════════════════════
-   SEARCH BAR (desktop)
-════════════════════════════════════════════════ */
 .hdr-search,
 .hdr-search-box {
   flex: 1;
@@ -175,9 +159,6 @@
   height: 13px;
 }
 
-/* ════════════════════════════════════════════════
-   RIGHT ACTIONS
-════════════════════════════════════════════════ */
 .hdr-actions {
   display: flex;
   align-items: center;
@@ -185,7 +166,6 @@
   margin-left: auto;
 }
 
-/* icon-only button */
 .hdr-icon-btn {
   width: 38px;
   height: 38px;
@@ -211,13 +191,10 @@
   height: 20px;
 }
 
-/* ── Mobile search toggle ── */
 .hdr-search-toggle {
   display: none;
-  /* shown only on mobile via media query */
 }
 
-/* ── CTA buttons ── */
 .hdr-btn {
   display: inline-flex;
   align-items: center;
@@ -261,9 +238,6 @@
   width: 100%;
 }
 
-/* ════════════════════════════════════════════════
-   USER AVATAR + DROPDOWN
-════════════════════════════════════════════════ */
 .hdr-avatar {
   width: 34px;
   height: 34px;
@@ -323,7 +297,6 @@
   transform: rotate(180deg);
 }
 
-/* Dropdown */
 .hdr-dropdown {
   position: absolute;
   top: calc(100% + 10px);
@@ -425,7 +398,6 @@
   color: var(--color-danger);
 }
 
-/* Admin panel item — distinct purple accent */
 .hdr-dropdown-item--admin {
   color: #7c3aed;
   font-weight: 600;
@@ -444,12 +416,8 @@
   color: #6d28d9;
 }
 
-/* ════════════════════════════════════════════════
-   HAMBURGER BUTTON
-════════════════════════════════════════════════ */
 .hdr-hamburger {
   display: none;
-  /* shown only on mobile */
   flex-direction: column;
   justify-content: center;
   gap: 5px;
@@ -503,9 +471,6 @@
   width: 22px;
 }
 
-/* ════════════════════════════════════════════════
-   MOBILE SEARCH BAR (slides down)
-════════════════════════════════════════════════ */
 .hdr-mobile-search {
   display: none;
   overflow: hidden;
@@ -566,9 +531,6 @@
   height: 14px;
 }
 
-/* ════════════════════════════════════════════════
-   MOBILE OVERLAY
-════════════════════════════════════════════════ */
 .hdr-overlay {
   display: none;
   position: fixed;
@@ -588,9 +550,6 @@
   }
 }
 
-/* ════════════════════════════════════════════════
-   MOBILE DRAWER
-════════════════════════════════════════════════ */
 .hdr-drawer {
   position: fixed;
   top: 0;
@@ -646,7 +605,6 @@
   height: 16px;
 }
 
-/* User profile in drawer */
 .hdr-drawer-user {
   display: flex;
   align-items: center;
@@ -677,7 +635,6 @@
   margin: 0;
 }
 
-/* Drawer nav */
 .hdr-drawer-nav {
   display: flex;
   flex-direction: column;
@@ -721,7 +678,6 @@
   margin: 16px 0;
 }
 
-/* Drawer logout */
 .hdr-drawer-logout {
   display: flex;
   align-items: center;
@@ -749,18 +705,12 @@
   height: 18px;
 }
 
-/* Drawer auth buttons */
 .hdr-drawer-auth {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* ════════════════════════════════════════════════
-   RESPONSIVE  BREAKPOINTS
-════════════════════════════════════════════════ */
-
-/* ── Tablet ── */
 @media (max-width: 1024px) {
   .hdr-inner {
     padding: 0 20px;
@@ -781,7 +731,6 @@
   }
 }
 
-/* ── Hide desktop nav + search, show mobile controls ── */
 @media (max-width: 860px) {
   .hdr-inner {
     gap: 12px;
@@ -812,7 +761,6 @@
     display: block;
   }
 
-  /* hide username text, keep avatar */
   .hdr-user-name,
   .hdr-chevron {
     display: none;
@@ -828,7 +776,6 @@
     background: var(--color-primary-subtle);
   }
 
-  /* hide dropdown on mobile — use drawer instead */
   .hdr-dropdown {
     display: none;
   }
@@ -856,7 +803,6 @@
 
   .hdr-btn--primary {
     display: none;
-    /* use the drawer for signup on very small screens */
   }
 
   .hdr-actions {

@@ -322,9 +322,6 @@
   }
 }
 
-/* ════════════════════════════════════════════════
-   SUCCESS OVERLAY
-════════════════════════════════════════════════ */
 
 .addcar-success-overlay {
   position: fixed;
@@ -378,7 +375,6 @@
   }
 }
 
-/* SVG checkmark circle */
 .addcar-success-icon {
   width: 80px;
   height: 80px;
@@ -390,12 +386,10 @@
   height: 80px;
 }
 
-/* Animated circle stroke */
 .addcar-success-circle {
   stroke: #10b981;
   stroke-width: 2;
   stroke-dasharray: 157;
-  /* 2π × 25 */
   stroke-dashoffset: 157;
   animation: addcar-circle-draw 600ms cubic-bezier(0.65, 0, 0.45, 1) 200ms forwards;
   transform-origin: center;
@@ -408,7 +402,6 @@
   }
 }
 
-/* Animated checkmark path */
 .addcar-success-check {
   stroke: #10b981;
   stroke-width: 3;
@@ -441,7 +434,6 @@
   max-width: 300px;
 }
 
-/* Progress bar */
 .addcar-success-bar {
   width: 100%;
   height: 4px;

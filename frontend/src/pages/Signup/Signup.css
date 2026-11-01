@@ -1,21 +1,13 @@
-/* ════════════════════════════════════════════════
-   SIGNUP  —  extensions on top of Login.css
-   ════════════════════════════════════════════════ */
-
-/* ── Right panel scrolls on long dealer form ── */
 .su-form-panel {
   align-items: flex-start;
-  /* don't stretch-center; let it scroll naturally */
   padding-top: 48px;
   padding-bottom: 56px;
 }
 
 .su-form-wrap {
   max-width: 480px;
-  /* dealer form is a bit wider */
 }
 
-/* ── Accent text in left-panel heading ── */
 .al-panel-heading-accent {
   background: linear-gradient(90deg, #fbbf24 0%, #f97316 100%);
   -webkit-background-clip: text;
@@ -23,7 +15,6 @@
   background-clip: text;
 }
 
-/* ── Feature list on left panel ── */
 .al-panel-features {
   list-style: none;
   display: flex;
@@ -72,7 +63,6 @@
   color: #fbbf24;
 }
 
-/* ── Account-type description chip ── */
 .su-tab-desc {
   display: flex;
   align-items: center;
@@ -94,7 +84,6 @@
   flex-shrink: 0;
 }
 
-/* ── Input hint text ── */
 .al-hint {
   font-size: 12px;
   color: #94a3b8;
@@ -102,7 +91,7 @@
   line-height: 1.4;
 }
 
-/* ── Optional label badge ── */
+
 .al-label-optional {
   display: inline-block;
   font-size: 10.5px;
@@ -116,9 +105,7 @@
   vertical-align: middle;
 }
 
-/* ════════════════════════════════════════════════
-   RESPONSIVE  —  768px
-════════════════════════════════════════════════ */
+
 
 @media (max-width: 768px) {
   .su-form-panel {
@@ -131,9 +118,7 @@
   }
 }
 
-/* ════════════════════════════════════════════════
-   RESPONSIVE  —  480px
-════════════════════════════════════════════════ */
+
 
 @media (max-width: 480px) {
   .su-form-panel {

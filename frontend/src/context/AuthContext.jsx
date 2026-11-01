@@ -79,22 +79,24 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const customerSignup = useCallback(
-    async (name, email, phone, password) => {
-      setLoading(true);
-      try {
-        const res = await authAPI.customerSignup({ name, email, phone, password });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Signup failed");
-        setTokens(data.accessToken, data.refreshToken);
-        persistUser(data.user);
-        return data;
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+  const customerSignup = useCallback(async (name, email, phone, password) => {
+    setLoading(true);
+    try {
+      const res = await authAPI.customerSignup({
+        name,
+        email,
+        phone,
+        password,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Signup failed");
+      setTokens(data.accessToken, data.refreshToken);
+      persistUser(data.user);
+      return data;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const dealerSignup = useCallback(async (formData) => {
     setLoading(true);
@@ -114,9 +116,7 @@ export function AuthProvider({ children }) {
     const refreshToken = localStorage.getItem("refreshToken");
     try {
       if (refreshToken) await authAPI.logout(refreshToken);
-    } catch {
-      /* best-effort */
-    }
+    } catch {}
     clearTokens();
     setUser(null);
   }, []);

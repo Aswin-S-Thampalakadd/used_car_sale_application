@@ -4,7 +4,6 @@ import { useAuth } from "../../context/AuthContext";
 import "../Login/Login.css";
 import "./Signup.css";
 
-/* ── Icon helpers ── */
 const IconUser = () => (
   <svg
     viewBox="0 0 24 24"
@@ -43,9 +42,6 @@ const IconAlert = () => (
   </svg>
 );
 
-/* ════════════════════════════════════
-   CUSTOMER FORM
-════════════════════════════════════ */
 const CustomerForm = ({ onSubmit, loading, error }) => {
   const [form, setForm] = useState({
     name: "",
@@ -247,9 +243,6 @@ const CustomerForm = ({ onSubmit, loading, error }) => {
   );
 };
 
-/* ════════════════════════════════════
-   DEALER FORM
-════════════════════════════════════ */
 const DealerForm = ({ onSubmit, loading, error }) => {
   const [form, setForm] = useState({
     name: "",
@@ -575,9 +568,6 @@ const DealerForm = ({ onSubmit, loading, error }) => {
   );
 };
 
-/* ════════════════════════════════════
-   SIGNUP PAGE
-════════════════════════════════════ */
 const Signup = () => {
   const { customerSignup, dealerSignup, loading } = useAuth();
   const navigate = useNavigate();
