@@ -25,9 +25,8 @@ export const subscribeService = async ({ email, name }) => {
     if (existing.status === "active") throw new Error("ALREADY_SUBSCRIBED");
     if (existing.status === "pending") throw new Error("ALREADY_PENDING");
     if (existing.status === "unsubscribed") {
-      // Re-subscribe: generate a fresh token, reset to pending
       const token = generateToken();
-      await confirmSubscriber("__force__"); // no-op — we update directly below
+      await confirmSubscriber("__force__");
       const { db } = await import("../../db/index.js");
       const { newsletterSubscribers } =
         await import("../../db/schemas/newsletter.js");
@@ -75,7 +74,7 @@ const sendConfirmation = async (email, name, token) => {
 
 export const confirmService = async (token) => {
   const sub = await confirmSubscriber(token);
-  if (!sub) return null; // expired or already confirmed
+  if (!sub) return null;
 
   await sendMail({
     to: sub.email,

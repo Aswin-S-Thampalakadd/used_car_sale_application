@@ -44,7 +44,6 @@ export const getAllCarsService = async (page, limit, filters) => {
 export const fetchCarById = async (carId) => {
   const car = await getCarByIdDB(carId);
   if (car) {
-    // Fire-and-forget — don't block the response
     incrementViewsDB(carId).catch(() => {});
   }
   return car;
@@ -87,7 +86,6 @@ export const getRecentlyAddedCarsService = async (limit) => {
 };
 
 export const addCarService = async (dealerId, data) => {
-  // Enforce subscription car limit
   const currentCount = await countDealerCarsDB(dealerId);
   const limitCheck = await checkCarLimitService(dealerId, currentCount);
   if (limitCheck.hasReachedLimit) {

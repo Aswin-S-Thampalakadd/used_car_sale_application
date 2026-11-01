@@ -126,8 +126,8 @@ export const findRefreshToken = async (tokenHash) => {
       and(
         eq(refreshTokens.tokenHash, tokenHash),
         isNull(refreshTokens.revokedAt),
-        gt(refreshTokens.expiresAt, new Date())
-      )
+        gt(refreshTokens.expiresAt, new Date()),
+      ),
     )
     .limit(1);
 
@@ -150,7 +150,7 @@ export const revokeAllUserRefreshTokens = async (userId) => {
       revokedAt: new Date(),
     })
     .where(
-      and(eq(refreshTokens.userId, userId), isNull(refreshTokens.revokedAt))
+      and(eq(refreshTokens.userId, userId), isNull(refreshTokens.revokedAt)),
     );
 };
 

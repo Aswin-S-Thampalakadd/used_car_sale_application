@@ -316,10 +316,4 @@ const dummyCars = [
   },
 ];
 
-export {
-  usersTypess,
-  dummyUsers,
-  dummyDealer,
-  carFeatures,
-  dummyCars,
-};
+export { usersTypess, dummyUsers, dummyDealer, carFeatures, dummyCars };

@@ -1,12 +1,4 @@
-import {
-  and,
-  count,
-  desc,
-  eq,
-  ilike,
-  or,
-  sql,
-} from "drizzle-orm";
+import { and, count, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { users } from "../../db/schemas/users.js";
 import { userTypes } from "../../db/schemas/users_types.js";
@@ -16,8 +8,7 @@ import { carImages } from "../../db/schemas/car_images.js";
 import { enquiries } from "../../db/schemas/enquiries.js";
 import { reviews } from "../../db/schemas/reviews.js";
 import { subscriptions } from "../../db/schemas/subscriptions.js";
-
-// ─── DASHBOARD STATS ────────────────────────────────────────────────────────
+import { usersTypess } from "../../constants/constants.js";
 
 export const getDashboardStats = async () => {
   const CUSTOMER_TYPE_ID = 2;
@@ -38,15 +29,30 @@ export const getDashboardStats = async () => {
     activeSubscriptionsRes,
   ] = await Promise.all([
     db.select({ total: count() }).from(users),
-    db.select({ total: count() }).from(users).where(eq(users.userTypeId, CUSTOMER_TYPE_ID)),
-    db.select({ total: count() }).from(users).where(eq(users.userTypeId, DEALER_TYPE_ID)),
-    db.select({ total: count() }).from(dealerProfiles).where(eq(dealerProfiles.isVerified, true)),
-    db.select({ total: count() }).from(dealerProfiles).where(eq(dealerProfiles.isVerified, false)),
+    db
+      .select({ total: count() })
+      .from(users)
+      .where(eq(users.userTypeId, CUSTOMER_TYPE_ID)),
+    db
+      .select({ total: count() })
+      .from(users)
+      .where(eq(users.userTypeId, DEALER_TYPE_ID)),
+    db
+      .select({ total: count() })
+      .from(dealerProfiles)
+      .where(eq(dealerProfiles.isVerified, true)),
+    db
+      .select({ total: count() })
+      .from(dealerProfiles)
+      .where(eq(dealerProfiles.isVerified, false)),
     db.select({ total: count() }).from(cars),
     db.select({ total: count() }).from(cars).where(eq(cars.status, "active")),
     db.select({ total: count() }).from(cars).where(eq(cars.status, "sold")),
     db.select({ total: count() }).from(enquiries),
-    db.select({ total: count() }).from(enquiries).where(eq(enquiries.status, "new")),
+    db
+      .select({ total: count() })
+      .from(enquiries)
+      .where(eq(enquiries.status, "new")),
     db.select({ total: count() }).from(reviews),
     db
       .select({ total: count() })
@@ -70,12 +76,15 @@ export const getDashboardStats = async () => {
   };
 };
 
-// ─── DEALERS ────────────────────────────────────────────────────────────────
-
-export const getAllDealers = async ({ page = 1, limit = 20, search = "", isVerified }) => {
+export const getAllDealers = async ({
+  page = 1,
+  limit = 20,
+  search = "",
+  isVerified,
+}) => {
   const offset = (page - 1) * limit;
 
-  const conditions = [eq(users.userTypeId, 3)]; // DEALER
+  const conditions = [eq(users.userTypeId, usersTypess.DEALER.id)];
 
   if (search) {
     conditions.push(
@@ -83,8 +92,8 @@ export const getAllDealers = async ({ page = 1, limit = 20, search = "", isVerif
         ilike(users.name, `%${search}%`),
         ilike(users.email, `%${search}%`),
         ilike(dealerProfiles.dealershipName, `%${search}%`),
-        ilike(dealerProfiles.city, `%${search}%`)
-      )
+        ilike(dealerProfiles.city, `%${search}%`),
+      ),
     );
   }
 
@@ -135,20 +144,22 @@ export const verifyDealer = async (dealerProfileId, isVerified) => {
   return result[0] || null;
 };
 
-// ─── CUSTOMERS ──────────────────────────────────────────────────────────────
-
-export const getAllCustomers = async ({ page = 1, limit = 20, search = "" }) => {
+export const getAllCustomers = async ({
+  page = 1,
+  limit = 20,
+  search = "",
+}) => {
   const offset = (page - 1) * limit;
 
-  const conditions = [eq(users.userTypeId, 2)]; // CUSTOMER
+  const conditions = [eq(users.userTypeId, usersTypess.CUSTOMER.id)];
 
   if (search) {
     conditions.push(
       or(
         ilike(users.name, `%${search}%`),
         ilike(users.email, `%${search}%`),
-        ilike(users.phone, `%${search}%`)
-      )
+        ilike(users.phone, `%${search}%`),
+      ),
     );
   }
 
@@ -170,20 +181,26 @@ export const getAllCustomers = async ({ page = 1, limit = 20, search = "" }) => 
       .orderBy(desc(users.createdAt))
       .limit(limit)
       .offset(offset),
-    db.select({ total: count() }).from(users).where(and(...conditions)),
+    db
+      .select({ total: count() })
+      .from(users)
+      .where(and(...conditions)),
   ]);
 
   return { customers: rows, total: Number(totalRes[0]?.total ?? 0) };
 };
-
-// ─── SHARED USER OPS ────────────────────────────────────────────────────────
 
 export const setUserActive = async (userId, isActive) => {
   const result = await db
     .update(users)
     .set({ isActive, updatedAt: new Date() })
     .where(eq(users.id, userId))
-    .returning({ id: users.id, name: users.name, email: users.email, isActive: users.isActive });
+    .returning({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      isActive: users.isActive,
+    });
   return result[0] || null;
 };
 
@@ -195,9 +212,12 @@ export const adminDeleteUser = async (userId) => {
   return result[0] || null;
 };
 
-// ─── CARS ────────────────────────────────────────────────────────────────────
-
-export const getAllCarsAdmin = async ({ page = 1, limit = 20, search = "", status }) => {
+export const getAllCarsAdmin = async ({
+  page = 1,
+  limit = 20,
+  search = "",
+  status,
+}) => {
   const offset = (page - 1) * limit;
 
   const conditions = [];
@@ -208,8 +228,8 @@ export const getAllCarsAdmin = async ({ page = 1, limit = 20, search = "", statu
         ilike(cars.make, `%${search}%`),
         ilike(cars.model, `%${search}%`),
         ilike(cars.registrationNumber, `%${search}%`),
-        ilike(users.name, `%${search}%`)
-      )
+        ilike(users.name, `%${search}%`),
+      ),
     );
   }
 
@@ -288,9 +308,11 @@ export const adminDeleteCar = async (carId) => {
   return result[0] || null;
 };
 
-// ─── ENQUIRIES ───────────────────────────────────────────────────────────────
-
-export const getAllEnquiriesAdmin = async ({ page = 1, limit = 20, status }) => {
+export const getAllEnquiriesAdmin = async ({
+  page = 1,
+  limit = 20,
+  status,
+}) => {
   const offset = (page - 1) * limit;
 
   const conditions = [];
@@ -326,14 +348,18 @@ export const getAllEnquiriesAdmin = async ({ page = 1, limit = 20, status }) => 
   return { enquiries: rows, total: Number(totalRes[0]?.total ?? 0) };
 };
 
-// ─── REVIEWS ─────────────────────────────────────────────────────────────────
-
-export const getAllReviewsAdmin = async ({ page = 1, limit = 20, reviewType, isApproved }) => {
+export const getAllReviewsAdmin = async ({
+  page = 1,
+  limit = 20,
+  reviewType,
+  isApproved,
+}) => {
   const offset = (page - 1) * limit;
 
   const conditions = [];
   if (reviewType) conditions.push(eq(reviews.reviewType, reviewType));
-  if (isApproved !== undefined) conditions.push(eq(reviews.isApproved, isApproved));
+  if (isApproved !== undefined)
+    conditions.push(eq(reviews.isApproved, isApproved));
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
   const [rows, totalRes] = await Promise.all([
@@ -375,9 +401,12 @@ export const adminDeleteReview = async (reviewId) => {
   return result[0] || null;
 };
 
-// ─── SUBSCRIPTIONS ───────────────────────────────────────────────────────────
-
-export const getAllSubscriptionsAdmin = async ({ page = 1, limit = 20, status, planType }) => {
+export const getAllSubscriptionsAdmin = async ({
+  page = 1,
+  limit = 20,
+  status,
+  planType,
+}) => {
   const offset = (page - 1) * limit;
 
   const conditions = [];

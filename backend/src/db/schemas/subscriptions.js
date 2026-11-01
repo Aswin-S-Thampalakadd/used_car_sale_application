@@ -35,23 +35,21 @@ export const subscriptions = pgTable("subscriptions", {
 
   planType: planTypeEnum("plan_type").notNull().default("free"),
 
-  // Car listing limits per plan
   carLimit: integer("car_limit").notNull().default(5),
 
-  // Price in INR
   price: numeric("price", {
     precision: 10,
     scale: 2,
-  }).notNull().default("0"),
+  })
+    .notNull()
+    .default("0"),
 
-  // Subscription validity
   startDate: timestamp("start_date").notNull().defaultNow(),
 
   endDate: timestamp("end_date"),
 
   status: subscriptionStatusEnum("status").notNull().default("active"),
 
-  // Razorpay details
   razorpayOrderId: varchar("razorpay_order_id", { length: 100 }),
 
   razorpayPaymentId: varchar("razorpay_payment_id", { length: 100 }),
@@ -62,7 +60,6 @@ export const subscriptions = pgTable("subscriptions", {
     .notNull()
     .default("completed"),
 
-  // Auto-renewal flag
   isAutoRenewal: boolean("is_auto_renewal").notNull().default(false),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),

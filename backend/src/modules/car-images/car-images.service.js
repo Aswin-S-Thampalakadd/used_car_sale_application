@@ -9,14 +9,12 @@ import {
 } from "./car-images.repository.js";
 
 export const addCarImagesService = async (carId, dealerUserId, images) => {
-  // Verify the car belongs to this dealer
   const car = await db.query.cars.findFirst({
     where: and(eq(cars.id, carId), eq(cars.dealerId, dealerUserId)),
     columns: { id: true },
   });
   if (!car) throw new Error("CAR_NOT_FOUND");
 
-  // images: [{ imageUrl, sortOrder?, isPrimary? }]
   const toInsert = images.map((img, idx) => ({
     imageUrl: img.imageUrl,
     sortOrder: img.sortOrder ?? idx,

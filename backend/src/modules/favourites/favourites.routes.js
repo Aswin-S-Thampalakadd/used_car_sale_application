@@ -9,7 +9,6 @@ import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const router = Router();
 
-// All favourite actions require auth (any user type)
 router.get("/", authenticate, getMyFavourites);
 router.post("/:carId", authenticate, addFavourite);
 router.delete("/:carId", authenticate, removeFavourite);

@@ -23,10 +23,8 @@ import {
 
 const router = Router();
 
-// ── Public: admin login ───────────────────────────────────────────────────────
 router.post("/login", adminLogin);
 
-// ── All routes below require auth + admin role ────────────────────────────────
 router.use(authenticate, authorizeAdmin);
 
 // Dashboard

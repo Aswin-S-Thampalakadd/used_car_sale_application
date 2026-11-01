@@ -10,5 +10,5 @@ export const userTypes = pgTable(
   },
   (table) => ({
     nameUnique: unique("uq_user_types_name").on(table.name),
-  })
+  }),
 );

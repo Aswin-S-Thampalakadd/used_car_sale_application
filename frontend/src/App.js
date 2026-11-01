@@ -16,13 +16,13 @@ import Favourites from "./pages/Favourites/Favourites";
 import Enquiries from "./pages/Enquiries/Enquiries";
 
 import RateUs from "./pages/RateUs/RateUs";
-import About        from "./pages/Static/About";
-import Blog         from "./pages/Static/Blog";
-import BlogPost     from "./pages/Static/BlogPost";
-import Contact      from "./pages/Static/Contact";
-import HelpCenter   from "./pages/Static/HelpCenter";
-import Terms        from "./pages/Static/Terms";
-import Privacy      from "./pages/Static/Privacy";
+import About from "./pages/Static/About";
+import Blog from "./pages/Static/Blog";
+import BlogPost from "./pages/Static/BlogPost";
+import Contact from "./pages/Static/Contact";
+import HelpCenter from "./pages/Static/HelpCenter";
+import Terms from "./pages/Static/Terms";
+import Privacy from "./pages/Static/Privacy";
 import CookiePolicy from "./pages/Static/CookiePolicy";
 import CookieBanner from "./components/CookieBanner/CookieBanner";
 import AdminLogin from "./pages/Admin/AdminLogin";
@@ -37,37 +37,39 @@ import AdminSubscriptions from "./pages/Admin/AdminSubscriptions";
 import AdminNewsletterSubscribers from "./pages/Admin/AdminNewsletterSubscribers";
 import NewsletterConfirmed from "./pages/Static/NewsletterConfirmed";
 
-/** Redirects to /admin/login if the user is not an authenticated admin */
 function ProtectedAdminRoute({ children }) {
   const { isAuthenticated, isAdmin, isInitializing } = useAuth();
 
-  // Wait for auth state to be read from storage before deciding.
-  // Without this, a hard-refresh to /admin/cars would flash-redirect to
-  // /admin/login even when the admin is already logged in.
   if (isInitializing) {
     return (
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "center",
-        minHeight: "100vh", background: "#0f172a",
-      }}>
-        <div style={{
-          width: 36, height: 36,
-          border: "3px solid rgba(255,255,255,0.15)",
-          borderTopColor: "#3b82f6",
-          borderRadius: "50%",
-          animation: "spin 0.75s linear infinite",
-        }} />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          background: "#0f172a",
+        }}
+      >
+        <div
+          style={{
+            width: 36,
+            height: 36,
+            border: "3px solid rgba(255,255,255,0.15)",
+            borderTopColor: "#3b82f6",
+            borderRadius: "50%",
+            animation: "spin 0.75s linear infinite",
+          }}
+        />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
 
-  // Not logged in → admin login page
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" replace />;
   }
 
-  // Logged in but not admin (dealer / customer) → home
   if (!isAdmin) {
     return <Navigate to="/" replace />;
   }
@@ -75,19 +77,17 @@ function ProtectedAdminRoute({ children }) {
   return children;
 }
 
-/** Protects dealer-only routes */
 function ProtectedDealerRoute({ children }) {
   const { isAuthenticated, isDealer, isInitializing } = useAuth();
 
-  if (isInitializing) return null; // page already has its own loading state
+  if (isInitializing) return null;
 
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (!isDealer)        return <Navigate to="/" replace />;
+  if (!isDealer) return <Navigate to="/" replace />;
 
   return children;
 }
 
-/** Protects routes that require any authenticated user */
 function ProtectedUserRoute({ children }) {
   const { isAuthenticated, isInitializing } = useAuth();
 
@@ -97,7 +97,6 @@ function ProtectedUserRoute({ children }) {
   return children;
 }
 
-/** Redirects already-logged-in admins away from the login page */
 function AdminLoginRoute() {
   const { isAuthenticated, isAdmin, isInitializing } = useAuth();
   if (isInitializing) return null;
@@ -107,7 +106,6 @@ function AdminLoginRoute() {
   return <AdminLogin />;
 }
 
-/** Public site routes — hide Header/Footer on admin routes */
 function PublicLayout({ children }) {
   return (
     <>
@@ -124,7 +122,6 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* ── Public / dealer / customer routes ── */}
           <Route
             path="/"
             element={
@@ -157,15 +154,78 @@ function App() {
               </PublicLayout>
             }
           />
-          <Route path="/about"   element={<PublicLayout><About /></PublicLayout>} />
-          <Route path="/blog"    element={<PublicLayout><Blog /></PublicLayout>} />
-          <Route path="/blog/:slug" element={<PublicLayout><BlogPost /></PublicLayout>} />
-          <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
-          <Route path="/help"    element={<PublicLayout><HelpCenter /></PublicLayout>} />
-          <Route path="/terms"   element={<PublicLayout><Terms /></PublicLayout>} />
-          <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />
-          <Route path="/cookies" element={<PublicLayout><CookiePolicy /></PublicLayout>} />
-          <Route path="/newsletter/confirmed" element={<PublicLayout><NewsletterConfirmed /></PublicLayout>} />
+          <Route
+            path="/about"
+            element={
+              <PublicLayout>
+                <About />
+              </PublicLayout>
+            }
+          />
+          <Route
+            path="/blog"
+            element={
+              <PublicLayout>
+                <Blog />
+              </PublicLayout>
+            }
+          />
+          <Route
+            path="/blog/:slug"
+            element={
+              <PublicLayout>
+                <BlogPost />
+              </PublicLayout>
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              <PublicLayout>
+                <Contact />
+              </PublicLayout>
+            }
+          />
+          <Route
+            path="/help"
+            element={
+              <PublicLayout>
+                <HelpCenter />
+              </PublicLayout>
+            }
+          />
+          <Route
+            path="/terms"
+            element={
+              <PublicLayout>
+                <Terms />
+              </PublicLayout>
+            }
+          />
+          <Route
+            path="/privacy"
+            element={
+              <PublicLayout>
+                <Privacy />
+              </PublicLayout>
+            }
+          />
+          <Route
+            path="/cookies"
+            element={
+              <PublicLayout>
+                <CookiePolicy />
+              </PublicLayout>
+            }
+          />
+          <Route
+            path="/newsletter/confirmed"
+            element={
+              <PublicLayout>
+                <NewsletterConfirmed />
+              </PublicLayout>
+            }
+          />
           <Route
             path="/login"
             element={
@@ -233,7 +293,6 @@ function App() {
             }
           />
 
-          {/* ── Admin routes — no Header/Footer ── */}
           <Route path="/admin/login" element={<AdminLoginRoute />} />
 
           <Route
@@ -244,14 +303,13 @@ function App() {
               </ProtectedAdminRoute>
             }
           >
-            {/* Default redirect from /admin → /admin/dashboard */}
             <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard"     element={<AdminDashboard />} />
-            <Route path="dealers"       element={<AdminDealers />} />
-            <Route path="customers"     element={<AdminCustomers />} />
-            <Route path="cars"          element={<AdminCars />} />
-            <Route path="enquiries"     element={<AdminEnquiries />} />
-            <Route path="reviews"       element={<AdminReviews />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="dealers" element={<AdminDealers />} />
+            <Route path="customers" element={<AdminCustomers />} />
+            <Route path="cars" element={<AdminCars />} />
+            <Route path="enquiries" element={<AdminEnquiries />} />
+            <Route path="reviews" element={<AdminReviews />} />
             <Route path="subscriptions" element={<AdminSubscriptions />} />
             <Route path="newsletter" element={<AdminNewsletterSubscribers />} />
           </Route>

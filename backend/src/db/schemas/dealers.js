@@ -54,5 +54,5 @@ export const dealerProfilesRelations = relations(
       fields: [dealerProfiles.userId],
       references: [users.id],
     }),
-  })
+  }),
 );

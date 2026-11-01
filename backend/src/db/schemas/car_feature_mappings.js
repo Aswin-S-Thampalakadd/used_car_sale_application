@@ -25,7 +25,7 @@ export const carFeatureMappings = pgTable(
     primaryKey({
       columns: [table.carId, table.featureId],
     }),
-  ]
+  ],
 );
 
 export const carFeatureMappingsRelations = relations(
@@ -40,5 +40,5 @@ export const carFeatureMappingsRelations = relations(
       fields: [carFeatureMappings.featureId],
       references: [carFeatures.id],
     }),
-  })
+  }),
 );

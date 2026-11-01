@@ -5,16 +5,6 @@ import { dealerProfiles } from "../../db/schemas/dealers.js";
 import { reviews } from "../../db/schemas/reviews.js";
 import { users } from "../../db/schemas/users.js";
 
-/**
- * GET /api/v1/stats
- * Returns live platform-wide counts:
- *   totalCars        – active car listings
- *   totalDealers     – verified dealers
- *   totalCities      – distinct cities where dealers are present
- *   averageRating    – average of all app-level reviews (1-5 stars)
- *   totalCustomers   – total registered customer accounts
- *   recommendRate    – % of app reviews with rating >= 4 ("would recommend")
- */
 export const getPlatformStats = async (_req, res) => {
   const CUSTOMER_TYPE_ID = 2;
 
@@ -28,21 +18,17 @@ export const getPlatformStats = async (_req, res) => {
       totalAppReviewsRes,
       positiveAppReviewsRes,
     ] = await Promise.all([
-      // active listings only
       db.select({ total: count() }).from(cars).where(eq(cars.status, "active")),
 
-      // verified dealers only
       db
         .select({ total: count() })
         .from(dealerProfiles)
         .where(eq(dealerProfiles.isVerified, true)),
 
-      // distinct non-null cities across all dealer profiles
       db
         .select({ total: countDistinct(dealerProfiles.city) })
         .from(dealerProfiles),
 
-      // avg star rating — approved app reviews only
       db
         .select({ avg: avg(reviews.rating) })
         .from(reviews)
@@ -50,13 +36,11 @@ export const getPlatformStats = async (_req, res) => {
           and(eq(reviews.reviewType, "app"), eq(reviews.isApproved, true)),
         ),
 
-      // total registered customers
       db
         .select({ total: count() })
         .from(users)
         .where(eq(users.userTypeId, CUSTOMER_TYPE_ID)),
 
-      // total approved app reviews (denominator for recommend rate)
       db
         .select({ total: count() })
         .from(reviews)
@@ -64,7 +48,6 @@ export const getPlatformStats = async (_req, res) => {
           and(eq(reviews.reviewType, "app"), eq(reviews.isApproved, true)),
         ),
 
-      // approved app reviews with rating >= 4 (numerator for recommend rate)
       db
         .select({ total: count() })
         .from(reviews)
@@ -80,7 +63,6 @@ export const getPlatformStats = async (_req, res) => {
     const totalAppReviews = Number(totalAppReviewsRes[0]?.total ?? 0);
     const positiveAppReviews = Number(positiveAppReviewsRes[0]?.total ?? 0);
 
-    // Recommend rate as a whole-number percentage; null when no reviews yet
     const recommendRate =
       totalAppReviews > 0
         ? Math.round((positiveAppReviews / totalAppReviews) * 100)

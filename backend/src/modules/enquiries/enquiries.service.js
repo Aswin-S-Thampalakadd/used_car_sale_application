@@ -6,18 +6,24 @@ import {
   deleteEnquiryDB,
   getEnquiriesByCustomerDB,
   getEnquiriesByDealerDB,
-  getEnquiryByIdDB,
   updateEnquiryStatusDB,
 } from "./enquiries.repository.js";
 import { notifyNewEnquiry } from "../notifications/notifications.service.js";
+import { usersTypess } from "../../constants/constants.js";
 
 const VALID_STATUSES = ["new", "contacted", "closed"];
 
 export const createEnquiryService = async (customerId, { carId, message }) => {
-  // Fetch car + customer name to build notification
   const car = await db.query.cars.findFirst({
     where: eq(cars.id, carId),
-    columns: { id: true, dealerId: true, status: true, make: true, model: true, year: true },
+    columns: {
+      id: true,
+      dealerId: true,
+      status: true,
+      make: true,
+      model: true,
+      year: true,
+    },
   });
 
   if (!car) throw new Error("CAR_NOT_FOUND");
@@ -30,21 +36,15 @@ export const createEnquiryService = async (customerId, { carId, message }) => {
     message: message || null,
   });
 
-  // Fire-and-forget notification to dealer
-  notifyNewEnquiry(
-    car.dealerId,
-    { ...enquiry, customer: null },
-    car
-  ).catch(() => {});
+  notifyNewEnquiry(car.dealerId, { ...enquiry, customer: null }, car).catch(
+    () => {},
+  );
 
   return { message: "Enquiry sent successfully", enquiry };
 };
 
-const CUSTOMER_USER_TYPE_ID = 2;
-const DEALER_USER_TYPE_ID   = 3;
-
 export const getMyEnquiriesService = async (userId, userTypeId) => {
-  if (userTypeId === DEALER_USER_TYPE_ID) {
+  if (userTypeId === usersTypess.DEALER.id) {
     return await getEnquiriesByDealerDB(userId);
   }
   return await getEnquiriesByCustomerDB(userId);
@@ -53,7 +53,7 @@ export const getMyEnquiriesService = async (userId, userTypeId) => {
 export const updateEnquiryStatusService = async (
   enquiryId,
   dealerId,
-  status
+  status,
 ) => {
   if (!VALID_STATUSES.includes(status)) throw new Error("INVALID_STATUS");
 

@@ -9,29 +9,22 @@ import {
   getReviewByCustomerCarDB,
   getReviewsByCarDB,
   updateReviewDB,
-  // dealer reviews
   getReviewsByDealerDB,
   getDealerRatingSummaryDB,
   replyToReviewDB,
   dealerDeleteReviewDB,
-  // app reviews
   createAppReviewDB,
   getAppReviewByCustomerDB,
   getTopAppReviewsDB,
   getAllAppReviewsDB,
 } from "./reviews.repository.js";
 
-/* ─────────────────────────────────────────────────────────────
-   CAR / DEALER  REVIEWS
-───────────────────────────────────────────────────────────── */
-
 export const createReviewService = async (
   customerId,
-  { carId, rating, comment }
+  { carId, rating, comment },
 ) => {
   if (rating < 1 || rating > 5) throw new Error("INVALID_RATING");
 
-  // Find car and its dealer
   const car = await db.query.cars.findFirst({
     where: eq(cars.id, carId),
     columns: { id: true, dealerId: true },
@@ -41,7 +34,6 @@ export const createReviewService = async (
   const existing = await getReviewByCustomerCarDB(customerId, carId);
   if (existing) throw new Error("ALREADY_REVIEWED");
 
-  // Get the dealer profile id from the dealer's userId
   const dealerProfile = await db.query.dealerProfiles.findFirst({
     where: eq(dealerProfiles.userId, car.dealerId),
     columns: { id: true },
@@ -60,12 +52,15 @@ export const createReviewService = async (
 export const updateReviewService = async (
   reviewId,
   customerId,
-  { rating, comment }
+  { rating, comment },
 ) => {
   if (rating !== undefined && (rating < 1 || rating > 5))
     throw new Error("INVALID_RATING");
 
-  const review = await updateReviewDB(reviewId, customerId, { rating, comment });
+  const review = await updateReviewDB(reviewId, customerId, {
+    rating,
+    comment,
+  });
   if (!review) throw new Error("REVIEW_NOT_FOUND");
 
   return { message: "Review updated", review };
@@ -85,11 +80,6 @@ export const getCarReviewsService = async (carId) => {
   return { ...summary, reviews: reviewsList };
 };
 
-/* ─────────────────────────────────────────────────────────────
-   DEALER  DASHBOARD  REVIEWS
-───────────────────────────────────────────────────────────── */
-
-/** Get dealer's profile id from their userId */
 const getDealerProfileId = async (userId) => {
   const profile = await db.query.dealerProfiles.findFirst({
     where: eq(dealerProfiles.userId, userId),
@@ -123,11 +113,10 @@ export const dealerDeleteReviewService = async (userId, reviewId) => {
   return { message: "Review deleted" };
 };
 
-/* ─────────────────────────────────────────────────────────────
-   APP  REVIEWS
-───────────────────────────────────────────────────────────── */
-
-export const createAppReviewService = async (customerId, { rating, comment }) => {
+export const createAppReviewService = async (
+  customerId,
+  { rating, comment },
+) => {
   if (rating < 1 || rating > 5) throw new Error("INVALID_RATING");
 
   const existing = await getAppReviewByCustomerDB(customerId);

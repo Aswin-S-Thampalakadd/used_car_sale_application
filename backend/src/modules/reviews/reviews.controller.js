@@ -13,9 +13,6 @@ import {
   getAllAppReviewsService,
 } from "./reviews.service.js";
 
-/* ─────────────────────────────────────────────────────────────
-   HELPERS
-───────────────────────────────────────────────────────────── */
 const errMap = (error, extra = {}) => {
   const map = {
     CAR_NOT_FOUND: [404, "Car not found"],
@@ -29,11 +26,6 @@ const errMap = (error, extra = {}) => {
   return map[error.message] ?? [500, "Something went wrong"];
 };
 
-/* ─────────────────────────────────────────────────────────────
-   CAR  REVIEWS  (customer ↔ car)
-───────────────────────────────────────────────────────────── */
-
-/** POST /reviews */
 export const createReview = async (req, res) => {
   try {
     const customerId = req.user.userId;
@@ -53,7 +45,6 @@ export const createReview = async (req, res) => {
   }
 };
 
-/** PUT /reviews/:id */
 export const updateReview = async (req, res) => {
   try {
     const customerId = req.user.userId;
@@ -70,7 +61,6 @@ export const updateReview = async (req, res) => {
   }
 };
 
-/** DELETE /reviews/:id  (customer deletes their own) */
 export const deleteReview = async (req, res) => {
   try {
     const customerId = req.user.userId;
@@ -83,7 +73,6 @@ export const deleteReview = async (req, res) => {
   }
 };
 
-/** GET /reviews/car/:carId  (public) */
 export const getCarReviews = async (req, res) => {
   try {
     const carId = Number(req.params.carId);
@@ -97,11 +86,6 @@ export const getCarReviews = async (req, res) => {
   }
 };
 
-/* ─────────────────────────────────────────────────────────────
-   DEALER  DASHBOARD  REVIEW  ENDPOINTS
-───────────────────────────────────────────────────────────── */
-
-/** GET /reviews/dealer/mine  — dealer sees all reviews about them */
 export const getDealerReviews = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -113,7 +97,6 @@ export const getDealerReviews = async (req, res) => {
   }
 };
 
-/** POST /reviews/:id/reply  — dealer replies to a review */
 export const replyToReview = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -130,7 +113,6 @@ export const replyToReview = async (req, res) => {
   }
 };
 
-/** DELETE /reviews/:id/dealer  — dealer removes a review about them */
 export const dealerDeleteReview = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -143,11 +125,6 @@ export const dealerDeleteReview = async (req, res) => {
   }
 };
 
-/* ─────────────────────────────────────────────────────────────
-   APP  REVIEWS  (customer reviews the platform)
-───────────────────────────────────────────────────────────── */
-
-/** POST /reviews/app  — customer submits an app review */
 export const createAppReview = async (req, res) => {
   try {
     const customerId = req.user.userId;
@@ -166,7 +143,6 @@ export const createAppReview = async (req, res) => {
   }
 };
 
-/** GET /reviews/app/top  — public, top 5 for Testimonials section */
 export const getTopAppReviews = async (_req, res) => {
   try {
     const result = await getTopAppReviewsService();
@@ -176,7 +152,6 @@ export const getTopAppReviews = async (_req, res) => {
   }
 };
 
-/** GET /reviews/app  — public, all app reviews */
 export const getAllAppReviews = async (_req, res) => {
   try {
     const result = await getAllAppReviewsService();

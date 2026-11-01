@@ -176,7 +176,6 @@ export const getAvailableCarBrandsDB = async () => {
     .from(cars)
     .orderBy(asc(cars.make));
 
-  // Normalize to title case and deduplicate
   const seen = new Set();
   return result
     .map((item) => {
@@ -408,7 +407,6 @@ export const countDealerCarsDB = async (dealerId) => {
   return Number(result[0]?.count ?? 0);
 };
 
-/** Atomically increment viewsCount for a car. Fire-and-forget safe. */
 export const incrementViewsDB = async (carId) => {
   await db
     .update(cars)

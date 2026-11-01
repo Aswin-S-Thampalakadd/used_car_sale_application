@@ -1,4 +1,5 @@
-const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api/v1";
+const BASE_URL =
+  process.env.REACT_APP_API_URL || "http://localhost:5000/api/v1";
 
 const getAccessToken = () => localStorage.getItem("accessToken");
 const getRefreshToken = () => localStorage.getItem("refreshToken");
@@ -34,7 +35,6 @@ async function apiFetch(path, options = {}) {
 
   let response = await fetch(url, { ...options, headers });
 
-  // Auto-refresh on 401
   if (response.status === 401 && getRefreshToken()) {
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
@@ -75,7 +75,6 @@ async function apiFetch(path, options = {}) {
   return response;
 }
 
-// ── Auth ────────────────────────────────────────────────────────────────────
 export const authAPI = {
   customerSignup: (data) =>
     apiFetch("/auth/customer/signup", {
@@ -108,7 +107,6 @@ export const authAPI = {
     }),
 };
 
-// ── Cars ────────────────────────────────────────────────────────────────────
 export const carsAPI = {
   getAll: (params = {}) => {
     const qs = new URLSearchParams(params).toString();
@@ -150,7 +148,6 @@ export const carsAPI = {
     apiFetch(`/cars/${carId}/images/${imageId}`, { method: "DELETE" }),
 };
 
-// ── Enquiries ───────────────────────────────────────────────────────────────
 export const enquiriesAPI = {
   create: (data) =>
     apiFetch("/enquiries", { method: "POST", body: JSON.stringify(data) }),
@@ -166,7 +163,6 @@ export const enquiriesAPI = {
   delete: (id) => apiFetch(`/enquiries/${id}`, { method: "DELETE" }),
 };
 
-// ── Favourites ──────────────────────────────────────────────────────────────
 export const favouritesAPI = {
   getMine: () => apiFetch("/favourites"),
 
@@ -177,9 +173,7 @@ export const favouritesAPI = {
   check: (carId) => apiFetch(`/favourites/${carId}/check`),
 };
 
-// ── Reviews ─────────────────────────────────────────────────────────────────
 export const reviewsAPI = {
-  // ── Car reviews (public + customer) ─────────────────────────────────────
   getByCar: (carId) => apiFetch(`/reviews/car/${carId}`),
 
   create: (data) =>
@@ -190,7 +184,6 @@ export const reviewsAPI = {
 
   delete: (id) => apiFetch(`/reviews/${id}`, { method: "DELETE" }),
 
-  // ── App reviews (platform reviews shown in Testimonials) ─────────────────
   getTopAppReviews: () => apiFetch("/reviews/app/top"),
 
   getAllAppReviews: () => apiFetch("/reviews/app"),
@@ -198,7 +191,6 @@ export const reviewsAPI = {
   createAppReview: (data) =>
     apiFetch("/reviews/app", { method: "POST", body: JSON.stringify(data) }),
 
-  // ── Dealer dashboard review management ───────────────────────────────────
   getDealerReviews: () => apiFetch("/reviews/dealer/mine"),
 
   replyToReview: (id, replyText) =>
@@ -211,7 +203,6 @@ export const reviewsAPI = {
     apiFetch(`/reviews/${id}/dealer`, { method: "DELETE" }),
 };
 
-// ── Dealers ─────────────────────────────────────────────────────────────────
 export const dealersAPI = {
   getPublicProfile: (id) => apiFetch(`/dealers/${id}`),
 
@@ -227,7 +218,6 @@ export const dealersAPI = {
     apiFetch(`/dealers/me/cars${status ? `?status=${status}` : ""}`),
 };
 
-// ── Users ────────────────────────────────────────────────────────────────────
 export const usersAPI = {
   getMyProfile: () => apiFetch("/users/me"),
 
@@ -235,29 +225,22 @@ export const usersAPI = {
     apiFetch("/users/me", { method: "PUT", body: JSON.stringify(data) }),
 };
 
-// ── Subscriptions ────────────────────────────────────────────────────────────
 export const subscriptionsAPI = {
-  // Public: get all available plans
   getPlans: () => apiFetch("/subscriptions/plans"),
 
-  // Dealer's current active plan
   getMyPlan: () => apiFetch("/subscriptions/my-plan"),
 
-  // Subscription history
   getHistory: () => apiFetch("/subscriptions/history"),
 
-  // Check if dealer has hit their car limit
   checkLimit: (currentCarCount) =>
     apiFetch(`/subscriptions/check-limit?currentCarCount=${currentCarCount}`),
 
-  // Create a Razorpay order for a plan upgrade
   createOrder: (planType) =>
     apiFetch("/subscriptions/create-order", {
       method: "POST",
       body: JSON.stringify({ planType }),
     }),
 
-  // Verify payment after Razorpay checkout completes
   verifyPayment: (razorpay_order_id, razorpay_payment_id, razorpay_signature) =>
     apiFetch("/subscriptions/verify-payment", {
       method: "POST",
@@ -269,19 +252,11 @@ export const subscriptionsAPI = {
     }),
 };
 
-// ── Stats ─────────────────────────────────────────────────────────────────────
 export const statsAPI = {
-  /** GET /stats — live platform counts, public */
   getPlatformStats: () => apiFetch("/stats"),
 };
 
-// ── Uploads ──────────────────────────────────────────────────────────────────
 export const uploadsAPI = {
-  /**
-   * Upload a single image file to Cloudinary via the backend.
-   * @param {File} file - the File object from an <input type="file">
-   * @returns fetch Response — body: { success, imageUrl, publicId }
-   */
   uploadImage: (file) => {
     const formData = new FormData();
     formData.append("image", file);
@@ -290,17 +265,12 @@ export const uploadsAPI = {
     return fetch(`${BASE_URL}/uploads/image`, {
       method: "POST",
       headers: {
-        // Do NOT set Content-Type — browser sets it with the multipart boundary
         ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       },
       body: formData,
     });
   },
 
-  /**
-   * Delete an image from Cloudinary by its publicId.
-   * @param {string} publicId - returned from uploadImage
-   */
   deleteImage: (publicId) =>
     apiFetch("/uploads/image", {
       method: "DELETE",
@@ -310,7 +280,6 @@ export const uploadsAPI = {
 
 export { setTokens, clearTokens, getAccessToken, getRefreshToken };
 
-// ── Newsletter ────────────────────────────────────────────────────────────────
 export const newsletterAPI = {
   subscribe: (email, name) =>
     apiFetch("/newsletter/subscribe", {
@@ -324,16 +293,12 @@ export const newsletterAPI = {
   },
 };
 
-// ── Admin ─────────────────────────────────────────────────────────────────────
 export const adminAPI = {
-  // Auth
   login: (data) =>
     apiFetch("/admin/login", { method: "POST", body: JSON.stringify(data) }),
 
-  // Dashboard
   getDashboardStats: () => apiFetch("/admin/dashboard/stats"),
 
-  // Dealers
   getDealers: (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     return apiFetch(`/admin/dealers${qs ? `?${qs}` : ""}`);
@@ -350,7 +315,6 @@ export const adminAPI = {
   deleteDealer: (userId) =>
     apiFetch(`/admin/dealers/${userId}`, { method: "DELETE" }),
 
-  // Customers
   getCustomers: (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     return apiFetch(`/admin/customers${qs ? `?${qs}` : ""}`);
@@ -362,7 +326,6 @@ export const adminAPI = {
   deleteCustomer: (userId) =>
     apiFetch(`/admin/customers/${userId}`, { method: "DELETE" }),
 
-  // Cars
   getCars: (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     return apiFetch(`/admin/cars${qs ? `?${qs}` : ""}`);
@@ -377,16 +340,13 @@ export const adminAPI = {
       method: "PATCH",
       body: JSON.stringify({ isFeatured }),
     }),
-  deleteCar: (carId) =>
-    apiFetch(`/admin/cars/${carId}`, { method: "DELETE" }),
+  deleteCar: (carId) => apiFetch(`/admin/cars/${carId}`, { method: "DELETE" }),
 
-  // Enquiries
   getEnquiries: (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     return apiFetch(`/admin/enquiries${qs ? `?${qs}` : ""}`);
   },
 
-  // Reviews
   getReviews: (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     return apiFetch(`/admin/reviews${qs ? `?${qs}` : ""}`);
@@ -400,7 +360,6 @@ export const adminAPI = {
       body: JSON.stringify({ isApproved }),
     }),
 
-  // Subscriptions
   getSubscriptions: (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     return apiFetch(`/admin/subscriptions${qs ? `?${qs}` : ""}`);

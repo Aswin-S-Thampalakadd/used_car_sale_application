@@ -72,8 +72,6 @@ export const getCarById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Accept both plain numeric IDs ("8") and SEO slugs ("2021-honda-city-8")
-    // Always use the last hyphen-segment as the numeric ID
     const segments = id.split("-");
     const carId = parseInt(segments[segments.length - 1], 10);
 

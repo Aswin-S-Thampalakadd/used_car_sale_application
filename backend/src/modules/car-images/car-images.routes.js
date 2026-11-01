@@ -10,22 +10,20 @@ import { authorizeDealer } from "../../middlewares/authorize.middleware.js";
 
 const router = Router();
 
-// Public: list images for a car
 router.get("/:carId/images", getCarImages);
 
-// Dealer only: manage images
 router.post("/:carId/images", authenticate, authorizeDealer, addCarImages);
 router.delete(
   "/:carId/images/:imageId",
   authenticate,
   authorizeDealer,
-  deleteCarImage
+  deleteCarImage,
 );
 router.patch(
   "/:carId/images/:imageId/primary",
   authenticate,
   authorizeDealer,
-  setPrimaryImage
+  setPrimaryImage,
 );
 
 export default router;

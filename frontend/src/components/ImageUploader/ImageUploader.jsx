@@ -2,30 +2,18 @@ import React, { useCallback, useRef, useState } from "react";
 import { uploadsAPI } from "../../api/api";
 import "./ImageUploader.css";
 
-/**
- * ImageUploader
- *
- * Props:
- *   images       – array of { id, imageUrl, publicId, isPrimary } (controlled)
- *   onChange     – called with the updated images array after every change
- *   maxImages    – max number of images allowed (default 10)
- */
 const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
   const [dragging, setDragging] = useState(false);
   const [uploadingCount, setUploadingCount] = useState(0);
   const [errors, setErrors] = useState([]);
   const inputRef = useRef(null);
 
-  // ── helpers ────────────────────────────────────────────────────────────────
-
-  const addError = (msg) =>
-    setErrors((prev) => [...prev, msg]);
+  const addError = (msg) => setErrors((prev) => [...prev, msg]);
 
   const clearErrors = () => setErrors([]);
 
   const hasPrimary = (list) => list.some((i) => i.isPrimary);
 
-  /** Upload one File object → returns { imageUrl, publicId } or throws */
   const uploadFile = async (file) => {
     const res = await uploadsAPI.uploadImage(file);
     const data = await res.json();
@@ -35,15 +23,20 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
     return { imageUrl: data.imageUrl, publicId: data.publicId };
   };
 
-  /** Process an array of File objects chosen by the user */
   const processFiles = useCallback(
     async (files) => {
       clearErrors();
       const accepted = [];
 
       for (const file of files) {
-        if (!["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(file.type)) {
-          addError(`"${file.name}" is not a supported format (JPG, PNG, WebP only).`);
+        if (
+          !["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
+            file.type,
+          )
+        ) {
+          addError(
+            `"${file.name}" is not a supported format (JPG, PNG, WebP only).`,
+          );
           continue;
         }
         if (file.size > 10 * 1024 * 1024) {
@@ -55,7 +48,9 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
 
       const slotsLeft = maxImages - images.length;
       if (accepted.length > slotsLeft) {
-        addError(`You can only add ${slotsLeft} more image${slotsLeft !== 1 ? "s" : ""}.`);
+        addError(
+          `You can only add ${slotsLeft} more image${slotsLeft !== 1 ? "s" : ""}.`,
+        );
         accepted.splice(slotsLeft);
       }
 
@@ -66,16 +61,21 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
       const uploaded = [];
       await Promise.all(
         accepted.map(async (file) => {
-          // local preview while uploading
           const previewUrl = URL.createObjectURL(file);
           const tempId = `temp_${Date.now()}_${Math.random()}`;
 
-          // optimistic insert
           onChange((prev) => {
-            const needsPrimary = !hasPrimary(prev) && uploaded.length === 0 && prev.length === 0;
+            const needsPrimary =
+              !hasPrimary(prev) && uploaded.length === 0 && prev.length === 0;
             return [
               ...prev,
-              { id: tempId, imageUrl: previewUrl, publicId: null, isPrimary: needsPrimary, uploading: true },
+              {
+                id: tempId,
+                imageUrl: previewUrl,
+                publicId: null,
+                isPrimary: needsPrimary,
+                uploading: true,
+              },
             ];
           });
 
@@ -93,30 +93,28 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
                 publicId,
                 uploading: false,
               };
-              // revoke blob URL to free memory
+
               URL.revokeObjectURL(previewUrl);
               return next;
             });
           } catch (err) {
             addError(`Failed to upload "${file.name}": ${err.message}`);
-            // remove the optimistic placeholder
+
             onChange((prev) => prev.filter((i) => i.id !== tempId));
             URL.revokeObjectURL(previewUrl);
           } finally {
             setUploadingCount((c) => Math.max(0, c - 1));
           }
-        })
+        }),
       );
     },
-    [images.length, maxImages, onChange]
+    [images.length, maxImages, onChange],
   );
-
-  // ── event handlers ─────────────────────────────────────────────────────────
 
   const onFileInput = (e) => {
     if (e.target.files?.length) {
       processFiles(Array.from(e.target.files));
-      e.target.value = ""; // reset so same file can be re-selected
+      e.target.value = "";
     }
   };
 
@@ -128,21 +126,25 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
     }
   };
 
-  const onDragOver = (e) => { e.preventDefault(); setDragging(true); };
+  const onDragOver = (e) => {
+    e.preventDefault();
+    setDragging(true);
+  };
   const onDragLeave = () => setDragging(false);
 
   const setPrimary = (id) => {
-    onChange((prev) => prev.map((img) => ({ ...img, isPrimary: img.id === id })));
+    onChange((prev) =>
+      prev.map((img) => ({ ...img, isPrimary: img.id === id })),
+    );
   };
 
   const removeImage = async (img) => {
-    // Delete from Cloudinary (fire-and-forget — don't block the UI)
     if (img.publicId) {
       uploadsAPI.deleteImage(img.publicId).catch(() => {});
     }
     onChange((prev) => {
       const next = prev.filter((i) => i.id !== img.id);
-      // if we removed the primary, promote the first remaining image
+
       if (img.isPrimary && next.length > 0 && !next.some((i) => i.isPrimary)) {
         next[0] = { ...next[0], isPrimary: true };
       }
@@ -153,16 +155,18 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
   const slotsLeft = maxImages - images.length;
   const isAtLimit = slotsLeft <= 0;
 
-  // ── render ─────────────────────────────────────────────────────────────────
-
   return (
     <div className="iu-root">
-      {/* Error list */}
       {errors.length > 0 && (
         <ul className="iu-errors" role="alert">
           {errors.map((e, i) => (
             <li key={i}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="8" x2="12" y2="12" />
                 <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -170,11 +174,16 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
               {e}
             </li>
           ))}
-          <button className="iu-errors-close" onClick={clearErrors} aria-label="Dismiss errors">×</button>
+          <button
+            className="iu-errors-close"
+            onClick={clearErrors}
+            aria-label="Dismiss errors"
+          >
+            ×
+          </button>
         </ul>
       )}
 
-      {/* Drop zone — hidden when limit reached */}
       {!isAtLimit && (
         <div
           className={`iu-dropzone ${dragging ? "iu-dropzone--active" : ""}`}
@@ -196,7 +205,12 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
             onChange={onFileInput}
           />
           <div className="iu-dropzone-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <rect x="3" y="3" width="18" height="18" rx="3" />
               <circle cx="8.5" cy="8.5" r="1.5" />
               <polyline points="21 15 16 10 5 21" />
@@ -219,7 +233,6 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
         </div>
       )}
 
-      {/* Preview grid */}
       {images.length > 0 && (
         <div className="iu-grid">
           {images.map((img) => (
@@ -234,14 +247,12 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
                 draggable={false}
               />
 
-              {/* uploading overlay */}
               {img.uploading && (
                 <div className="iu-card-overlay">
                   <span className="iu-card-spinner" />
                 </div>
               )}
 
-              {/* primary badge */}
               {img.isPrimary && !img.uploading && (
                 <span className="iu-card-primary-badge">
                   <svg viewBox="0 0 24 24" fill="currentColor">
@@ -251,7 +262,6 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
                 </span>
               )}
 
-              {/* actions — only when not uploading */}
               {!img.uploading && (
                 <div className="iu-card-actions">
                   {!img.isPrimary && (
@@ -261,7 +271,12 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
                       onClick={() => setPrimary(img.id)}
                       title="Set as primary photo"
                     >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
                         <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
                       </svg>
                     </button>
@@ -272,7 +287,12 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
                     onClick={() => removeImage(img)}
                     title="Remove photo"
                   >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
                       <line x1="18" y1="6" x2="6" y2="18" />
                       <line x1="6" y1="6" x2="18" y2="18" />
                     </svg>
@@ -282,7 +302,6 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
             </div>
           ))}
 
-          {/* Add-more tile when under limit */}
           {!isAtLimit && (
             <button
               type="button"
@@ -290,7 +309,12 @@ const ImageUploader = ({ images = [], onChange, maxImages = 10 }) => {
               onClick={() => inputRef.current?.click()}
               title={`Add more photos (${slotsLeft} remaining)`}
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>

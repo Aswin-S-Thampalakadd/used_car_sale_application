@@ -17,8 +17,6 @@ import {
   getAllSubscriptionsService,
 } from "./admin.service.js";
 
-// ─── AUTH ─────────────────────────────────────────────────────────────────────
-
 export const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -40,8 +38,6 @@ export const adminLogin = async (req, res) => {
   }
 };
 
-// ─── DASHBOARD ────────────────────────────────────────────────────────────────
-
 export const getDashboardStats = async (_req, res) => {
   try {
     const stats = await getDashboardStatsService();
@@ -50,8 +46,6 @@ export const getDashboardStats = async (_req, res) => {
     return res.status(500).json({ message: "Failed to fetch dashboard stats" });
   }
 };
-
-// ─── DEALERS ──────────────────────────────────────────────────────────────────
 
 export const getAllDealers = async (req, res) => {
   try {
@@ -84,8 +78,6 @@ export const verifyDealer = async (req, res) => {
   }
 };
 
-// ─── CUSTOMERS ────────────────────────────────────────────────────────────────
-
 export const getAllCustomers = async (req, res) => {
   try {
     const result = await getAllCustomersService(req.query);
@@ -94,8 +86,6 @@ export const getAllCustomers = async (req, res) => {
     return res.status(500).json({ message: "Failed to fetch customers" });
   }
 };
-
-// ─── SHARED USER OPS ──────────────────────────────────────────────────────────
 
 export const activateUser = async (req, res) => {
   try {
@@ -141,8 +131,6 @@ export const deleteUser = async (req, res) => {
     return res.status(500).json({ message: "Failed to delete user" });
   }
 };
-
-// ─── CARS ──────────────────────────────────────────────────────────────────────
 
 export const getAllCars = async (req, res) => {
   try {
@@ -209,8 +197,6 @@ export const deleteCar = async (req, res) => {
   }
 };
 
-// ─── ENQUIRIES ────────────────────────────────────────────────────────────────
-
 export const getAllEnquiries = async (req, res) => {
   try {
     const result = await getAllEnquiriesService(req.query);
@@ -219,8 +205,6 @@ export const getAllEnquiries = async (req, res) => {
     return res.status(500).json({ message: "Failed to fetch enquiries" });
   }
 };
-
-// ─── REVIEWS ──────────────────────────────────────────────────────────────────
 
 export const getAllReviews = async (req, res) => {
   try {
@@ -268,8 +252,6 @@ export const approveReview = async (req, res) => {
       .json({ message: "Failed to update review approval" });
   }
 };
-
-// ─── SUBSCRIPTIONS ────────────────────────────────────────────────────────────
 
 export const getAllSubscriptions = async (req, res) => {
   try {

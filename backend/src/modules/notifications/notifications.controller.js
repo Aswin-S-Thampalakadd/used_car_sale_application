@@ -5,7 +5,6 @@ import {
   markUnreadService,
 } from "./notifications.service.js";
 
-/** GET /notifications/me */
 export const getMyNotifications = async (req, res) => {
   try {
     const result = await getMyNotificationsService(req.user.userId);
@@ -15,7 +14,6 @@ export const getMyNotifications = async (req, res) => {
   }
 };
 
-/** PATCH /notifications/:id/read */
 export const markRead = async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -29,7 +27,6 @@ export const markRead = async (req, res) => {
   }
 };
 
-/** PATCH /notifications/:id/unread */
 export const markUnread = async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -43,7 +40,6 @@ export const markUnread = async (req, res) => {
   }
 };
 
-/** PATCH /notifications/read-all */
 export const markAllRead = async (req, res) => {
   try {
     await markAllReadService(req.user.userId);

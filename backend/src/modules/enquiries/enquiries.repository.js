@@ -1,8 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { enquiries } from "../../db/schemas/enquiries.js";
-import { users } from "../../db/schemas/users.js";
-import { cars } from "../../db/schemas/cars.js";
 
 export const createEnquiryDB = async ({
   carId,
@@ -60,9 +58,7 @@ export const updateEnquiryStatusDB = async (enquiryId, dealerId, status) => {
   const result = await db
     .update(enquiries)
     .set({ status, updatedAt: new Date() })
-    .where(
-      and(eq(enquiries.id, enquiryId), eq(enquiries.dealerId, dealerId))
-    )
+    .where(and(eq(enquiries.id, enquiryId), eq(enquiries.dealerId, dealerId)))
     .returning();
   return result[0] || null;
 };
@@ -71,7 +67,7 @@ export const deleteEnquiryDB = async (enquiryId, customerId) => {
   const result = await db
     .delete(enquiries)
     .where(
-      and(eq(enquiries.id, enquiryId), eq(enquiries.customerId, customerId))
+      and(eq(enquiries.id, enquiryId), eq(enquiries.customerId, customerId)),
     )
     .returning({ id: enquiries.id });
   return result[0] || null;

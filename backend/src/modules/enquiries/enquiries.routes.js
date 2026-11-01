@@ -13,16 +13,12 @@ import {
 
 const router = Router();
 
-// Customer: send an enquiry
 router.post("/", authenticate, authorizeCustomer, createEnquiry);
 
-// Both customer and dealer: view their own enquiries
 router.get("/me", authenticate, getMyEnquiries);
 
-// Dealer: update enquiry status (new → contacted → closed)
 router.patch("/:id/status", authenticate, authorizeDealer, updateEnquiryStatus);
 
-// Customer: delete their enquiry
 router.delete("/:id", authenticate, authorizeCustomer, deleteEnquiry);
 
 export default router;

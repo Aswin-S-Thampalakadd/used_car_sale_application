@@ -24,44 +24,36 @@ export const reviews = pgTable(
       .generatedAlwaysAsIdentity()
       .primaryKey(),
 
-    // review_type = "app"    → review about the platform (carId = null, dealerId = null)
-    // review_type = "dealer" → review about a specific dealer (dealerId required)
     reviewType: reviewTypeEnum("review_type").notNull().default("dealer"),
 
-    // For car-level dealer reviews (existing behaviour, kept for backward compat)
     carId: bigint("car_id", { mode: "number" }).references(() => cars.id, {
       onDelete: "cascade",
     }),
 
-    // Dealer being reviewed (filled for reviewType = "dealer")
     dealerId: bigint("dealer_id", { mode: "number" }).references(
       () => dealerProfiles.id,
-      { onDelete: "cascade" }
+      { onDelete: "cascade" },
     ),
 
     customerId: bigint("customer_id", { mode: "number" })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
 
-    // 1–5 star rating
     rating: integer("rating").notNull(),
 
     comment: text("comment"),
 
-    // Dealer reply
     replyText: text("reply_text"),
     replyAt: timestamp("reply_at"),
 
-    // Admin moderation — app reviews must be approved before showing publicly
     isApproved: boolean("is_approved").notNull().default(false),
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => [
-    // one car-review per customer per car (existing constraint)
     unique("uq_reviews_car_customer").on(table.carId, table.customerId),
-  ]
+  ],
 );
 
 export const reviewsRelations = relations(reviews, ({ one }) => ({

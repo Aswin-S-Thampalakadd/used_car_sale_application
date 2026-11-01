@@ -17,7 +17,7 @@ export const favourites = pgTable(
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => [primaryKey({ columns: [table.userId, table.carId] })]
+  (table) => [primaryKey({ columns: [table.userId, table.carId] })],
 );
 
 export const favouritesRelations = relations(favourites, ({ one }) => ({

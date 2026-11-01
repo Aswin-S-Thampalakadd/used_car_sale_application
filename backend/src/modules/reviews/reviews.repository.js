@@ -2,19 +2,32 @@ import { and, avg, count, desc, eq, isNull } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { reviews } from "../../db/schemas/reviews.js";
 
-/* ─────────────────────────────────────────────────────────────
-   CAR  REVIEWS  (reviewType = "dealer", carId set)
-───────────────────────────────────────────────────────────── */
-
-export const createReviewDB = async ({ carId, dealerId, customerId, rating, comment }) => {
+export const createReviewDB = async ({
+  carId,
+  dealerId,
+  customerId,
+  rating,
+  comment,
+}) => {
   const result = await db
     .insert(reviews)
-    .values({ reviewType: "dealer", carId, dealerId, customerId, rating, comment })
+    .values({
+      reviewType: "dealer",
+      carId,
+      dealerId,
+      customerId,
+      rating,
+      comment,
+    })
     .returning();
   return result[0];
 };
 
-export const updateReviewDB = async (reviewId, customerId, { rating, comment }) => {
+export const updateReviewDB = async (
+  reviewId,
+  customerId,
+  { rating, comment },
+) => {
   const result = await db
     .update(reviews)
     .set({ rating, comment, updatedAt: new Date() })
@@ -63,24 +76,16 @@ export const getReviewByCustomerCarDB = async (customerId, carId) => {
     where: and(
       eq(reviews.customerId, customerId),
       eq(reviews.carId, carId),
-      eq(reviews.reviewType, "dealer")
+      eq(reviews.reviewType, "dealer"),
     ),
   });
 };
 
-/* ─────────────────────────────────────────────────────────────
-   DEALER  REVIEWS  (reviewType = "dealer", looked up by dealerId)
-   A dealer review is associated with a specific dealer's car but
-   we query by dealerId so the dealer can see all reviews.
-───────────────────────────────────────────────────────────── */
-
 export const getReviewsByDealerDB = async (dealerId) => {
-  // Fetch all dealer-type reviews whose cars belong to this dealer
-  // We join via cars table — cars have dealerId
   return await db.query.reviews.findMany({
     where: and(
       eq(reviews.reviewType, "dealer"),
-      eq(reviews.dealerId, dealerId)
+      eq(reviews.dealerId, dealerId),
     ),
     with: {
       customer: { columns: { id: true, name: true, profileImage: true } },
@@ -98,7 +103,7 @@ export const getDealerRatingSummaryDB = async (dealerId) => {
     })
     .from(reviews)
     .where(
-      and(eq(reviews.reviewType, "dealer"), eq(reviews.dealerId, dealerId))
+      and(eq(reviews.reviewType, "dealer"), eq(reviews.dealerId, dealerId)),
     );
 
   return {
@@ -113,9 +118,7 @@ export const replyToReviewDB = async (reviewId, dealerId, replyText) => {
   const result = await db
     .update(reviews)
     .set({ replyText, replyAt: new Date(), updatedAt: new Date() })
-    .where(
-      and(eq(reviews.id, reviewId), eq(reviews.dealerId, dealerId))
-    )
+    .where(and(eq(reviews.id, reviewId), eq(reviews.dealerId, dealerId)))
     .returning();
   return result[0] || null;
 };
@@ -128,10 +131,6 @@ export const dealerDeleteReviewDB = async (reviewId, dealerId) => {
   return result[0] || null;
 };
 
-/* ─────────────────────────────────────────────────────────────
-   APP  REVIEWS  (reviewType = "app")
-───────────────────────────────────────────────────────────── */
-
 export const createAppReviewDB = async ({ customerId, rating, comment }) => {
   const result = await db
     .insert(reviews)
@@ -140,7 +139,7 @@ export const createAppReviewDB = async ({ customerId, rating, comment }) => {
       customerId,
       rating,
       comment,
-      isApproved: false,   // must be approved by admin before appearing publicly
+      isApproved: false,
     })
     .returning();
   return result[0];
@@ -150,7 +149,7 @@ export const getAppReviewByCustomerDB = async (customerId) => {
   return await db.query.reviews.findFirst({
     where: and(
       eq(reviews.customerId, customerId),
-      eq(reviews.reviewType, "app")
+      eq(reviews.reviewType, "app"),
     ),
   });
 };
@@ -160,7 +159,7 @@ export const getTopAppReviewsDB = async (limit = 5) => {
     where: and(
       eq(reviews.reviewType, "app"),
       isNull(reviews.carId),
-      eq(reviews.isApproved, true),   // only admin-approved reviews shown publicly
+      eq(reviews.isApproved, true),
     ),
     with: {
       customer: { columns: { id: true, name: true, profileImage: true } },
@@ -175,7 +174,7 @@ export const getAllAppReviewsDB = async () => {
     where: and(
       eq(reviews.reviewType, "app"),
       isNull(reviews.carId),
-      eq(reviews.isApproved, true),   // only admin-approved reviews shown publicly
+      eq(reviews.isApproved, true),
     ),
     with: {
       customer: { columns: { id: true, name: true, profileImage: true } },
@@ -184,7 +183,6 @@ export const getAllAppReviewsDB = async () => {
   });
 };
 
-/** Admin only — approve or un-approve an app review */
 export const approveReviewDB = async (reviewId, isApproved) => {
   const result = await db
     .update(reviews)
