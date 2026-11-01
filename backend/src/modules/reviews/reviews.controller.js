@@ -3,11 +3,9 @@ import {
   deleteReviewService,
   getCarReviewsService,
   updateReviewService,
-  // dealer dashboard
   getDealerReviewsService,
   replyToReviewService,
   dealerDeleteReviewService,
-  // app reviews
   createAppReviewService,
   getTopAppReviewsService,
   getAllAppReviewsService,

@@ -88,17 +88,16 @@ const EMPTY_FORM = {
 const AddCar = () => {
   const { isAuthenticated, isDealer } = useAuth();
   const navigate = useNavigate();
-  const { id } = useParams(); // present when editing
+  const { id } = useParams();
   const isEditing = Boolean(id);
 
   const [form, setForm] = useState(EMPTY_FORM);
-  const [images, setImages] = useState([]); // [{ id, imageUrl, publicId, isPrimary, uploading? }]
+  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(isEditing);
   const [error, setError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // Subscription modal state
   const [showSubModal, setShowSubModal] = useState(false);
   const [currentPlan, setCurrentPlan] = useState("free");
 
@@ -112,7 +111,6 @@ const AddCar = () => {
       return;
     }
 
-    // Fetch current subscription plan
     const fetchPlan = async () => {
       try {
         const res = await subscriptionsAPI.getMyPlan();
@@ -120,14 +118,11 @@ const AddCar = () => {
           const data = await res.json();
           setCurrentPlan(data.subscription?.planType || "free");
         }
-      } catch {
-        // Silently default to free
-      }
+      } catch {}
     };
     fetchPlan();
   }, [isAuthenticated, isDealer, navigate]);
 
-  // Load existing car when editing
   useEffect(() => {
     if (!isEditing) return;
     const load = async () => {
@@ -215,7 +210,6 @@ const AddCar = () => {
         carId = data.car.id;
       }
 
-      // Upload images — only fully-uploaded ones (no uploading:true placeholders)
       const readyImages = images.filter(
         (img) => img.imageUrl && !img.uploading,
       );
@@ -231,7 +225,6 @@ const AddCar = () => {
         );
       }
 
-      // Show success overlay — it auto-redirects after 2.6 s (CSS bar duration)
       setShowSuccess(true);
       setTimeout(() => navigate("/dashboard"), 2600);
     } catch (err) {

@@ -6,7 +6,7 @@ import "./Footer.css";
 const Footer = () => {
   const [email, setEmail] = useState("");
   const [subLoading, setSubLoading] = useState(false);
-  const [subStatus, setSubStatus] = useState(null); // null | "ok" | "error"
+  const [subStatus, setSubStatus] = useState(null);
   const [subMsg, setSubMsg] = useState("");
 
   const handleSubscribe = async (e) => {

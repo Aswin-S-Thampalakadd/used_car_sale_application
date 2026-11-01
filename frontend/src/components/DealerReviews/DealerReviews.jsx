@@ -220,7 +220,7 @@ const DealerReviews = () => {
     const res = await reviewsAPI.replyToReview(reviewId, replyText);
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Failed to post reply");
-    // update inline
+
     setReviews((prev) =>
       prev.map((r) =>
         r.id === reviewId

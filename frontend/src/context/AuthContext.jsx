@@ -26,18 +26,13 @@ export function AuthProvider({ children }) {
   });
 
   const [loading, setLoading] = useState(false);
-  // True during the first render — prevents guards from redirecting before
-  // auth state has been read from localStorage.
+
   const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
-    // Mark initialization complete after the first synchronous render.
-    // localStorage reads are synchronous so user/token are already populated
-    // by the time this effect fires.
     setIsInitializing(false);
   }, []);
 
-  // Listen for forced logouts (e.g. refresh token expired)
   useEffect(() => {
     const handler = () => {
       setUser(null);

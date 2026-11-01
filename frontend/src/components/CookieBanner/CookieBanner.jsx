@@ -8,10 +8,8 @@ export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Show only if user hasn't made a choice yet
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) {
-      // Small delay so it doesn't flash immediately on load
       const t = setTimeout(() => setVisible(true), 1200);
       return () => clearTimeout(t);
     }
@@ -30,15 +28,22 @@ export default function CookieBanner() {
   if (!visible) return null;
 
   return (
-    <div className="cb-wrap" role="dialog" aria-label="Cookie consent" aria-live="polite">
+    <div
+      className="cb-wrap"
+      role="dialog"
+      aria-label="Cookie consent"
+      aria-live="polite"
+    >
       <div className="cb-inner">
-        <div className="cb-icon" aria-hidden="true">🍪</div>
+        <div className="cb-icon" aria-hidden="true">
+          🍪
+        </div>
 
         <div className="cb-content">
           <p className="cb-title">We use cookies</p>
           <p className="cb-text">
-            VandiMart uses cookies to improve your experience, remember your preferences, and analyse traffic.
-            Read our{" "}
+            VandiMart uses cookies to improve your experience, remember your
+            preferences, and analyse traffic. Read our{" "}
             <Link to="/cookies" className="cb-link" onClick={accept}>
               Cookie Policy
             </Link>{" "}

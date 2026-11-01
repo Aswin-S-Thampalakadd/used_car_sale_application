@@ -88,7 +88,7 @@ export default function Banner() {
   const [budgetIdx, setBudgetIdx] = useState(0);
   const [liveStats, setLiveStats] = useState(null);
   const [statsVisible, setStatsVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState("buy"); // buy | sell
+  const [activeTab, setActiveTab] = useState("buy");
   const statsRef = useRef(null);
 
   useEffect(() => {

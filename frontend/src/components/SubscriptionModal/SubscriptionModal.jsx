@@ -42,7 +42,6 @@ const PLAN_META = {
   },
 };
 
-// Load Razorpay checkout script once
 const loadRazorpay = () =>
   new Promise((resolve) => {
     if (window.Razorpay) return resolve(true);
@@ -74,7 +73,6 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
     fetchPlans();
   }, []);
 
-  // Close on Escape key
   useEffect(() => {
     const handler = (e) => {
       if (e.key === "Escape") onClose();
@@ -89,7 +87,6 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
     setProcessingPlan(planType);
 
     try {
-      // 1. Load Razorpay SDK
       const sdkLoaded = await loadRazorpay();
       if (!sdkLoaded) {
         setError(
@@ -98,7 +95,6 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
         return;
       }
 
-      // 2. Create order on backend
       const orderRes = await subscriptionsAPI.createOrder(planType);
       const orderData = await orderRes.json();
 
@@ -108,7 +104,6 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
 
       const { orderId, amount, currency } = orderData.order;
 
-      // 3. Open Razorpay checkout
       await new Promise((resolve, reject) => {
         const options = {
           key: process.env.REACT_APP_RAZORPAY_KEY_ID,
@@ -119,7 +114,6 @@ const SubscriptionModal = ({ onClose, onSuccess, currentPlan = "free" }) => {
           order_id: orderId,
           handler: async (response) => {
             try {
-              // 4. Verify payment on backend
               const verifyRes = await subscriptionsAPI.verifyPayment(
                 response.razorpay_order_id,
                 response.razorpay_payment_id,

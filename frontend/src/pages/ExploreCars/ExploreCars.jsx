@@ -37,7 +37,6 @@ const Spinner = () => (
 const ExploreCars = () => {
   const location = useLocation();
 
-  // ── Filter state ─────────────────────────────────────────
   const [search, setSearch] = useState("");
   const [selectedMakes, setSelectedMakes] = useState([]);
   const [selectedFuel, setSelectedFuel] = useState([]);
@@ -54,7 +53,6 @@ const ExploreCars = () => {
   const [page, setPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
-  // ── Data state ───────────────────────────────────────────
   const [cars, setCars] = useState([]);
   const [makes, setMakes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,7 +61,6 @@ const ExploreCars = () => {
 
   const isFirstMount = useRef(true);
 
-  // ── Parse URL params on first load ──────────────────────
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get("search")) setSearch(params.get("search"));
@@ -72,9 +69,8 @@ const ExploreCars = () => {
       setSelectedTransmission([params.get("transmission")]);
     if (params.get("make")) setSelectedMakes([params.get("make")]);
     if (params.get("isFeatured") === "true") setFeaturedOnly(true);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
-  // ── Load makes once ──────────────────────────────────────
   useEffect(() => {
     carsAPI
       .getAll({ limit: 200, status: "active" })
@@ -87,7 +83,6 @@ const ExploreCars = () => {
       .catch(() => {});
   }, []);
 
-  // ── Map sort UI value → API params ──────────────────────
   const sortParams = useMemo(() => {
     switch (sortBy) {
       case "price-asc":
@@ -109,7 +104,6 @@ const ExploreCars = () => {
     }
   }, [sortBy]);
 
-  // ── Fetch from API ───────────────────────────────────────
   const fetchCars = useCallback(async () => {
     setLoading(true);
     setError("");
@@ -140,7 +134,6 @@ const ExploreCars = () => {
       if (!res.ok) throw new Error("Failed to load cars");
       const data = await res.json();
 
-      // API returns array or { cars: [] }
       const list = Array.isArray(data) ? data : data.cars || [];
       setCars(list);
       setTotal(data.total ?? list.length);
@@ -166,7 +159,6 @@ const ExploreCars = () => {
     featuredOnly,
   ]);
 
-  // ── Reset page when filters change ──────────────────────
   useEffect(() => {
     if (isFirstMount.current) {
       isFirstMount.current = false;
@@ -193,7 +185,6 @@ const ExploreCars = () => {
     fetchCars();
   }, [fetchCars]);
 
-  // ── Helpers ──────────────────────────────────────────────
   const toggleInArray = (arr, setArr, value) => {
     setArr(
       arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value],
@@ -228,7 +219,6 @@ const ExploreCars = () => {
     (negotiableOnly ? 1 : 0) +
     (featuredOnly ? 1 : 0);
 
-  // Calculate pages — server knows total, fallback to list length
   const totalPages = Math.max(
     1,
     Math.ceil((total || cars.length) / ITEMS_PER_PAGE),

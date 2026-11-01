@@ -80,12 +80,12 @@ export default function AdminReviews() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [filterType, setFilterType] = useState("");
-  const [filterStatus, setFilterStatus] = useState(""); // "" | "pending" | "approved"
+  const [filterStatus, setFilterStatus] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [confirm, setConfirm] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
-  const [approving, setApproving] = useState(null); // reviewId being toggled
+  const [approving, setApproving] = useState(null);
 
   const fetchReviews = useCallback(async () => {
     setLoading(true);
@@ -121,7 +121,7 @@ export default function AdminReviews() {
       const res = await adminAPI.approveReview(review.id, next);
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to update");
-  
+
       setReviews((prev) =>
         prev.map((r) => (r.id === review.id ? { ...r, isApproved: next } : r)),
       );

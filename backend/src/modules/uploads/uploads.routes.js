@@ -6,20 +6,14 @@ import { authorizeDealer } from "../../middlewares/authorize.middleware.js";
 
 const router = Router();
 
-// Only authenticated dealers can upload car images
 router.post(
   "/image",
   authenticate,
   authorizeDealer,
-  upload.single("image"),   // field name must be "image"
-  uploadImage
+  upload.single("image"),
+  uploadImage,
 );
 
-router.delete(
-  "/image",
-  authenticate,
-  authorizeDealer,
-  deleteImage
-);
+router.delete("/image", authenticate, authorizeDealer, deleteImage);
 
 export default router;

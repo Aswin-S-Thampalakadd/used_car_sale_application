@@ -27,37 +27,30 @@ router.post("/login", adminLogin);
 
 router.use(authenticate, authorizeAdmin);
 
-// Dashboard
 router.get("/dashboard/stats", getDashboardStats);
 
-// Dealers
 router.get("/dealers", getAllDealers);
 router.patch("/dealers/:id/verify", verifyDealer);
 router.patch("/dealers/:userId/activate", activateUser);
 router.patch("/dealers/:userId/deactivate", deactivateUser);
 router.delete("/dealers/:userId", deleteUser);
 
-// Customers
 router.get("/customers", getAllCustomers);
 router.patch("/customers/:userId/activate", activateUser);
 router.patch("/customers/:userId/deactivate", deactivateUser);
 router.delete("/customers/:userId", deleteUser);
 
-// Cars
 router.get("/cars", getAllCars);
 router.patch("/cars/:carId/status", updateCarStatus);
 router.patch("/cars/:carId/featured", toggleCarFeatured);
 router.delete("/cars/:carId", deleteCar);
 
-// Enquiries
 router.get("/enquiries", getAllEnquiries);
 
-// Reviews
 router.get("/reviews", getAllReviews);
 router.patch("/reviews/:reviewId/approve", approveReview);
 router.delete("/reviews/:reviewId", deleteReview);
 
-// Subscriptions
 router.get("/subscriptions", getAllSubscriptions);
 
 export default router;

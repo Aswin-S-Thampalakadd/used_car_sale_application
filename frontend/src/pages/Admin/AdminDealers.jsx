@@ -84,7 +84,6 @@ export default function AdminDealers() {
     fetchDealers();
   }, [fetchDealers]);
 
-  // Reset to page 1 on filter change
   useEffect(() => {
     setPage(1);
   }, [search, filterVerified]);

@@ -9,12 +9,11 @@ import {
 
 const router = Router();
 
-// All notification routes require auth
 router.use(authenticate);
 
-router.get("/me",              getMyNotifications);
-router.patch("/read-all",      markAllRead);
-router.patch("/:id/read",      markRead);
-router.patch("/:id/unread",    markUnread);
+router.get("/me", getMyNotifications);
+router.patch("/read-all", markAllRead);
+router.patch("/:id/read", markRead);
+router.patch("/:id/unread", markUnread);
 
 export default router;

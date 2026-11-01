@@ -71,7 +71,7 @@ const DealerDashboard = () => {
   const [subscription, setSubscription] = useState(null);
   const [showSubModal, setShowSubModal] = useState(false);
   const [activeTab, setActiveTab] = useState("listings");
-  const [sidebarOpen, setSidebarOpen] = useState(false); // mobile drawer
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {

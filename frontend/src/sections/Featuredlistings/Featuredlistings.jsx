@@ -24,39 +24,79 @@ const ArrowIcon = ({ direction }) => (
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
     <path
       d={direction === "left" ? "M15 5l-7 7 7 7" : "M9 5l7 7-7 7"}
-      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
 
 const HeartIcon = ({ filled }) => (
-  <svg viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} aria-hidden="true">
+  <svg
+    viewBox="0 0 24 24"
+    fill={filled ? "currentColor" : "none"}
+    aria-hidden="true"
+  >
     <path
       d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-      stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinejoin="round"
     />
   </svg>
 );
 
 const FuelIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d="M5 20V5a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v15M4 20h12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    <path d="M14 9h3a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V9l-3-3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M7 7h5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    <path
+      d="M5 20V5a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v15M4 20h12"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
+    <path
+      d="M14 9h3a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V9l-3-3"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M7 7h5"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
 const GaugeIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d="M4 18a8 8 0 1 1 16 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    <path d="M12 18l4.5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    <path
+      d="M4 18a8 8 0 1 1 16 0"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
+    <path
+      d="M12 18l4.5-5"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
     <circle cx="12" cy="18" r="1.6" fill="currentColor" />
   </svg>
 );
 
 const GearIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d="M6 4v16M12 4v16M18 4v10M6 10h12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    <path
+      d="M6 4v16M12 4v16M18 4v10M6 10h12"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
     <circle cx="6" cy="4" r="1.6" fill="currentColor" />
     <circle cx="12" cy="4" r="1.6" fill="currentColor" />
     <circle cx="18" cy="4" r="1.6" fill="currentColor" />
@@ -81,7 +121,12 @@ function ListingCard({ car, saved, onToggleSave }) {
           />
         ) : (
           <div className="listing__no-image">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <rect x="3" y="3" width="18" height="18" rx="2" />
               <circle cx="8.5" cy="8.5" r="1.5" />
               <polyline points="21 15 16 10 5 21" />
@@ -98,9 +143,18 @@ function ListingCard({ car, saved, onToggleSave }) {
         </div>
         <button
           type="button"
-          className={saved ? "listing__save listing__save--on" : "listing__save"}
-          onClick={(e) => { e.stopPropagation(); onToggleSave(car.id); }}
-          aria-label={saved ? `Remove ${car.make} ${car.model} from saved` : `Save ${car.make} ${car.model}`}
+          className={
+            saved ? "listing__save listing__save--on" : "listing__save"
+          }
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleSave(car.id);
+          }}
+          aria-label={
+            saved
+              ? `Remove ${car.make} ${car.model} from saved`
+              : `Save ${car.make} ${car.model}`
+          }
           aria-pressed={saved}
         >
           <HeartIcon filled={saved} />
@@ -110,21 +164,32 @@ function ListingCard({ car, saved, onToggleSave }) {
       <div className="listing__body">
         <div className="listing__pricerow">
           <p className="listing__price">{formatPrice(car.price)}</p>
-          {car.isNegotiable && (
-            <span className="listing__neg">Negotiable</span>
-          )}
+          {car.isNegotiable && <span className="listing__neg">Negotiable</span>}
         </div>
 
         <h3 className="listing__title">
-          <span className="listing__year">{car.year}</span>{" "}
-          {car.make} {car.model}
-          {car.variant ? <span className="listing__variant"> {car.variant}</span> : null}
+          <span className="listing__year">{car.year}</span> {car.make}{" "}
+          {car.model}
+          {car.variant ? (
+            <span className="listing__variant"> {car.variant}</span>
+          ) : null}
         </h3>
 
         <ul className="listing__specs">
-          <li><GaugeIcon />{formatKm(car.kilometersDriven)}</li>
-          <li><FuelIcon /><span style={{ textTransform: "capitalize" }}>{car.fuelType}</span></li>
-          <li><GearIcon /><span style={{ textTransform: "capitalize" }}>{car.transmission}</span></li>
+          <li>
+            <GaugeIcon />
+            {formatKm(car.kilometersDriven)}
+          </li>
+          <li>
+            <FuelIcon />
+            <span style={{ textTransform: "capitalize" }}>{car.fuelType}</span>
+          </li>
+          <li>
+            <GearIcon />
+            <span style={{ textTransform: "capitalize" }}>
+              {car.transmission}
+            </span>
+          </li>
         </ul>
 
         <div className="listing__footer">
@@ -142,7 +207,6 @@ function ListingCard({ car, saved, onToggleSave }) {
   );
 }
 
-// Skeleton card for loading state
 function SkeletonCard() {
   return (
     <article className="listing listing--skeleton">
@@ -165,9 +229,9 @@ export default function FeaturedListings() {
   const [atEnd, setAtEnd] = useState(false);
   const [isFeaturedMode, setIsFeaturedMode] = useState(true);
 
-  // Fetch: try featured first, fall back to latest 8 if empty
   useEffect(() => {
-    carsAPI.getFeatured(8)
+    carsAPI
+      .getFeatured(8)
       .then((r) => r.json())
       .then((data) => {
         const featured = data.cars || (Array.isArray(data) ? data : []);
@@ -176,8 +240,8 @@ export default function FeaturedListings() {
           setIsFeaturedMode(true);
           setLoading(false);
         } else {
-          // No featured cars — show latest 8 active listings instead
-          return carsAPI.getRecent(8)
+          return carsAPI
+            .getRecent(8)
             .then((r) => r.json())
             .then((d) => {
               setItems(d.cars || []);
@@ -212,7 +276,7 @@ export default function FeaturedListings() {
 
   const toggleSave = (id) => {
     setSaved((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   };
 
@@ -233,15 +297,19 @@ export default function FeaturedListings() {
 
           <div className="featured__controls">
             <button
-              type="button" className="featured__arrow"
-              onClick={() => scrollByCard(-1)} disabled={atStart}
+              type="button"
+              className="featured__arrow"
+              onClick={() => scrollByCard(-1)}
+              disabled={atStart}
               aria-label="Show previous cars"
             >
               <ArrowIcon direction="left" />
             </button>
             <button
-              type="button" className="featured__arrow"
-              onClick={() => scrollByCard(1)} disabled={atEnd}
+              type="button"
+              className="featured__arrow"
+              onClick={() => scrollByCard(1)}
+              disabled={atEnd}
               aria-label="Show next cars"
             >
               <ArrowIcon direction="right" />
@@ -250,21 +318,26 @@ export default function FeaturedListings() {
         </header>
 
         <div className="featured__track" ref={trackRef} onScroll={updateEdges}>
-          {loading
-            ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
-            : items.length === 0
-              ? <p className="featured__empty">No featured listings right now.</p>
-              : items.map((car) => (
-                  <ListingCard
-                    key={car.id}
-                    car={car}
-                    saved={saved.includes(car.id)}
-                    onToggleSave={toggleSave}
-                  />
-                ))}
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
+          ) : items.length === 0 ? (
+            <p className="featured__empty">No featured listings right now.</p>
+          ) : (
+            items.map((car) => (
+              <ListingCard
+                key={car.id}
+                car={car}
+                saved={saved.includes(car.id)}
+                onToggleSave={toggleSave}
+              />
+            ))
+          )}
         </div>
 
-        <a className="featured__more" href={isFeaturedMode ? "/used-cars?isFeatured=true" : "/used-cars"}>
+        <a
+          className="featured__more"
+          href={isFeaturedMode ? "/used-cars?isFeatured=true" : "/used-cars"}
+        >
           {isFeaturedMode ? "Browse all featured cars →" : "Browse all cars →"}
         </a>
       </div>

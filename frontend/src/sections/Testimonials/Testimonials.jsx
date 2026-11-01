@@ -221,7 +221,7 @@ const Testimonials = () => {
   const handleSubmitted = () => {
     setShowModal(false);
     setSubmitSuccess(true);
-    fetchReviews(); // refresh to show the new review
+    fetchReviews();
     setTimeout(() => setSubmitSuccess(false), 4000);
   };
 
