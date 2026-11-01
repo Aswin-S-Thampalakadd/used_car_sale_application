@@ -29,8 +29,6 @@ export const customerSignup = async (req, res) => {
 
     return res.status(201).json(result);
   } catch (error) {
-    console.error(error);
-
     if (error.message === "EMAIL_ALREADY_EXISTS") {
       return res.status(409).json({
         message: "Email already exists",
@@ -66,8 +64,6 @@ export const customerLogin = async (req, res) => {
 
     return res.json(result);
   } catch (error) {
-    console.error(error);
-
     if (error.message === "INVALID_CREDENTIALS") {
       return res.status(401).json({
         message: "Invalid email or password",
@@ -132,8 +128,6 @@ export const dealerSignup = async (req, res) => {
 
     return res.status(201).json(result);
   } catch (error) {
-    console.error(error);
-
     if (error.message === "EMAIL_ALREADY_EXISTS") {
       return res.status(409).json({
         message: "Email already exists",
@@ -169,8 +163,6 @@ export const dealerLogin = async (req, res) => {
 
     return res.json(result);
   } catch (error) {
-    console.error(error);
-
     if (error.message === "INVALID_CREDENTIALS") {
       return res.status(401).json({
         message: "Invalid email or password",
@@ -197,8 +189,6 @@ export const refreshAccessToken = async (req, res) => {
 
     return res.json(result);
   } catch (error) {
-    console.error(error);
-
     if (
       error.message === "REFRESH_TOKEN_REQUIRED" ||
       error.message === "INVALID_REFRESH_TOKEN"
@@ -222,8 +212,6 @@ export const logout = async (req, res) => {
 
     return res.json(result);
   } catch (error) {
-    console.error(error);
-
     return res.status(500).json({
       message: "Failed to logout",
     });
@@ -238,8 +226,6 @@ export const deactivateAccount = async (req, res) => {
 
     return res.json(result);
   } catch (error) {
-    console.error(error);
-
     if (error.message === "USER_NOT_FOUND") {
       return res.status(404).json({
         message: "User not found",
@@ -260,8 +246,6 @@ export const activateAccount = async (req, res) => {
 
     return res.json(result);
   } catch (error) {
-    console.error(error);
-
     if (error.message === "USER_NOT_FOUND") {
       return res.status(404).json({
         message: "User not found",
@@ -282,8 +266,6 @@ export const deleteAccount = async (req, res) => {
 
     return res.json(result);
   } catch (error) {
-    console.error(error);
-
     if (error.message === "USER_NOT_FOUND") {
       return res.status(404).json({
         message: "User not found",

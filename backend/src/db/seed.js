@@ -20,9 +20,6 @@ import { carImages } from "./schemas/car_images.js";
 import { carFeatureMappings } from "./schemas/car_feature_mappings.js";
 
 async function seedDatabase() {
-  console.log("Seeding data...");
-
-  // User types
   await db
     .insert(userTypes)
     .values(Object.values(usersTypess))
@@ -31,16 +28,12 @@ async function seedDatabase() {
     });
 
   const existingUserTypes = await db.select().from(userTypes);
-
   const userTypeMap = {};
 
   for (const userType of existingUserTypes) {
     userTypeMap[userType.name] = userType.id;
   }
 
-  console.log("User types ready:", userTypeMap);
-
-  // Users
   const userValues = await Promise.all(
     Object.entries(dummyUsers).map(async ([userTypeName, user]) => ({
       name: user.name,
@@ -51,16 +44,13 @@ async function seedDatabase() {
       isActive: true,
       emailVerified: true,
       phoneVerified: true,
-    }))
+    })),
   );
 
   await db.insert(users).values(userValues).onConflictDoNothing({
     target: users.email,
   });
 
-  console.log("Users seeded.");
-
-  // Dealer user
   const dealerUser = await db
     .select()
     .from(users)
@@ -73,7 +63,6 @@ async function seedDatabase() {
 
   const dealerUserId = dealerUser[0].id;
 
-  // Dealer profile
   await db
     .insert(dealerProfiles)
     .values({
@@ -84,31 +73,24 @@ async function seedDatabase() {
       target: dealerProfiles.userId,
     });
 
-  console.log("Dealer profile ready.");
-
-  // Features
   await db
     .insert(carFeatures)
     .values(
       dummyCarFeatures.map((name) => ({
         name,
-      }))
+      })),
     )
     .onConflictDoNothing({
       target: carFeatures.name,
     });
 
   const existingFeatures = await db.select().from(carFeatures);
-
   const featureMap = {};
 
   for (const feature of existingFeatures) {
     featureMap[feature.name] = feature.id;
   }
 
-  console.log("Car features ready.");
-
-  // Cars
   const insertedCars = [];
 
   for (const car of dummyCars) {
@@ -150,9 +132,6 @@ async function seedDatabase() {
     insertedCars.push(insertedCar);
   }
 
-  console.log("Cars seeded.");
-
-  // Images
   for (let i = 0; i < dummyCars.length; i++) {
     const car = dummyCars[i];
     const insertedCar = insertedCars[i];
@@ -172,13 +151,10 @@ async function seedDatabase() {
         imageUrl,
         sortOrder: index,
         isPrimary: index === 0,
-      }))
+      })),
     );
   }
 
-  console.log("Car images seeded.");
-
-  // Feature mappings
   for (let i = 0; i < dummyCars.length; i++) {
     const car = dummyCars[i];
     const insertedCar = insertedCars[i];
@@ -198,14 +174,11 @@ async function seedDatabase() {
         .onConflictDoNothing();
     }
   }
-
-  console.log("Car feature mappings seeded.");
   console.log("Seeding completed.");
 
   process.exit(0);
 }
 
 seedDatabase().catch((err) => {
-  console.error("Seeding failed", err);
   process.exit(1);
 });

@@ -15,9 +15,7 @@ export const addCarImages = async (req, res) => {
       return res.status(400).json({ message: "Invalid car ID" });
     }
     if (!Array.isArray(images) || images.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "images array is required" });
+      return res.status(400).json({ message: "images array is required" });
     }
     for (const img of images) {
       if (!img.imageUrl) {
@@ -33,7 +31,6 @@ export const addCarImages = async (req, res) => {
     if (error.message === "CAR_NOT_FOUND") {
       return res.status(404).json({ message: "Car not found" });
     }
-    console.error(error);
     return res.status(500).json({ message: "Failed to add images" });
   }
 };
@@ -53,7 +50,6 @@ export const deleteCarImage = async (req, res) => {
     if (error.message === "IMAGE_NOT_FOUND") {
       return res.status(404).json({ message: "Image not found" });
     }
-    console.error(error);
     return res.status(500).json({ message: "Failed to delete image" });
   }
 };
@@ -74,7 +70,6 @@ export const setPrimaryImage = async (req, res) => {
     if (error.message === "IMAGE_NOT_FOUND") {
       return res.status(404).json({ message: "Image not found" });
     }
-    console.error(error);
     return res.status(500).json({ message: "Failed to set primary image" });
   }
 };
@@ -88,7 +83,6 @@ export const getCarImages = async (req, res) => {
     const images = await getCarImagesService(carId);
     return res.json({ images });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Failed to fetch images" });
   }
 };

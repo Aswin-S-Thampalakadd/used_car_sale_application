@@ -8,7 +8,6 @@ export const getMyProfile = async (req, res) => {
     }
     return res.json(user);
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Failed to fetch profile" });
   }
 };
@@ -26,7 +25,6 @@ export const updateMyProfile = async (req, res) => {
     }
     return res.json({ message: "Profile updated successfully", user });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Failed to update profile" });
   }
 };

@@ -27,7 +27,6 @@ export const subscribe = async (req, res) => {
         message:
           "Please check your inbox — a confirmation email was already sent.",
       });
-    console.error(err);
     return res
       .status(500)
       .json({ message: "Failed to subscribe. Please try again." });
@@ -43,7 +42,6 @@ export const confirm = async (req, res) => {
     }
     return res.redirect(`${APP_URL}/newsletter/confirmed?status=ok`);
   } catch (err) {
-    console.error(err);
     return res.redirect(`${APP_URL}/newsletter/confirmed?status=error`);
   }
 };
@@ -54,7 +52,6 @@ export const unsubscribe = async (req, res) => {
     await unsubscribeService(token);
     return res.redirect(`${APP_URL}/newsletter/confirmed?status=unsubscribed`);
   } catch (err) {
-    console.error(err);
     return res.status(500).json({ message: "Failed to unsubscribe." });
   }
 };
@@ -66,8 +63,8 @@ export const adminConfirm = async (req, res) => {
     const sub = await adminConfirmService(id);
     return res.json({ success: true, subscriber: sub });
   } catch (err) {
-    if (err.message === "NOT_FOUND") return res.status(404).json({ message: "Subscriber not found" });
-    console.error(err);
+    if (err.message === "NOT_FOUND")
+      return res.status(404).json({ message: "Subscriber not found" });
     return res.status(500).json({ message: "Failed to confirm subscriber" });
   }
 };
@@ -79,8 +76,8 @@ export const deleteSubscriber = async (req, res) => {
     await deleteSubscriberService(id);
     return res.json({ success: true });
   } catch (err) {
-    if (err.message === "NOT_FOUND") return res.status(404).json({ message: "Subscriber not found" });
-    console.error(err);
+    if (err.message === "NOT_FOUND")
+      return res.status(404).json({ message: "Subscriber not found" });
     return res.status(500).json({ message: "Failed to delete subscriber" });
   }
 };
@@ -90,7 +87,6 @@ export const getSubscribers = async (req, res) => {
     const subscribers = await getSubscribersService(req.query);
     return res.json({ success: true, subscribers });
   } catch (err) {
-    console.error(err);
     return res.status(500).json({ message: "Failed to fetch subscribers." });
   }
 };

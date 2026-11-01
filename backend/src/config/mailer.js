@@ -10,20 +10,15 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-/**
- * Send an email. Fails silently in dev if SMTP not configured.
- */
 export const sendMail = async ({ to, subject, html }) => {
   if (
     !process.env.SMTP_USER ||
     !process.env.SMTP_PASS ||
     process.env.SMTP_PASS === "your_app_password_here"
   ) {
-    console.log(
-      `[Mailer] Skipped (no SMTP config). To: ${to} | Subject: ${subject}`,
-    );
     return;
   }
+
   try {
     await transporter.sendMail({
       from: `"VandiMart" <${process.env.SMTP_USER}>`,
@@ -31,8 +26,7 @@ export const sendMail = async ({ to, subject, html }) => {
       subject,
       html,
     });
-    console.log(`[Mailer] Sent to ${to}`);
-  } catch (err) {
-    console.error("[Mailer] Error:", err.message);
+  } catch {
+    return;
   }
 };

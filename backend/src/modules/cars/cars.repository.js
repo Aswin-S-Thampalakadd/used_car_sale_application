@@ -1,11 +1,21 @@
-import { and, asc, count, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gte,
+  ilike,
+  lte,
+  or,
+  sql,
+} from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { cars } from "../../db/schemas/cars.js";
 import { dealerProfiles } from "../../db/schemas/dealers.js";
 
 export const getAllCarsDB = async (page, limit, filters) => {
   const offset = (page - 1) * limit;
-
   const conditions = [];
 
   if (filters.make) {
@@ -92,11 +102,8 @@ export const getAllCarsDB = async (page, limit, filters) => {
     conditions.push(eq(cars.dealerId, filters.dealerId));
   }
 
-  let orderBy;
-
   const sortBy = filters.sortBy || "createdAt";
   const sortOrder = filters.sortOrder || "desc";
-
   const sortColumnMap = {
     price: cars.price,
     year: cars.year,
@@ -107,10 +114,10 @@ export const getAllCarsDB = async (page, limit, filters) => {
   };
 
   const sortColumn = sortColumnMap[sortBy] || cars.createdAt;
+  const orderBy = sortOrder === "asc" ? asc(sortColumn) : desc(sortColumn);
+  const where = conditions.length ? and(...conditions) : undefined;
 
-  orderBy = sortOrder === "asc" ? asc(sortColumn) : desc(sortColumn);
-
-  let query = db.query.cars.findMany({
+  const result = await db.query.cars.findMany({
     with: {
       carImages: true,
       carFeatureMappings: {
@@ -122,13 +129,9 @@ export const getAllCarsDB = async (page, limit, filters) => {
     limit,
     offset,
     orderBy,
-    where: conditions.length ? and(...conditions) : undefined,
+    where,
   });
 
-  const result = await query;
-
-  // Get total count for pagination
-  const where = conditions.length ? and(...conditions) : undefined;
   const countResult = await db
     .select({ total: count() })
     .from(cars)
@@ -314,8 +317,8 @@ export const searchCarsDB = async ({
       or(
         ilike(cars.make, `%${search}%`),
         ilike(cars.model, `%${search}%`),
-        ilike(cars.variant, `%${search}%`)
-      )
+        ilike(cars.variant, `%${search}%`),
+      ),
     );
   }
 

@@ -11,7 +11,6 @@ export const getMyNotifications = async (req, res) => {
     const result = await getMyNotificationsService(req.user.userId);
     return res.json({ success: true, ...result });
   } catch (err) {
-    console.error(err);
     return res.status(500).json({ message: "Failed to fetch notifications" });
   }
 };
@@ -24,7 +23,8 @@ export const markRead = async (req, res) => {
     await markReadService(id, req.user.userId);
     return res.json({ success: true });
   } catch (err) {
-    if (err.message === "NOT_FOUND") return res.status(404).json({ message: "Not found" });
+    if (err.message === "NOT_FOUND")
+      return res.status(404).json({ message: "Not found" });
     return res.status(500).json({ message: "Failed" });
   }
 };
@@ -37,7 +37,8 @@ export const markUnread = async (req, res) => {
     await markUnreadService(id, req.user.userId);
     return res.json({ success: true });
   } catch (err) {
-    if (err.message === "NOT_FOUND") return res.status(404).json({ message: "Not found" });
+    if (err.message === "NOT_FOUND")
+      return res.status(404).json({ message: "Not found" });
     return res.status(500).json({ message: "Failed" });
   }
 };
@@ -48,7 +49,6 @@ export const markAllRead = async (req, res) => {
     await markAllReadService(req.user.userId);
     return res.json({ success: true });
   } catch (err) {
-    console.error(err);
     return res.status(500).json({ message: "Failed" });
   }
 };

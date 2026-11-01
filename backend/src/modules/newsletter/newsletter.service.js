@@ -3,6 +3,8 @@ import { sendMail } from "../../config/mailer.js";
 import {
   confirmSubscriber,
   createSubscriber,
+  adminConfirmById,
+  deleteSubscriberById,
   findByEmail,
   findByToken,
   getAllSubscribers,
@@ -100,6 +102,18 @@ export const confirmService = async (token) => {
 
 export const unsubscribeService = async (token) => {
   return await unsubscribeByToken(token);
+};
+
+export const adminConfirmService = async (id) => {
+  const subscriber = await adminConfirmById(id);
+  if (!subscriber) throw new Error("NOT_FOUND");
+  return subscriber;
+};
+
+export const deleteSubscriberService = async (id) => {
+  const subscriber = await deleteSubscriberById(id);
+  if (!subscriber) throw new Error("NOT_FOUND");
+  return subscriber;
 };
 
 export const getSubscribersService = async (query) => {

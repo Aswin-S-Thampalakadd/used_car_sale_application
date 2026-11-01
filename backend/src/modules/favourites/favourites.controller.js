@@ -20,7 +20,6 @@ export const addFavourite = async (req, res) => {
     if (error.message === "CAR_NOT_FOUND") {
       return res.status(404).json({ message: "Car not found" });
     }
-    console.error(error);
     return res.status(500).json({ message: "Failed to add favourite" });
   }
 };
@@ -40,7 +39,6 @@ export const removeFavourite = async (req, res) => {
     if (error.message === "NOT_IN_FAVOURITES") {
       return res.status(404).json({ message: "Car not in favourites" });
     }
-    console.error(error);
     return res.status(500).json({ message: "Failed to remove favourite" });
   }
 };
@@ -51,7 +49,6 @@ export const getMyFavourites = async (req, res) => {
     const cars = await getMyFavouritesService(userId);
     return res.json({ cars });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Failed to fetch favourites" });
   }
 };
@@ -68,7 +65,6 @@ export const checkFavourite = async (req, res) => {
     const result = await checkFavouriteService(userId, carId);
     return res.json(result);
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Failed to check favourite" });
   }
 };

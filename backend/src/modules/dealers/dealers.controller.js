@@ -13,7 +13,6 @@ export const getMyDealerProfile = async (req, res) => {
     if (error.message === "PROFILE_NOT_FOUND") {
       return res.status(404).json({ message: "Dealer profile not found" });
     }
-    console.error(error);
     return res.status(500).json({ message: "Failed to fetch dealer profile" });
   }
 };
@@ -30,7 +29,6 @@ export const getPublicDealerProfile = async (req, res) => {
     if (error.message === "PROFILE_NOT_FOUND") {
       return res.status(404).json({ message: "Dealer not found" });
     }
-    console.error(error);
     return res.status(500).json({ message: "Failed to fetch dealer" });
   }
 };
@@ -43,7 +41,6 @@ export const updateDealerProfile = async (req, res) => {
     if (error.message === "PROFILE_NOT_FOUND") {
       return res.status(404).json({ message: "Dealer profile not found" });
     }
-    console.error(error);
     return res.status(500).json({ message: "Failed to update profile" });
   }
 };
@@ -54,7 +51,6 @@ export const getMyDealerCars = async (req, res) => {
     const cars = await getMyDealerCarsService(req.user.userId, status);
     return res.json({ cars });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Failed to fetch cars" });
   }
 };

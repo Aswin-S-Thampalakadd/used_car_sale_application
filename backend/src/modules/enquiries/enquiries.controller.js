@@ -29,7 +29,6 @@ export const createEnquiry = async (req, res) => {
         .status(400)
         .json({ message: "Car is not available for enquiry" });
     }
-    console.error(error);
     return res.status(500).json({ message: "Failed to create enquiry" });
   }
 };
@@ -40,7 +39,6 @@ export const getMyEnquiries = async (req, res) => {
     const enquiries = await getMyEnquiriesService(userId, userTypeId);
     return res.json({ enquiries });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Failed to fetch enquiries" });
   }
 };
@@ -61,7 +59,7 @@ export const updateEnquiryStatus = async (req, res) => {
     const result = await updateEnquiryStatusService(
       enquiryId,
       dealerId,
-      status
+      status,
     );
     return res.json(result);
   } catch (error) {
@@ -71,7 +69,6 @@ export const updateEnquiryStatus = async (req, res) => {
     if (error.message === "INVALID_STATUS") {
       return res.status(400).json({ message: "Invalid status value" });
     }
-    console.error(error);
     return res.status(500).json({ message: "Failed to update enquiry" });
   }
 };
@@ -91,7 +88,6 @@ export const deleteEnquiry = async (req, res) => {
     if (error.message === "ENQUIRY_NOT_FOUND") {
       return res.status(404).json({ message: "Enquiry not found" });
     }
-    console.error(error);
     return res.status(500).json({ message: "Failed to delete enquiry" });
   }
 };

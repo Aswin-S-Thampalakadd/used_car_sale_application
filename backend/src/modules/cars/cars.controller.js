@@ -62,8 +62,6 @@ export const getAllCars = async (req, res) => {
 
     res.json(result);
   } catch (error) {
-    console.error(error);
-
     res.status(500).json({
       message: "Failed to fetch cars",
     });
@@ -103,8 +101,6 @@ export const getAvailableCarBrands = async (req, res) => {
       brands,
     });
   } catch (error) {
-    console.error(error);
-
     res.status(500).json({
       message: "Failed to fetch car brands",
     });
@@ -121,8 +117,6 @@ export const getRecentlyAddedCars = async (req, res) => {
       cars,
     });
   } catch (error) {
-    console.error(error);
-
     res.status(500).json({
       message: "Failed to fetch recently added cars",
     });
@@ -186,8 +180,6 @@ export const addCar = async (req, res) => {
 
     return res.status(201).json(result);
   } catch (error) {
-    console.error(error);
-
     if (error.message === "CAR_LIMIT_REACHED") {
       return res.status(403).json({
         message: "CAR_LIMIT_REACHED",
@@ -217,8 +209,6 @@ export const updateCar = async (req, res) => {
 
     return res.json(result);
   } catch (error) {
-    console.error(error);
-
     if (error.message === "CAR_NOT_FOUND") {
       return res.status(404).json({
         message: "Car not found",
@@ -246,8 +236,6 @@ export const deleteCar = async (req, res) => {
 
     return res.json(result);
   } catch (error) {
-    console.error(error);
-
     if (error.message === "CAR_NOT_FOUND") {
       return res.status(404).json({
         message: "Car not found",
@@ -282,8 +270,6 @@ export const updateCarStatus = async (req, res) => {
 
     return res.json(result);
   } catch (error) {
-    console.error(error);
-
     if (error.message === "CAR_NOT_FOUND") {
       return res.status(404).json({
         message: "Car not found",

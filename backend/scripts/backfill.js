@@ -11,8 +11,6 @@ const result = await db.execute(sql`
     AND r.review_type = 'dealer'
     AND r.dealer_id IS NULL
 `);
-console.log("Backfill done. Rows updated:", result.rowCount);
-
 // Verify
 const check = await db.execute(sql`
   SELECT id, car_id, dealer_id, is_approved FROM reviews WHERE review_type='dealer'

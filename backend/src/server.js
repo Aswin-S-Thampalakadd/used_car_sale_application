@@ -22,15 +22,13 @@ import newsletterRouter from "./modules/newsletter/newsletter.routes.js";
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-// Routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/cars", carRouter);
-app.use("/api/v1/cars", carImagesRouter); // image sub-routes on /cars/:carId/images
+app.use("/api/v1/cars", carImagesRouter);
 app.use("/api/v1/enquiries", enquiriesRouter);
 app.use("/api/v1/favourites", favouritesRouter);
 app.use("/api/v1/reviews", reviewsRouter);

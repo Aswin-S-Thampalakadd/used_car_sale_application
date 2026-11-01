@@ -18,11 +18,11 @@ import {
 ───────────────────────────────────────────────────────────── */
 const errMap = (error, extra = {}) => {
   const map = {
-    CAR_NOT_FOUND:            [404, "Car not found"],
-    INVALID_RATING:           [400, "Rating must be between 1 and 5"],
-    ALREADY_REVIEWED:         [409, "You have already submitted a review"],
-    REVIEW_NOT_FOUND:         [404, "Review not found"],
-    REPLY_EMPTY:              [400, "Reply text cannot be empty"],
+    CAR_NOT_FOUND: [404, "Car not found"],
+    INVALID_RATING: [400, "Rating must be between 1 and 5"],
+    ALREADY_REVIEWED: [409, "You have already submitted a review"],
+    REVIEW_NOT_FOUND: [404, "Review not found"],
+    REPLY_EMPTY: [400, "Reply text cannot be empty"],
     DEALER_PROFILE_NOT_FOUND: [404, "Dealer profile not found"],
     ...extra,
   };
@@ -93,7 +93,6 @@ export const getCarReviews = async (req, res) => {
     const result = await getCarReviewsService(carId);
     return res.json(result);
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Failed to fetch reviews" });
   }
 };
@@ -173,7 +172,6 @@ export const getTopAppReviews = async (_req, res) => {
     const result = await getTopAppReviewsService();
     return res.json(result);
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Failed to fetch app reviews" });
   }
 };
@@ -184,7 +182,6 @@ export const getAllAppReviews = async (_req, res) => {
     const result = await getAllAppReviewsService();
     return res.json(result);
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Failed to fetch app reviews" });
   }
 };
