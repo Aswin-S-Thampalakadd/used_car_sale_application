@@ -18,6 +18,7 @@ import Enquiries from "./pages/Enquiries/Enquiries";
 import RateUs from "./pages/RateUs/RateUs";
 import About        from "./pages/Static/About";
 import Blog         from "./pages/Static/Blog";
+import BlogPost     from "./pages/Static/BlogPost";
 import Contact      from "./pages/Static/Contact";
 import HelpCenter   from "./pages/Static/HelpCenter";
 import Terms        from "./pages/Static/Terms";
@@ -156,6 +157,7 @@ function App() {
           />
           <Route path="/about"   element={<PublicLayout><About /></PublicLayout>} />
           <Route path="/blog"    element={<PublicLayout><Blog /></PublicLayout>} />
+          <Route path="/blog/:slug" element={<PublicLayout><BlogPost /></PublicLayout>} />
           <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
           <Route path="/help"    element={<PublicLayout><HelpCenter /></PublicLayout>} />
           <Route path="/terms"   element={<PublicLayout><Terms /></PublicLayout>} />
