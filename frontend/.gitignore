@@ -18,6 +18,13 @@
 .env.test.local
 .env.production.local
 
+# Environment-specific files contain API URLs and public keys.
+# The root .env is committed (documents required variable names only).
+# Per-environment files are NOT committed — set them locally or via CI secrets.
+.env.development
+.env.test
+.env.production
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

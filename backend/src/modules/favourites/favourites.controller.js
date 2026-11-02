@@ -1,3 +1,4 @@
+import { AppError } from "../../utils/AppError.js";
 import {
   addFavouriteService,
   checkFavouriteService,
@@ -6,65 +7,43 @@ import {
 } from "./favourites.service.js";
 
 export const addFavourite = async (req, res) => {
-  try {
-    const userId = req.user.userId;
-    const carId = Number(req.params.carId);
+  const userId = req.user.userId;
+  const carId = Number(req.params.carId);
 
-    if (isNaN(carId)) {
-      return res.status(400).json({ message: "Invalid car ID" });
-    }
-
-    const result = await addFavouriteService(userId, carId);
-    return res.status(201).json(result);
-  } catch (error) {
-    if (error.message === "CAR_NOT_FOUND") {
-      return res.status(404).json({ message: "Car not found" });
-    }
-    return res.status(500).json({ message: "Failed to add favourite" });
+  if (isNaN(carId)) {
+    throw new AppError(400, "Invalid car ID");
   }
+
+  const result = await addFavouriteService(userId, carId);
+  return res.status(201).json(result);
 };
 
 export const removeFavourite = async (req, res) => {
-  try {
-    const userId = req.user.userId;
-    const carId = Number(req.params.carId);
+  const userId = req.user.userId;
+  const carId = Number(req.params.carId);
 
-    if (isNaN(carId)) {
-      return res.status(400).json({ message: "Invalid car ID" });
-    }
-
-    const result = await removeFavouriteService(userId, carId);
-    return res.json(result);
-  } catch (error) {
-    if (error.message === "NOT_IN_FAVOURITES") {
-      return res.status(404).json({ message: "Car not in favourites" });
-    }
-    return res.status(500).json({ message: "Failed to remove favourite" });
+  if (isNaN(carId)) {
+    throw new AppError(400, "Invalid car ID");
   }
+
+  const result = await removeFavouriteService(userId, carId);
+  return res.json(result);
 };
 
 export const getMyFavourites = async (req, res) => {
-  try {
-    const userId = req.user.userId;
-    const cars = await getMyFavouritesService(userId);
-    return res.json({ cars });
-  } catch (error) {
-    return res.status(500).json({ message: "Failed to fetch favourites" });
-  }
+  const userId = req.user.userId;
+  const cars = await getMyFavouritesService(userId);
+  return res.json({ cars });
 };
 
 export const checkFavourite = async (req, res) => {
-  try {
-    const userId = req.user.userId;
-    const carId = Number(req.params.carId);
+  const userId = req.user.userId;
+  const carId = Number(req.params.carId);
 
-    if (isNaN(carId)) {
-      return res.status(400).json({ message: "Invalid car ID" });
-    }
-
-    const result = await checkFavouriteService(userId, carId);
-    return res.json(result);
-  } catch (error) {
-    return res.status(500).json({ message: "Failed to check favourite" });
+  if (isNaN(carId)) {
+    throw new AppError(400, "Invalid car ID");
   }
+
+  const result = await checkFavouriteService(userId, carId);
+  return res.json(result);
 };

@@ -1,32 +1,43 @@
+import "../config/env.js";
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
-import dotenv from "dotenv";
+import logger from "../config/logger.js";
 
 import * as schema from "./schemas/index.js";
 
-dotenv.config();
-
 const { Pool } = pg;
 
-const isProduction = process.env.NODE_ENV === "production";
+const env = process.env.NODE_ENV || "development";
+const isProduction = env === "production";
 
-const dbUrl = isProduction
-  ? process.env.DATABASE_URL_PROD
-  : process.env.DATABASE_URL_DEV;
+if (!process.env.DATABASE_URL) {
+  throw new Error(
+    `DATABASE_URL is not set for NODE_ENV="${env}". Check your .env.${env} file.`,
+  );
+}
+
+const POOL_MAX = parseInt(process.env.DB_POOL_MAX || "20", 10);
+const POOL_MIN = parseInt(process.env.DB_POOL_MIN || "2", 10);
+
+const dbUrl = "postgres://postgres:444444@localhost:5432/wheelzloop";
 
 const pool = new Pool({
-  connectionString: dbUrl,
-  ssl: isProduction
-    ? {
-        rejectUnauthorized: false,
-      }
-    : false,
+  connectionString: process.env.DATABASE_URL,
+  ssl: isProduction ? { rejectUnauthorized: false } : false,
+  max: POOL_MAX,
+  min: POOL_MIN,
+  idleTimeoutMillis: 30_000,
+  connectionTimeoutMillis: 5_000,
+  keepAlive: true,
+  keepAliveInitialDelayMillis: 10_000,
 });
 
 pool.on("connect", () => {
-  console.log("Database connection established");
+  logger.info("Database connected", { env });
 });
 
-export const db = drizzle(pool, {
-  schema,
+pool.on("error", (err) => {
+  logger.error("Unexpected DB pool error", { message: err.message });
 });
+
+export const db = drizzle(pool, { schema });

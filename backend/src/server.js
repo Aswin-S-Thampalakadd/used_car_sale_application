@@ -1,8 +1,9 @@
+import "./config/env.js";
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
-
-dotenv.config();
+import compression from "compression";
+import logger from "./config/logger.js";
+import { httpLogger } from "./middlewares/httpLogger.middleware.js";
 
 import carRouter from "./modules/cars/car.routes.js";
 import authRouter from "./modules/auth/auth.routes.js";
@@ -18,13 +19,36 @@ import statsRouter from "./modules/stats/stats.routes.js";
 import adminRouter from "./modules/admin/admin.routes.js";
 import notificationsRouter from "./modules/notifications/notifications.routes.js";
 import newsletterRouter from "./modules/newsletter/newsletter.routes.js";
+import { notFound, errorHandler } from "./middlewares/error.middleware.js";
+import { publicCacheHeaders } from "./middlewares/cache.middleware.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
+const env = process.env.NODE_ENV || "development";
+
+const corsOptions =
+  env === "production"
+    ? {
+        origin: (process.env.CORS_ORIGINS || "").split(",").map((o) => o.trim()).filter(Boolean),
+        credentials: true,
+      }
+    : { origin: true, credentials: true };
+
+app.set("etag", "strong");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors(corsOptions));
+app.use(compression({
+  level: 6,
+  threshold: 1024,
+  filter: (req, res) => {
+    if (req.headers["x-no-compression"]) return false;
+    return compression.filter(req, res);
+  },
+}));
+app.use(publicCacheHeaders);
+app.use(httpLogger);
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/cars", carRouter);
@@ -45,6 +69,9 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+app.use(notFound);
+app.use(errorHandler);
+
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  logger.info(`Server started`, { env, port });
 });

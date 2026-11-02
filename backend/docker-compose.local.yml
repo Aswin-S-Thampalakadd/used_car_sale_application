@@ -1,63 +1,50 @@
-# services:
-#   backend:
-#     build:
-#       context: .
-#     container_name: wheelzloop_backend_local
-#     ports:
-#       - "5000:5000"
-#     env_file:
-#       - .env.local
-#     depends_on:
-#       db:
-#         condition: service_healthy
-
-#   db:
-#     image: postgres:16
-#     container_name: wheelzloop_db_local
-#     environment:
-#       POSTGRES_USER: postgres
-#       POSTGRES_PASSWORD: postgres
-#       POSTGRES_DB: used_car
-#     ports:
-#       - "5434:5432"
-#     volumes:
-#       - postgres_local_data:/var/lib/postgresql/data
-#     healthcheck:
-#       test: ["CMD-SHELL", "pg_isready -U postgres -d used_car"]
-#       interval: 5s
-#       timeout: 5s
-#       retries: 5
-
-# volumes:
-#   postgres_local_data:
-
 services:
   backend:
     build:
       context: .
+    container_name: wheelzloop_backend_dev
     ports:
       - "5000:5000"
     env_file:
-      - .env.local
+      - .env.development
+    environment:
+      # Override DATABASE_URL to reach the containerised Postgres.
+      DATABASE_URL: postgres://postgres:postgres@db:5432/wheelzloop
+      REDIS_URL: redis://redis:6379
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
 
   db:
     image: postgres:16
+    container_name: wheelzloop_db_dev
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: used_car
+      POSTGRES_DB: wheelzloop
     ports:
       - "5434:5432"
     volumes:
-      - postgres_local_data:/var/lib/postgresql/data
+      - postgres_dev_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d used_car"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d wheelzloop"]
       interval: 5s
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    container_name: wheelzloop_redis_dev
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
 volumes:
-  postgres_local_data:
+  postgres_dev_data:

@@ -1,2 +1,6 @@
 node_modules
-.env
+coverage
+.env.development
+.env.test
+.env.production
+.env.local
