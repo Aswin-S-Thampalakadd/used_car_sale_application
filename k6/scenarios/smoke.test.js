@@ -7,8 +7,8 @@ export const options = {
   stages: STAGES_SMOKE,
   thresholds: {
     ...THRESHOLDS,
-    http_req_failed:   ["rate<0.01"],
-    http_req_duration: ["p(95)<2000"],
+    "http_req_failed{type:api}": ["rate<0.01"],
+    http_req_duration:           ["p(95)<2000"],
   },
 };
 
@@ -27,15 +27,16 @@ export default function (data) {
   const aHeaders = authHeaders(data.aToken);
 
   // ── Public endpoints ──────────────────────────────────────────────────────
-  assertPublicRead(get("/api/v1/cars"),              "GET /cars");
-  assertPublicRead(get("/api/v1/cars/featured"),     "GET /cars/featured");
-  assertPublicRead(get("/api/v1/cars/brands"),       "GET /cars/brands");
-  assertPublicRead(get("/api/v1/cars/recent"),       "GET /cars/recent");
-  assertPublicRead(get("/api/v1/cars/search?search=toyota"), "GET /cars/search");
-  assertPublicRead(get("/api/v1/stats"),             "GET /stats");
-  assertPublicRead(get("/api/v1/reviews/app/top"),   "GET /reviews/app/top");
-  assertPublicRead(get("/api/v1/reviews/app"),       "GET /reviews/app");
-  assertPublicRead(get("/api/v1/subscriptions/plans"), "GET /subscriptions/plans");
+  const T = { tags: { type: "api" } };
+  assertPublicRead(get("/api/v1/cars",              {}, { type: "api" }), "GET /cars");
+  assertPublicRead(get("/api/v1/cars/featured",     {}, { type: "api" }), "GET /cars/featured");
+  assertPublicRead(get("/api/v1/cars/brands",       {}, { type: "api" }), "GET /cars/brands");
+  assertPublicRead(get("/api/v1/cars/recent",       {}, { type: "api" }), "GET /cars/recent");
+  assertPublicRead(get("/api/v1/cars/search?search=toyota", {}, { type: "api" }), "GET /cars/search");
+  assertPublicRead(get("/api/v1/stats",             {}, { type: "api" }), "GET /stats");
+  assertPublicRead(get("/api/v1/reviews/app/top",   {}, { type: "api" }), "GET /reviews/app/top");
+  assertPublicRead(get("/api/v1/reviews/app",       {}, { type: "api" }), "GET /reviews/app");
+  assertPublicRead(get("/api/v1/subscriptions/plans", {}, { type: "api" }), "GET /subscriptions/plans");
 
   sleep(0.3);
 

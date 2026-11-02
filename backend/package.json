@@ -7,6 +7,7 @@
     "start": "NODE_ENV=production node src/server.js",
     "dev": "NODE_ENV=development nodemon src/server.js",
     "seed": "NODE_ENV=development node src/db/seed.js",
+    "seed:loadtest": "NODE_ENV=development node scripts/create-load-test-users.js",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:migrate:prod": "NODE_ENV=production drizzle-kit migrate",
