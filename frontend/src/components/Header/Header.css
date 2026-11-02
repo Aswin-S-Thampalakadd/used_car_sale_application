@@ -777,7 +777,10 @@
   }
 
   .hdr-dropdown {
-    display: none;
+    display: block;
+    right: 0;
+    left: auto;
+    min-width: 200px;
   }
 
   .hdr-btn--ghost {
@@ -807,5 +810,10 @@
 
   .hdr-actions {
     gap: 4px;
+  }
+
+  .hdr-dropdown {
+    right: -8px;
+    min-width: 190px;
   }
 }
