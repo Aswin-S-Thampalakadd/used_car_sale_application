@@ -100,6 +100,12 @@ export const authAPI = {
       body: JSON.stringify(data),
     }),
 
+  googleSignIn: (userType, data) =>
+    apiFetch(`/auth/${userType}/google`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
   logout: (refreshToken) =>
     apiFetch("/auth/logout", {
       method: "POST",

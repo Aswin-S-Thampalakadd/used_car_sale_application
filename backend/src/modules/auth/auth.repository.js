@@ -30,6 +30,8 @@ export const createUser = async ({
   phone,
   passwordHash,
   userTypeId,
+  profileImage,
+  emailVerified,
 }) => {
   const result = await db
     .insert(users)
@@ -39,6 +41,8 @@ export const createUser = async ({
       phone,
       passwordHash,
       userTypeId,
+      ...(profileImage !== undefined ? { profileImage } : {}),
+      ...(emailVerified !== undefined ? { emailVerified } : {}),
     })
     .returning({
       id: users.id,

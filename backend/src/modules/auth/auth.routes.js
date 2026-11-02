@@ -4,9 +4,11 @@ import { authenticate } from "../../middlewares/auth.middleware.js";
 import {
   activateAccount,
   customerLogin,
+  customerGoogleSignIn,
   customerSignup,
   deactivateAccount,
   dealerLogin,
+  dealerGoogleSignIn,
   dealerSignup,
   deleteAccount,
   logout,
@@ -17,9 +19,11 @@ const router = Router();
 
 router.post("/customer/signup", customerSignup);
 router.post("/customer/login", customerLogin);
+router.post("/customer/google", customerGoogleSignIn);
 
 router.post("/dealer/signup", dealerSignup);
 router.post("/dealer/login", dealerLogin);
+router.post("/dealer/google", dealerGoogleSignIn);
 
 router.post("/refresh", refreshAccessToken);
 router.post("/logout", logout);

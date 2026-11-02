@@ -12,6 +12,8 @@ import {
   getAccessToken,
   setTokens,
 } from "../api/api.js";
+import { signInWithPopup, signOut } from "firebase/auth";
+import { firebaseAuth, googleProvider } from "../firebase";
 
 const AuthContext = createContext(null);
 
@@ -74,6 +76,31 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  const googleSignIn = useCallback(async (userType, dealershipName) => {
+    if (!firebaseAuth) {
+      throw new Error(
+        "Google sign-in is not configured. Add the Firebase web app settings.",
+      );
+    }
+
+    setLoading(true);
+    try {
+      const credential = await signInWithPopup(firebaseAuth, googleProvider);
+      const idToken = await credential.user.getIdToken();
+      const res = await authAPI.googleSignIn(userType, {
+        idToken,
+        ...(dealershipName ? { dealershipName } : {}),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Google sign-in failed");
+      setTokens(data.accessToken, data.refreshToken);
+      persistUser(data.user);
+      return data;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const customerSignup = useCallback(async (name, email, phone, password) => {
     setLoading(true);
     try {
@@ -112,6 +139,11 @@ export function AuthProvider({ children }) {
     try {
       if (refreshToken) await authAPI.logout(refreshToken);
     } catch {}
+    if (firebaseAuth) {
+      try {
+        await signOut(firebaseAuth);
+      } catch {}
+    }
     clearTokens();
     setUser(null);
   }, []);
@@ -147,6 +179,7 @@ export function AuthProvider({ children }) {
         isAdmin,
         customerLogin,
         dealerLogin,
+        googleSignIn,
         adminLogin,
         customerSignup,
         dealerSignup,

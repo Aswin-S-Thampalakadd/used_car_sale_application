@@ -4,6 +4,8 @@ import {
   customerLoginService,
   dealerSignupService,
   dealerLoginService,
+  customerGoogleSignInService,
+  dealerGoogleSignInService,
   refreshAccessTokenService,
   logoutService,
   deactivateAccountService,
@@ -90,6 +92,30 @@ export const dealerLogin = async (req, res) => {
   }
 
   const result = await dealerLoginService({ email, password });
+
+  return res.json(result);
+};
+
+export const customerGoogleSignIn = async (req, res) => {
+  const { idToken } = req.body;
+
+  if (!idToken) {
+    throw new AppError(400, "Firebase ID token is required");
+  }
+
+  const result = await customerGoogleSignInService({ idToken });
+
+  return res.json(result);
+};
+
+export const dealerGoogleSignIn = async (req, res) => {
+  const { idToken, dealershipName } = req.body;
+
+  if (!idToken) {
+    throw new AppError(400, "Firebase ID token is required");
+  }
+
+  const result = await dealerGoogleSignInService({ idToken, dealershipName });
 
   return res.json(result);
 };

@@ -9,6 +9,19 @@ export const ERROR_MAP = {
     statusCode: 401,
     message: "Invalid email or password",
   },
+  INVALID_FIREBASE_TOKEN: {
+    statusCode: 401,
+    message: "Invalid Google sign-in. Please try again.",
+  },
+  ACCOUNT_TYPE_MISMATCH: {
+    statusCode: 403,
+    message: "This email is registered with a different account type.",
+  },
+  DEALERSHIP_NAME_REQUIRED: {
+    statusCode: 400,
+    message:
+      "To create a dealer account with Google, sign up and enter your dealership name.",
+  },
   ACCOUNT_INACTIVE: { statusCode: 403, message: "Account is inactive" },
   REFRESH_TOKEN_REQUIRED: {
     statusCode: 401,

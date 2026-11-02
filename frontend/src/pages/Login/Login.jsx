@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import GoogleSignInButton from "../../components/GoogleSignInButton";
 import "./Login.css";
 
 const Login = () => {
-  const { customerLogin, dealerLogin, loading } = useAuth();
+  const { customerLogin, dealerLogin, googleSignIn, loading } = useAuth();
   const navigate = useNavigate();
 
   const [tab, setTab] = useState("customer");
@@ -26,6 +27,16 @@ const Login = () => {
       }
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError("");
+    try {
+      await googleSignIn(tab);
+      navigate(tab === "dealer" ? "/dashboard" : "/used-cars");
+    } catch (err) {
+      setError(err.message || "Google sign-in failed. Please try again.");
     }
   };
 
@@ -295,6 +306,9 @@ const Login = () => {
               )}
             </button>
           </form>
+
+          <div className="al-google-divider"><span>or</span></div>
+          <GoogleSignInButton onClick={handleGoogleSignIn} disabled={loading} />
 
           <p className="al-footer">
             Don't have an account? <Link to="/signup">Create one free</Link>

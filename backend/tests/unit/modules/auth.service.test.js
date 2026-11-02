@@ -17,12 +17,21 @@ jest.unstable_mockModule("../../../src/modules/auth/auth.repository.js", () => (
   deleteUser: jest.fn(),
 }));
 
+jest.unstable_mockModule("../../../src/config/firebaseAdmin.js", () => ({
+  verifyFirebaseIdToken: jest.fn(),
+}));
+
 const authRepo = await import("../../../src/modules/auth/auth.repository.js");
+const { verifyFirebaseIdToken } = await import(
+  "../../../src/config/firebaseAdmin.js"
+);
 const {
   customerSignupService,
   customerLoginService,
   dealerSignupService,
   dealerLoginService,
+  customerGoogleSignInService,
+  dealerGoogleSignInService,
   refreshAccessTokenService,
   logoutService,
   deactivateAccountService,
@@ -37,6 +46,14 @@ beforeEach(() => {
   process.env.JWT_ACCESS_EXPIRES_IN = "15m";
   process.env.JWT_REFRESH_EXPIRES_IN = "30d";
 });
+
+const googleIdentity = {
+  email: "alice@example.com",
+  email_verified: true,
+  name: "Alice Example",
+  picture: "https://example.com/alice.png",
+  firebase: { sign_in_provider: "google.com" },
+};
 
 const passwordHash = bcrypt.hashSync("password123", 12);
 const mockUser = {
@@ -148,6 +165,87 @@ describe("dealerLoginService", () => {
     const result = await dealerLoginService({ email: "dealer@example.com", password: "password123" });
     expect(result.accessToken).toBeDefined();
     expect(result.user.passwordHash).toBeUndefined();
+  });
+});
+
+describe("Google sign-in services", () => {
+  beforeEach(() => {
+    verifyFirebaseIdToken.mockResolvedValue(googleIdentity);
+  });
+
+  it("creates a customer account from a verified Firebase Google identity", async () => {
+    authRepo.findUserByEmail.mockResolvedValue(null);
+    authRepo.createUser.mockResolvedValue({
+      ...mockUser,
+      passwordHash: null,
+      profileImage: googleIdentity.picture,
+      emailVerified: true,
+    });
+    authRepo.createRefreshToken.mockResolvedValue({ id: 1 });
+
+    const result = await customerGoogleSignInService({ idToken: "firebase-id-token" });
+
+    expect(authRepo.createUser).toHaveBeenCalledWith({
+      name: googleIdentity.name,
+      email: googleIdentity.email,
+      phone: null,
+      passwordHash: null,
+      userTypeId: 2,
+      profileImage: googleIdentity.picture,
+      emailVerified: true,
+    });
+    expect(result.accessToken).toBeDefined();
+    expect(result.user.passwordHash).toBeUndefined();
+  });
+
+  it("rejects a Google identity assigned to the other account type", async () => {
+    authRepo.findUserByEmail.mockResolvedValue({ ...mockUser, userTypeId: 3 });
+
+    await expect(
+      customerGoogleSignInService({ idToken: "firebase-id-token" }),
+    ).rejects.toThrow("ACCOUNT_TYPE_MISMATCH");
+  });
+
+  it("requires a dealership name before creating a dealer account", async () => {
+    authRepo.findUserByEmail.mockResolvedValue(null);
+
+    await expect(
+      dealerGoogleSignInService({ idToken: "firebase-id-token" }),
+    ).rejects.toThrow("DEALERSHIP_NAME_REQUIRED");
+    expect(authRepo.createUser).not.toHaveBeenCalled();
+  });
+
+  it("creates a dealer profile when signing up with Google", async () => {
+    authRepo.findUserByEmail.mockResolvedValue(null);
+    authRepo.createUser.mockResolvedValue({
+      ...mockUser,
+      passwordHash: null,
+      userTypeId: 3,
+    });
+    authRepo.createDealerProfile.mockResolvedValue({ id: 10, userId: 1 });
+    authRepo.createRefreshToken.mockResolvedValue({ id: 1 });
+
+    const result = await dealerGoogleSignInService({
+      idToken: "firebase-id-token",
+      dealershipName: "Example Motors",
+    });
+
+    expect(authRepo.createDealerProfile).toHaveBeenCalledWith({
+      userId: mockUser.id,
+      dealershipName: "Example Motors",
+    });
+    expect(result.dealerProfile).toBeDefined();
+  });
+
+  it("rejects non-Google or unverified Firebase identities", async () => {
+    verifyFirebaseIdToken.mockResolvedValue({
+      ...googleIdentity,
+      email_verified: false,
+    });
+
+    await expect(
+      customerGoogleSignInService({ idToken: "firebase-id-token" }),
+    ).rejects.toThrow("INVALID_FIREBASE_TOKEN");
   });
 });
 

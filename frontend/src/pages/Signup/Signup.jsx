@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import GoogleSignInButton from "../../components/GoogleSignInButton";
 import "../Login/Login.css";
 import "./Signup.css";
 
@@ -42,7 +43,7 @@ const IconAlert = () => (
   </svg>
 );
 
-const CustomerForm = ({ onSubmit, loading, error }) => {
+const CustomerForm = ({ onSubmit, onGoogleSignIn, loading, error }) => {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -239,11 +240,16 @@ const CustomerForm = ({ onSubmit, loading, error }) => {
           </>
         )}
       </button>
+      <div className="al-google-divider"><span>or</span></div>
+      <GoogleSignInButton
+        onClick={() => onGoogleSignIn(form)}
+        disabled={loading}
+      />
     </form>
   );
 };
 
-const DealerForm = ({ onSubmit, loading, error }) => {
+const DealerForm = ({ onSubmit, onGoogleSignIn, loading, error }) => {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -564,12 +570,17 @@ const DealerForm = ({ onSubmit, loading, error }) => {
           </>
         )}
       </button>
+      <div className="al-google-divider"><span>or</span></div>
+      <GoogleSignInButton
+        onClick={() => onGoogleSignIn(form)}
+        disabled={loading}
+      />
     </form>
   );
 };
 
 const Signup = () => {
-  const { customerSignup, dealerSignup, loading } = useAuth();
+  const { customerSignup, dealerSignup, googleSignIn, loading } = useAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState("customer");
   const [error, setError] = useState("");
@@ -591,6 +602,21 @@ const Signup = () => {
       navigate("/dashboard");
     } catch (err) {
       setError(err.message);
+    }
+  };
+
+  const handleGoogleSignIn = async (userType, dealerForm = {}) => {
+    setError("");
+    if (userType === "dealer" && !dealerForm.dealershipName?.trim()) {
+      setError("Enter your dealership name to create a dealer account.");
+      return;
+    }
+
+    try {
+      await googleSignIn(userType, dealerForm.dealershipName);
+      navigate(userType === "dealer" ? "/dashboard" : "/used-cars");
+    } catch (err) {
+      setError(err.message || "Google sign-in failed. Please try again.");
     }
   };
 
@@ -778,12 +804,14 @@ const Signup = () => {
           {tab === "customer" ? (
             <CustomerForm
               onSubmit={handleCustomer}
+              onGoogleSignIn={() => handleGoogleSignIn("customer")}
               loading={loading}
               error={error}
             />
           ) : (
             <DealerForm
               onSubmit={handleDealer}
+              onGoogleSignIn={(form) => handleGoogleSignIn("dealer", form)}
               loading={loading}
               error={error}
             />

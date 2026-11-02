@@ -10,6 +10,8 @@ jest.unstable_mockModule("../../src/modules/auth/auth.service.js", () => ({
   customerLoginService: jest.fn(),
   dealerSignupService: jest.fn(),
   dealerLoginService: jest.fn(),
+  customerGoogleSignInService: jest.fn(),
+  dealerGoogleSignInService: jest.fn(),
   refreshAccessTokenService: jest.fn(),
   logoutService: jest.fn(),
   deactivateAccountService: jest.fn(),
@@ -108,6 +110,53 @@ describe("POST /api/v1/auth/dealer/login", () => {
     authService.dealerLoginService.mockResolvedValue({ message: "Dealer login successful", user: { id: 2 }, accessToken: "at", refreshToken: "rt" });
     const res = await request(app).post("/api/v1/auth/dealer/login").send({ email: "d@d.com", password: "pass" });
     expect(res.status).toBe(200);
+  });
+});
+
+describe("POST /api/v1/auth/{customer,dealer}/google", () => {
+  it("authenticates a customer with a Firebase ID token", async () => {
+    authService.customerGoogleSignInService.mockResolvedValue({
+      message: "Google sign-in successful",
+      user: { id: 1 },
+      accessToken: "at",
+      refreshToken: "rt",
+    });
+
+    const res = await request(app)
+      .post("/api/v1/auth/customer/google")
+      .send({ idToken: "firebase-id-token" });
+
+    expect(res.status).toBe(200);
+    expect(authService.customerGoogleSignInService).toHaveBeenCalledWith({
+      idToken: "firebase-id-token",
+    });
+  });
+
+  it("passes the dealership name when authenticating a dealer", async () => {
+    authService.dealerGoogleSignInService.mockResolvedValue({
+      message: "Google sign-in successful",
+      user: { id: 2 },
+      accessToken: "at",
+      refreshToken: "rt",
+    });
+
+    const res = await request(app)
+      .post("/api/v1/auth/dealer/google")
+      .send({ idToken: "firebase-id-token", dealershipName: "Example Motors" });
+
+    expect(res.status).toBe(200);
+    expect(authService.dealerGoogleSignInService).toHaveBeenCalledWith({
+      idToken: "firebase-id-token",
+      dealershipName: "Example Motors",
+    });
+  });
+
+  it("requires a Firebase ID token", async () => {
+    const res = await request(app)
+      .post("/api/v1/auth/customer/google")
+      .send({});
+
+    expect(res.status).toBe(400);
   });
 });
 

@@ -1,6 +1,4 @@
 node_modules
 coverage
-.env.development
-.env.test
-.env.production
-.env.local
+.env*
+!.env.example

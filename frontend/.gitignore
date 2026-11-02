@@ -13,17 +13,11 @@
 
 # misc
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*
+!.env.example
 
 # Environment-specific files contain API URLs and public keys.
-# The root .env is committed (documents required variable names only).
-# Per-environment files are NOT committed — set them locally or via CI secrets.
-.env.development
-.env.test
-.env.production
+# Set these locally or via CI secrets.
 
 npm-debug.log*
 yarn-debug.log*

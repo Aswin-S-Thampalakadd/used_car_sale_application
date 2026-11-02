@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import { verifyFirebaseIdToken } from "../../config/firebaseAdmin.js";
 
 import {
   findUserByEmail,
@@ -205,6 +206,87 @@ export const dealerLoginService = async ({ email, password }) => {
   return {
     message: "Dealer login successful",
     user: safeUser,
+    ...tokens,
+  };
+};
+
+export const customerGoogleSignInService = async ({ idToken }) =>
+  googleSignInService({ idToken, userTypeId: CUSTOMER_USER_TYPE_ID });
+
+export const dealerGoogleSignInService = async ({
+  idToken,
+  dealershipName,
+}) =>
+  googleSignInService({
+    idToken,
+    userTypeId: DEALER_USER_TYPE_ID,
+    dealershipName,
+  });
+
+const googleSignInService = async ({
+  idToken,
+  userTypeId,
+  dealershipName,
+}) => {
+  if (!idToken) {
+    throw new Error("INVALID_FIREBASE_TOKEN");
+  }
+
+  const identity = await verifyFirebaseIdToken(idToken);
+  const email = identity.email?.trim().toLowerCase();
+
+  if (
+    !email ||
+    identity.email_verified !== true ||
+    identity.firebase?.sign_in_provider !== "google.com"
+  ) {
+    throw new Error("INVALID_FIREBASE_TOKEN");
+  }
+
+  let user = await findUserByEmail(email);
+
+  if (user && user.userTypeId !== userTypeId) {
+    throw new Error("ACCOUNT_TYPE_MISMATCH");
+  }
+
+  if (user && !user.isActive) {
+    throw new Error("ACCOUNT_INACTIVE");
+  }
+
+  let dealerProfile;
+
+  if (!user) {
+    if (userTypeId === DEALER_USER_TYPE_ID && !dealershipName?.trim()) {
+      throw new Error("DEALERSHIP_NAME_REQUIRED");
+    }
+
+    user = await createUser({
+      name: identity.name?.trim() || email.split("@")[0],
+      email,
+      phone: null,
+      passwordHash: null,
+      userTypeId,
+      profileImage: identity.picture || null,
+      emailVerified: true,
+    });
+
+    if (userTypeId === DEALER_USER_TYPE_ID) {
+      dealerProfile = await createDealerProfile({
+        userId: user.id,
+        dealershipName: dealershipName.trim(),
+      });
+    }
+  } else {
+    await updateLastLogin(user.id);
+  }
+
+  const tokens = await createAuthTokens(user);
+  const { passwordHash, ...safeUser } = user;
+
+  return {
+    message: "Google sign-in successful",
+    user: safeUser,
+    ...(dealerProfile ? { dealerProfile } : {}),
     ...tokens,
   };
 };
