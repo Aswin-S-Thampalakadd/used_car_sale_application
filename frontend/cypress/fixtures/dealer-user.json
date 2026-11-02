@@ -1,0 +1,11 @@
+{
+  "id": 20,
+  "name": "Cypress Dealer",
+  "email": "cypress.dealer@example.com",
+  "phone": "9000000088",
+  "userTypeId": 3,
+  "isActive": true,
+  "profileImage": null,
+  "emailVerified": true,
+  "createdAt": "2024-01-01T00:00:00Z"
+}

@@ -1,0 +1,8 @@
+{
+  "success": true,
+  "plans": [
+    { "planType": "free",  "carLimit": 5,   "price": 0,    "durationDays": null },
+    { "planType": "elite", "carLimit": 20,  "price": 999,  "durationDays": 30   },
+    { "planType": "pro",   "carLimit": 100, "price": 2999, "durationDays": 30   }
+  ]
+}

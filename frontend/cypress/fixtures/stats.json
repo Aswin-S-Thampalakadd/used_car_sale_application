@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "stats": {
+    "totalCars": 1250,
+    "totalDealers": 87,
+    "totalCities": 32,
+    "averageRating": 4.3,
+    "totalCustomers": 5200,
+    "recommendRate": 94
+  }
+}

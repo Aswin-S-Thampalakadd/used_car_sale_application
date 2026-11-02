@@ -1,0 +1,39 @@
+{
+  "id": 1,
+  "make": "Toyota",
+  "model": "Corolla",
+  "variant": "VXi",
+  "year": 2020,
+  "fuelType": "petrol",
+  "transmission": "manual",
+  "kilometersDriven": 45000,
+  "price": "850000",
+  "color": "White",
+  "condition": "good",
+  "description": "Well-maintained Toyota Corolla in excellent condition.",
+  "registrationNumber": "KL01AB1234",
+  "isNegotiable": true,
+  "isFeatured": true,
+  "status": "active",
+  "viewsCount": 121,
+  "dealer": {
+    "id": 1,
+    "name": "Best Motors",
+    "email": "bestmotors@example.com",
+    "phone": "9876543210",
+    "emailVerified": true
+  },
+  "carImages": [
+    {
+      "id": 1,
+      "carId": 1,
+      "imageUrl": "https://via.placeholder.com/800x500?text=Toyota+Corolla",
+      "isPrimary": true,
+      "sortOrder": 0
+    }
+  ],
+  "carFeatureMappings": [
+    { "carId": 1, "featureId": 1, "feature": { "id": 1, "name": "Air Conditioning" } },
+    { "carId": 1, "featureId": 2, "feature": { "id": 2, "name": "Power Steering" } }
+  ]
+}

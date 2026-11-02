@@ -1,0 +1,76 @@
+{
+  "cars": [
+    {
+      "id": 1,
+      "make": "Toyota",
+      "model": "Corolla",
+      "variant": "VXi",
+      "year": 2020,
+      "fuelType": "petrol",
+      "transmission": "manual",
+      "kilometersDriven": 45000,
+      "price": "850000",
+      "color": "White",
+      "condition": "good",
+      "isNegotiable": true,
+      "isFeatured": true,
+      "status": "active",
+      "viewsCount": 120,
+      "dealerId": 1,
+      "carImages": [
+        {
+          "id": 1,
+          "carId": 1,
+          "imageUrl": "https://via.placeholder.com/400x250?text=Toyota+Corolla",
+          "isPrimary": true,
+          "sortOrder": 0
+        }
+      ],
+      "carFeatureMappings": [],
+      "createdAt": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "make": "Honda",
+      "model": "City",
+      "variant": "ZX",
+      "year": 2019,
+      "fuelType": "diesel",
+      "transmission": "automatic",
+      "kilometersDriven": 62000,
+      "price": "720000",
+      "color": "Silver",
+      "condition": "excellent",
+      "isNegotiable": false,
+      "isFeatured": false,
+      "status": "active",
+      "viewsCount": 85,
+      "dealerId": 1,
+      "carImages": [],
+      "carFeatureMappings": [],
+      "createdAt": "2024-01-10T10:00:00Z"
+    },
+    {
+      "id": 3,
+      "make": "Maruti",
+      "model": "Swift",
+      "variant": "LXi",
+      "year": 2021,
+      "fuelType": "petrol",
+      "transmission": "manual",
+      "kilometersDriven": 28000,
+      "price": "520000",
+      "color": "Red",
+      "condition": "excellent",
+      "isNegotiable": true,
+      "isFeatured": false,
+      "status": "active",
+      "viewsCount": 200,
+      "dealerId": 2,
+      "carImages": [],
+      "carFeatureMappings": [],
+      "createdAt": "2024-01-20T10:00:00Z"
+    }
+  ],
+  "total": 3
+}
