@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "NODE_ENV=production node src/server.js",
+    "lint": "eslint src",
     "dev": "NODE_ENV=development nodemon src/server.js",
     "seed": "NODE_ENV=development node src/db/seed.js",
     "seed:loadtest": "NODE_ENV=development node scripts/create-load-test-users.js",
@@ -24,6 +24,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
+    "eslint": "^9.39.5",
     "express": "^5.2.1",
     "jest": "^30.5.2",
     "nodemon": "^3.1.14",
