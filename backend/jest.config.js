@@ -9,4 +9,10 @@ export default {
     NODE_ENV: "test",
   },
   setupFiles: ["./tests/setup/env.js"],
+  moduleNameMapper: {
+    "^firebase-admin/app$":  "<rootDir>/tests/__mocks__/firebase-admin-app.js",
+    "^firebase-admin/auth$": "<rootDir>/tests/__mocks__/firebase-admin-auth.js",
+    "^firebase-admin(.*)$":  "<rootDir>/tests/__mocks__/firebase-admin-app.js",
+    "firebaseAdmin\\.js$":   "<rootDir>/tests/__mocks__/firebaseAdmin.js",
+  },
 };
