@@ -799,10 +799,6 @@
   cursor: not-allowed;
 }
 
-[title] {
-  cursor: help;
-}
-
 .admin-modal-backdrop {
   position: fixed;
   inset: 0;
