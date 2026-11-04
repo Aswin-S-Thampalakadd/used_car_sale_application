@@ -571,9 +571,14 @@ const DealerForm = ({ onSubmit, onGoogleSignIn, loading, error }) => {
         )}
       </button>
       <div className="al-google-divider"><span>or</span></div>
+      {!form.dealershipName?.trim() && (
+        <p className="al-hint" style={{ textAlign: "center", marginBottom: 8 }}>
+          Fill in your dealership name above to use Google Sign-In as a dealer.
+        </p>
+      )}
       <GoogleSignInButton
         onClick={() => onGoogleSignIn(form)}
-        disabled={loading}
+        disabled={loading || !form.dealershipName?.trim()}
       />
     </form>
   );
@@ -608,7 +613,7 @@ const Signup = () => {
   const handleGoogleSignIn = async (userType, dealerForm = {}) => {
     setError("");
     if (userType === "dealer" && !dealerForm.dealershipName?.trim()) {
-      setError("Enter your dealership name to create a dealer account.");
+      setError("Enter your dealership name above before using Google Sign-In.");
       return;
     }
 
@@ -616,7 +621,16 @@ const Signup = () => {
       await googleSignIn(userType, dealerForm.dealershipName);
       navigate(userType === "dealer" ? "/dashboard" : "/used-cars");
     } catch (err) {
-      setError(err.message || "Google sign-in failed. Please try again.");
+      const msg = err.message || "";
+      if (msg.includes("different account type") || msg.includes("ACCOUNT_TYPE_MISMATCH")) {
+        setError(
+          userType === "dealer"
+            ? "This Google account is already registered as a customer. Go to the Login page and use the Customer tab."
+            : "This Google account is already registered as a dealer. Go to the Login page and use the Dealer tab.",
+        );
+      } else {
+        setError(msg || "Google sign-in failed. Please try again.");
+      }
     }
   };
 

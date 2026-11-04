@@ -36,7 +36,18 @@ const Login = () => {
       await googleSignIn(tab);
       navigate(tab === "dealer" ? "/dashboard" : "/used-cars");
     } catch (err) {
-      setError(err.message || "Google sign-in failed. Please try again.");
+      const msg = err.message || "";
+      if (msg.includes("different account type") || msg.includes("ACCOUNT_TYPE_MISMATCH")) {
+        setError(
+          tab === "dealer"
+            ? "This Google account is registered as a customer. Switch to the Customer tab to sign in."
+            : "This Google account is registered as a dealer. Switch to the Dealer tab to sign in.",
+        );
+      } else if (msg.includes("dealership name") || msg.includes("DEALERSHIP_NAME_REQUIRED")) {
+        setError("New dealer accounts must be created from the Sign Up page where you can enter your dealership name.");
+      } else {
+        setError(msg || "Google sign-in failed. Please try again.");
+      }
     }
   };
 

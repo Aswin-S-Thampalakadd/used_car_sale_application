@@ -19,10 +19,12 @@ if (!process.env.DATABASE_URL) {
 const POOL_MAX = parseInt(process.env.DB_POOL_MAX || "20", 10);
 const POOL_MIN = parseInt(process.env.DB_POOL_MIN || "2", 10);
 
-const dbUrl = "postgres://postgres:444444@localhost:5432/wheelzloop";
+const dbUrl =
+  process.env.DATABASE_URL ||
+  "postgres://postgres:444444@localhost:5432/vandimart_dev";
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: dbUrl,
   ssl: isProduction ? { rejectUnauthorized: false } : false,
   max: POOL_MAX,
   min: POOL_MIN,
