@@ -989,7 +989,7 @@
 }
 
 .dd-enq-card:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .dd-enq-card--new {
@@ -1021,7 +1021,10 @@
   color: #cbd5e1;
 }
 
-.dd-enq-img-placeholder svg { width: 32px; height: 32px; }
+.dd-enq-img-placeholder svg {
+  width: 32px;
+  height: 32px;
+}
 
 .dd-enq-details {
   flex: 1;
@@ -1065,9 +1068,20 @@
   flex-shrink: 0;
 }
 
-.dd-enq-status--new       { background: #fef3c7; color: #b45309; }
-.dd-enq-status--contacted { background: #dbeafe; color: #1d4ed8; }
-.dd-enq-status--closed    { background: #f1f5f9; color: #64748b; }
+.dd-enq-status--new {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.dd-enq-status--contacted {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.dd-enq-status--closed {
+  background: #f1f5f9;
+  color: #64748b;
+}
 
 .dd-enq-customer {
   display: flex;
@@ -1078,7 +1092,13 @@
   padding: 10px 14px;
 }
 
-.dd-enq-customer svg { width: 16px; height: 16px; color: #94a3b8; flex-shrink: 0; margin-top: 2px; }
+.dd-enq-customer svg {
+  width: 16px;
+  height: 16px;
+  color: #94a3b8;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
 
 .dd-enq-customer-name {
   font-size: 13.5px;
@@ -1101,7 +1121,9 @@
   font-weight: 500;
 }
 
-.dd-enq-customer-contact a:hover { text-decoration: underline; }
+.dd-enq-customer-contact a:hover {
+  text-decoration: underline;
+}
 
 .dd-enq-message {
   font-size: 13.5px;
@@ -1112,10 +1134,20 @@
 }
 
 @media (max-width: 540px) {
-  .dd-enq-card { flex-direction: column; }
-  .dd-enq-img  { width: 100%; height: 140px; }
-  .dd-enq-details { padding: 14px 16px; }
+  .dd-enq-card {
+    flex-direction: column;
+  }
+
+  .dd-enq-img {
+    width: 100%;
+    height: 140px;
+  }
+
+  .dd-enq-details {
+    padding: 14px 16px;
+  }
 }
+
 .dd-reviews-wrap {
   background: #fff;
   border-radius: 18px;
@@ -1274,4 +1306,142 @@
   .dd-car-actions {
     justify-content: flex-end;
   }
+}
+
+.dd-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+  animation: dd-fade-in 0.15s ease;
+}
+
+@keyframes dd-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.dd-confirm-modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 28px 28px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: dd-slide-up 0.18s ease;
+}
+
+@keyframes dd-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dd-confirm-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #fef2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  flex-shrink: 0;
+}
+
+.dd-confirm-icon svg {
+  width: 26px;
+  height: 26px;
+  color: #ef4444;
+}
+
+.dd-confirm-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 10px;
+}
+
+.dd-confirm-body {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0 0 26px;
+}
+
+.dd-confirm-body strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.dd-confirm-actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.dd-confirm-cancel,
+.dd-confirm-delete {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 11px 16px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  font-family: inherit;
+}
+
+.dd-confirm-cancel {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.dd-confirm-cancel:hover {
+  background: #e2e8f0;
+}
+
+.dd-confirm-delete {
+  background: #ef4444;
+  color: #fff;
+}
+
+.dd-confirm-delete svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.dd-confirm-delete:hover {
+  background: #dc2626;
+}
+
+.dd-confirm-delete:active,
+.dd-confirm-cancel:active {
+  transform: scale(0.97);
 }

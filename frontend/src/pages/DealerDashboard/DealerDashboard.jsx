@@ -72,6 +72,7 @@ const DealerDashboard = () => {
   const [showSubModal, setShowSubModal] = useState(false);
   const [activeTab, setActiveTab] = useState("listings");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [confirmDeleteCar, setConfirmDeleteCar] = useState(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -118,8 +119,15 @@ const DealerDashboard = () => {
     loadData();
   }, [loadData]);
 
-  const handleDelete = async (carId) => {
-    if (!window.confirm("Delete this listing permanently?")) return;
+  const handleDelete = (carId) => {
+    const car = cars.find((c) => c.id === carId);
+    setConfirmDeleteCar(car || { id: carId });
+  };
+
+  const confirmDelete = async () => {
+    if (!confirmDeleteCar) return;
+    const carId = confirmDeleteCar.id;
+    setConfirmDeleteCar(null);
     setDeletingId(carId);
     try {
       const res = await carsAPI.delete(carId);
@@ -932,6 +940,61 @@ const DealerDashboard = () => {
             setSubscription(sub);
           }}
         />
+      )}
+
+      {confirmDeleteCar && (
+        <div
+          className="dd-confirm-backdrop"
+          onClick={() => setConfirmDeleteCar(null)}
+        >
+          <div
+            className="dd-confirm-modal"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="dd-confirm-title"
+          >
+            <div className="dd-confirm-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                <path d="M10 11v6M14 11v6" />
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+              </svg>
+            </div>
+
+            <h3 id="dd-confirm-title" className="dd-confirm-title">
+              Delete listing?
+            </h3>
+
+            <p className="dd-confirm-body">
+              {confirmDeleteCar.year && confirmDeleteCar.make
+                ? <>You're about to permanently delete <strong>{confirmDeleteCar.year} {confirmDeleteCar.make} {confirmDeleteCar.model}</strong>. This cannot be undone.</>
+                : "This listing will be permanently deleted. This cannot be undone."}
+            </p>
+
+            <div className="dd-confirm-actions">
+              <button
+                className="dd-confirm-cancel"
+                onClick={() => setConfirmDeleteCar(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="dd-confirm-delete"
+                onClick={confirmDelete}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                  <path d="M10 11v6M14 11v6" />
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                </svg>
+                Delete permanently
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
