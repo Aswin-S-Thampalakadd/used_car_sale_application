@@ -20,23 +20,7 @@ import { checkCarLimitService } from "../subscriptions/subscriptions.service.js"
 const validStatuses = ["draft", "active", "sold", "reserved", "inactive"];
 
 export const getAllCarsService = async (page, limit, filters) => {
-  const cacheKey = `cars:${JSON.stringify({
-    page,
-    limit,
-    filters,
-  })}`;
-
-  const cachedCars = await redisClient.get(cacheKey);
-
-  if (cachedCars) {
-    return JSON.parse(cachedCars);
-  }
-
   const cars = await getAllCarsDB(page, limit, filters);
-
-  await redisClient.set(cacheKey, JSON.stringify(cars), {
-    EX: 60,
-  });
 
   return cars;
 };
