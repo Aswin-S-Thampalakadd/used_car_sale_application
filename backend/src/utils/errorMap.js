@@ -33,6 +33,11 @@ export const ERROR_MAP = {
   },
   USER_NOT_FOUND: { statusCode: 404, message: "User not found" },
 
+  // ── Operator ──────────────────────────────────────────
+  OPERATOR_NOT_FOUND: { statusCode: 404, message: "Operator not found" },
+  OPERATOR_LIMIT_REACHED: { statusCode: 403, message: "OPERATOR_LIMIT_REACHED" },
+  MUST_CHANGE_PASSWORD: { statusCode: 403, message: "Password change required" },
+
   // ── Cars ──────────────────────────────────────────────
   CAR_NOT_FOUND: { statusCode: 404, message: "Car not found" },
   CAR_LIMIT_REACHED: { statusCode: 403, message: "CAR_LIMIT_REACHED" },

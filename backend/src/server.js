@@ -19,6 +19,7 @@ import statsRouter from "./modules/stats/stats.routes.js";
 import adminRouter from "./modules/admin/admin.routes.js";
 import notificationsRouter from "./modules/notifications/notifications.routes.js";
 import newsletterRouter from "./modules/newsletter/newsletter.routes.js";
+import operatorsRouter from "./modules/operators/operators.routes.js";
 import { notFound, errorHandler } from "./middlewares/error.middleware.js";
 import { publicCacheHeaders } from "./middlewares/cache.middleware.js";
 
@@ -64,6 +65,7 @@ app.use("/api/v1/stats", statsRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/notifications", notificationsRouter);
 app.use("/api/v1/newsletter", newsletterRouter);
+app.use("/api/v1/operators", operatorsRouter);
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });

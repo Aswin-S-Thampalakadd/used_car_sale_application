@@ -19,7 +19,8 @@ import {
 } from "./auth.repository.js";
 
 const CUSTOMER_USER_TYPE_ID = 2;
-const DEALER_USER_TYPE_ID = 3;
+const DEALER_USER_TYPE_ID   = 3;
+const OPERATOR_USER_TYPE_ID = 4;
 
 export const customerSignupService = async ({
   name,
@@ -428,4 +429,28 @@ const generateRefreshToken = (user) => {
 
 const hashToken = (token) => {
   return crypto.createHash("sha256").update(token).digest("hex");
+};
+
+export const operatorLoginService = async ({ email, password }) => {
+  const normalizedEmail = email.trim().toLowerCase();
+  const user = await findUserByEmail(normalizedEmail);
+
+  if (!user) throw new Error("INVALID_CREDENTIALS");
+  if (!user.isActive) throw new Error("ACCOUNT_INACTIVE");
+  if (user.userTypeId !== OPERATOR_USER_TYPE_ID) throw new Error("INVALID_CREDENTIALS");
+  if (!user.passwordHash) throw new Error("INVALID_CREDENTIALS");
+
+  const passwordMatch = await bcrypt.compare(password, user.passwordHash);
+  if (!passwordMatch) throw new Error("INVALID_CREDENTIALS");
+
+  await updateLastLogin(user.id);
+  const tokens = await createAuthTokens(user);
+  const { passwordHash, ...safeUser } = user;
+
+  return {
+    message: "Operator login successful",
+    user: safeUser,
+    mustChangePassword: user.mustChangePassword,
+    ...tokens,
+  };
 };

@@ -12,6 +12,7 @@ import {
   dealerSignup,
   deleteAccount,
   logout,
+  operatorLogin,
   refreshAccessToken,
 } from "./auth.controller.js";
 
@@ -24,6 +25,8 @@ router.post("/customer/google", customerGoogleSignIn);
 router.post("/dealer/signup", dealerSignup);
 router.post("/dealer/login", dealerLogin);
 router.post("/dealer/google", dealerGoogleSignIn);
+
+router.post("/operator/login", operatorLogin);
 
 router.post("/refresh", refreshAccessToken);
 router.post("/logout", logout);

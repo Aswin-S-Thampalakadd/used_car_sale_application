@@ -6,6 +6,7 @@ import {
   dealerLoginService,
   customerGoogleSignInService,
   dealerGoogleSignInService,
+  operatorLoginService,
   refreshAccessTokenService,
   logoutService,
   deactivateAccountService,
@@ -157,5 +158,14 @@ export const deleteAccount = async (req, res) => {
 
   const result = await deleteAccountService(userId);
 
+  return res.json(result);
+};
+
+export const operatorLogin = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    throw new AppError(400, "Email and password are required");
+  }
+  const result = await operatorLoginService({ email, password });
   return res.json(result);
 };

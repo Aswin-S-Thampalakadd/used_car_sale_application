@@ -20,6 +20,7 @@ import {
   approveReview,
   getAllSubscriptions,
 } from "./admin.controller.js";
+import { getAllOperatorsAdmin } from "../operators/operators.controller.js";
 
 const router = Router();
 
@@ -39,6 +40,11 @@ router.get("/customers", getAllCustomers);
 router.patch("/customers/:userId/activate", activateUser);
 router.patch("/customers/:userId/deactivate", deactivateUser);
 router.delete("/customers/:userId", deleteUser);
+
+router.get("/operators", getAllOperatorsAdmin);
+router.patch("/operators/:userId/activate", activateUser);
+router.patch("/operators/:userId/deactivate", deactivateUser);
+router.delete("/operators/:userId", deleteUser);
 
 router.get("/cars", getAllCars);
 router.patch("/cars/:carId/status", updateCarStatus);
