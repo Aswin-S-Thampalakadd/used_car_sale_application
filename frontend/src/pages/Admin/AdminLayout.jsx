@@ -14,6 +14,7 @@ import {
   MdClose,
   MdLogout,
   MdAdminPanelSettings,
+  MdSupervisorAccount,
 } from "react-icons/md";
 import "./Admin.css";
 
@@ -21,14 +22,11 @@ const navItems = [
   { to: "/admin/dashboard", label: "Dashboard", icon: <MdDashboard /> },
   { to: "/admin/dealers", label: "Dealers", icon: <MdVerifiedUser /> },
   { to: "/admin/customers", label: "Customers", icon: <MdPeople /> },
+  { to: "/admin/operators", label: "Operators", icon: <MdSupervisorAccount /> },
   { to: "/admin/cars", label: "Cars", icon: <MdDirectionsCar /> },
   { to: "/admin/enquiries", label: "Enquiries", icon: <MdQuestionAnswer /> },
   { to: "/admin/reviews", label: "Reviews", icon: <MdStar /> },
-  {
-    to: "/admin/subscriptions",
-    label: "Subscriptions",
-    icon: <MdSubscriptions />,
-  },
+  { to: "/admin/subscriptions", label: "Subscriptions", icon: <MdSubscriptions /> },
   { to: "/admin/newsletter", label: "Newsletter", icon: <MdMail /> },
 ];
 

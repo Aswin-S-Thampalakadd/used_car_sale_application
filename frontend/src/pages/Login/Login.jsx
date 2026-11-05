@@ -5,7 +5,7 @@ import GoogleSignInButton from "../../components/GoogleSignInButton";
 import "./Login.css";
 
 const Login = () => {
-  const { customerLogin, dealerLogin, googleSignIn, loading } = useAuth();
+  const { customerLogin, dealerLogin, operatorLogin, googleSignIn, loading } = useAuth();
   const navigate = useNavigate();
 
   const [tab, setTab] = useState("customer");
@@ -21,6 +21,13 @@ const Login = () => {
       if (tab === "dealer") {
         await dealerLogin(email, password);
         navigate("/dashboard");
+      } else if (tab === "operator") {
+        const data = await operatorLogin(email, password);
+        if (data.mustChangePassword) {
+          navigate("/operator/change-password");
+        } else {
+          navigate("/operator/dashboard");
+        }
       } else {
         await customerLogin(email, password);
         navigate("/used-cars");
@@ -169,22 +176,25 @@ const Login = () => {
               role="tab"
               aria-selected={tab === "dealer"}
               className={`al-tab ${tab === "dealer" ? "al-tab--active" : ""}`}
-              onClick={() => {
-                setTab("dealer");
-                setError("");
-              }}
+              onClick={() => { setTab("dealer"); setError(""); }}
             >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <rect x="2" y="7" width="20" height="14" rx="2" />
                 <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
               </svg>
               Dealer
+            </button>
+            <button
+              role="tab"
+              aria-selected={tab === "operator"}
+              className={`al-tab ${tab === "operator" ? "al-tab--active" : ""}`}
+              onClick={() => { setTab("operator"); setError(""); }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+              </svg>
+              Operator
             </button>
           </div>
 
@@ -303,7 +313,7 @@ const Login = () => {
                 </>
               ) : (
                 <>
-                  Sign in as {tab === "dealer" ? "Dealer" : "Customer"}
+                  Sign in as {tab === "dealer" ? "Dealer" : tab === "operator" ? "Operator" : "Customer"}
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -319,7 +329,9 @@ const Login = () => {
           </form>
 
           <div className="al-google-divider"><span>or</span></div>
-          <GoogleSignInButton onClick={handleGoogleSignIn} disabled={loading} />
+          {tab !== "operator" && (
+            <GoogleSignInButton onClick={handleGoogleSignIn} disabled={loading} />
+          )}
 
           <p className="al-footer">
             Don't have an account? <Link to="/signup">Create one free</Link>

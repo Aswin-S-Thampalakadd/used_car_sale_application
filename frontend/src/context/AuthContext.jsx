@@ -134,6 +134,20 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  const operatorLogin = useCallback(async (email, password) => {
+    setLoading(true);
+    try {
+      const res = await authAPI.operatorLogin({ email, password });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Login failed");
+      setTokens(data.accessToken, data.refreshToken);
+      persistUser({ ...data.user, mustChangePassword: data.mustChangePassword });
+      return data;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const logout = useCallback(async () => {
     const refreshToken = localStorage.getItem("refreshToken");
     try {
@@ -162,9 +176,10 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const isDealer = user?.userTypeId === 3;
+  const isDealer   = user?.userTypeId === 3;
   const isCustomer = user?.userTypeId === 2;
-  const isAdmin = user?.userTypeId === 1;
+  const isAdmin    = user?.userTypeId === 1;
+  const isOperator = user?.userTypeId === 4;
   const isAuthenticated = !!user && !!getAccessToken();
 
   return (
@@ -177,8 +192,10 @@ export function AuthProvider({ children }) {
         isDealer,
         isCustomer,
         isAdmin,
+        isOperator,
         customerLogin,
         dealerLogin,
+        operatorLogin,
         googleSignIn,
         adminLogin,
         customerSignup,

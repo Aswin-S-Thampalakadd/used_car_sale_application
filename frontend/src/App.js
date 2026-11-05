@@ -30,12 +30,24 @@ import AdminLayout from "./pages/Admin/AdminLayout";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminDealers from "./pages/Admin/AdminDealers";
 import AdminCustomers from "./pages/Admin/AdminCustomers";
+import AdminOperators from "./pages/Admin/AdminOperators";
 import AdminCars from "./pages/Admin/AdminCars";
 import AdminEnquiries from "./pages/Admin/AdminEnquiries";
 import AdminReviews from "./pages/Admin/AdminReviews";
 import AdminSubscriptions from "./pages/Admin/AdminSubscriptions";
 import AdminNewsletterSubscribers from "./pages/Admin/AdminNewsletterSubscribers";
 import NewsletterConfirmed from "./pages/Static/NewsletterConfirmed";
+import OperatorDashboard from "./pages/OperatorDashboard/OperatorDashboard";
+import ChangePassword from "./pages/OperatorDashboard/ChangePassword";
+
+function ProtectedOperatorRoute({ children }) {
+  const { isAuthenticated, isOperator, isInitializing, user } = useAuth();
+  if (isInitializing) return null;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!isOperator) return <Navigate to="/" replace />;
+  if (user?.mustChangePassword) return <Navigate to="/operator/change-password" replace />;
+  return children;
+}
 
 function ProtectedAdminRoute({ children }) {
   const { isAuthenticated, isAdmin, isInitializing } = useAuth();
@@ -307,12 +319,46 @@ function App() {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="dealers" element={<AdminDealers />} />
             <Route path="customers" element={<AdminCustomers />} />
+            <Route path="operators" element={<AdminOperators />} />
             <Route path="cars" element={<AdminCars />} />
             <Route path="enquiries" element={<AdminEnquiries />} />
             <Route path="reviews" element={<AdminReviews />} />
             <Route path="subscriptions" element={<AdminSubscriptions />} />
             <Route path="newsletter" element={<AdminNewsletterSubscribers />} />
           </Route>
+
+          <Route
+            path="/operator/change-password"
+            element={<ChangePassword />}
+          />
+          <Route
+            path="/operator/dashboard"
+            element={
+              <ProtectedOperatorRoute>
+                <OperatorDashboard />
+              </ProtectedOperatorRoute>
+            }
+          />
+          <Route
+            path="/operator/add-car"
+            element={
+              <ProtectedOperatorRoute>
+                <PublicLayout>
+                  <AddCar />
+                </PublicLayout>
+              </ProtectedOperatorRoute>
+            }
+          />
+          <Route
+            path="/operator/edit-car/:id"
+            element={
+              <ProtectedOperatorRoute>
+                <PublicLayout>
+                  <AddCar />
+                </PublicLayout>
+              </ProtectedOperatorRoute>
+            }
+          />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

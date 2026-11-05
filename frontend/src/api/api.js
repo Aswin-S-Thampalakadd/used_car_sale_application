@@ -100,6 +100,12 @@ export const authAPI = {
       body: JSON.stringify(data),
     }),
 
+  operatorLogin: (data) =>
+    apiFetch("/auth/operator/login", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
   googleSignIn: (userType, data) =>
     apiFetch(`/auth/${userType}/google`, {
       method: "POST",
@@ -332,6 +338,17 @@ export const adminAPI = {
   deleteCustomer: (userId) =>
     apiFetch(`/admin/customers/${userId}`, { method: "DELETE" }),
 
+  getOperators: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiFetch(`/admin/operators${qs ? `?${qs}` : ""}`);
+  },
+  activateOperator: (userId) =>
+    apiFetch(`/admin/operators/${userId}/activate`, { method: "PATCH" }),
+  deactivateOperator: (userId) =>
+    apiFetch(`/admin/operators/${userId}/deactivate`, { method: "PATCH" }),
+  deleteOperator: (userId) =>
+    apiFetch(`/admin/operators/${userId}`, { method: "DELETE" }),
+
   getCars: (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     return apiFetch(`/admin/cars${qs ? `?${qs}` : ""}`);
@@ -370,4 +387,31 @@ export const adminAPI = {
     const qs = new URLSearchParams(params).toString();
     return apiFetch(`/admin/subscriptions${qs ? `?${qs}` : ""}`);
   },
+};
+
+export const operatorsAPI = {
+  getAll: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiFetch(`/operators/mine${qs ? `?${qs}` : ""}`);
+  },
+  create: (data) =>
+    apiFetch("/operators", { method: "POST", body: JSON.stringify(data) }),
+  activate: (id) =>
+    apiFetch(`/operators/${id}/activate`, { method: "PATCH" }),
+  deactivate: (id) =>
+    apiFetch(`/operators/${id}/deactivate`, { method: "PATCH" }),
+  delete: (id) =>
+    apiFetch(`/operators/${id}`, { method: "DELETE" }),
+  resetPassword: (id, newPassword) =>
+    apiFetch(`/operators/${id}/reset-password`, {
+      method: "PATCH",
+      body: JSON.stringify({ newPassword }),
+    }),
+  getMyProfile: () => apiFetch("/operators/me/profile"),
+  changePassword: (newPassword) =>
+    apiFetch("/operators/me/change-password", {
+      method: "PATCH",
+      body: JSON.stringify({ newPassword }),
+    }),
+  checkCarLimit: () => apiFetch("/operators/me/car-limit"),
 };
