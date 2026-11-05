@@ -15,6 +15,20 @@
       "when": 1793613477462,
       "tag": "0001_ambitious_the_anarchist",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793816801955,
+      "tag": "0002_tan_forgotten_one",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793817400318,
+      "tag": "0003_groovy_marrow",
+      "breakpoints": true
     }
   ]
 }

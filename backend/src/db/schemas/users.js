@@ -35,6 +35,8 @@ export const users = pgTable("users", {
 
   fcmToken: varchar("fcm_token", { length: 500 }),
 
+  mustChangePassword: boolean("must_change_password").notNull().default(false),
+
   lastLoginAt: timestamp("last_login_at"),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
