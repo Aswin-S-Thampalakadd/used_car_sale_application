@@ -17,6 +17,7 @@ const dummyUsers = {
   ADMIN: {
     name: "Admin",
     email: "admin@gmail.com",
+    
     phone: "9000000001",
     password: "111111",
   },
