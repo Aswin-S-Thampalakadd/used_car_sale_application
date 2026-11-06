@@ -83,23 +83,33 @@ export default function BrowseByCategory() {
     <section className="categories" aria-labelledby="categories-heading">
       <div className="categories__inner">
         <header className="categories__header">
-          <div>
-            <h2 className="categories__title" id="categories-heading">
-              Browse by category
-            </h2>
-            <p className="categories__subtitle">
-              Find your perfect car — from budget picks to premium rides.
-            </p>
-          </div>
+          <h2 className="categories__title" id="categories-heading">
+            Browse by category
+          </h2>
+          <p className="categories__subtitle">
+            Find your perfect car — from budget picks to premium rides.
+          </p>
           <Link to="/used-cars" className="categories__all">
-            View all cars →
+            View all cars
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              aria-hidden="true"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
           </Link>
         </header>
 
         <ul className="categories__grid">
           {CATEGORIES.map(
             ({ id, name, meta, emoji, href, bg, color, badge }) => (
-              <li key={id}>
+              <li
+                key={id}
+                className={`categories__item categories__item--${id}`}
+              >
                 <Link
                   to={href}
                   className="category-card"
@@ -110,17 +120,29 @@ export default function BrowseByCategory() {
                     <span className="category-card__badge">{badge}</span>
                   )}
 
+                  <span className="category-card__text">
+                    <span className="category-card__name">{name}</span>
+                    <span className="category-card__meta">{meta}</span>
+                  </span>
+
+                  <span className="category-card__cta" aria-hidden="true">
+                    Explore
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </span>
+
                   <span
-                    className="category-card__icon"
+                    className="category-card__emoji"
                     role="img"
                     aria-hidden="true"
                   >
                     {emoji}
-                  </span>
-
-                  <span>
-                    <span className="category-card__name">{name}</span>
-                    <span className="category-card__meta">{meta}</span>
                   </span>
                 </Link>
               </li>

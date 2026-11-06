@@ -12,7 +12,7 @@ function HomePage() {
   return (
     <div>
       <Banner />
-      <BrowseByCategory />
+      {/* <BrowseByCategory /> */}
       <FeaturedListings />
       <TrustStrip />
       <HowItWorks />
