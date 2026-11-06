@@ -31,6 +31,31 @@ const STAT_DEFS = [
 
 const QUICK_TAGS = ["Maruti", "Honda", "Hyundai", "Toyota", "Kia", "Tata"];
 
+const HERO_IMG =
+  "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=90&w=1400&auto=format&fit=crop";
+
+const PERKS = [
+  { label: "Verified Dealers", d: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM8.5 12l2.5 2.5L16 9.5" },
+  { label: "Transparent Deals", d: "M3 12l4-4 4 3 4-3 6 5-5 5-3-2-2 2-8-6zM3 12v5" },
+  { label: "Wide Selection", d: "M5 16v-4l2-5h10l2 5v4M5 16h14M5 16v2h3v-2M16 16v2h3v-2M8 12h8" },
+];
+
+const STAT_ICONS = {
+  totalCars: "M5 16v-4l2-5h10l2 5v4M5 16h14M5 16v2h3v-2M16 16v2h3v-2M8 12h8",
+  totalDealers: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM8.5 12l2.5 2.5L16 9.5",
+  totalCities: "M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z",
+  averageRating: "M12 3l2.7 5.7 6.3.9-4.5 4.4 1 6.3L12 17.3 6.5 20.3l1-6.3L3 9.6l6.3-.9L12 3z",
+};
+
+const BRAND_COLORS = {
+  Maruti: "#e11d2e",
+  Honda: "#475569",
+  Hyundai: "#1d3a8a",
+  Toyota: "#dc2626",
+  Kia: "#111827",
+  Tata: "#1d4ed8",
+};
+
 function formatNum(key, n) {
   if (n === null || n === undefined) return "—";
   const num = Number(n);
@@ -70,11 +95,16 @@ function StatChip({ statKey, label, suffix, icon, rawValue, animate }) {
       ? formatNum(statKey, animated)
       : formatNum(statKey, rawValue);
   return (
-    <div className="bn-stat-chip">
-      <span className="bn-stat-chip-num">
-        {display === "—" ? "—" : `${display}${suffix}`}
-      </span>
-      <span className="bn-stat-chip-label">{label}</span>
+    <div className="bn-stat">
+      <svg className="bn-stat-icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1" strokeLinejoin="round" aria-hidden="true">
+        <path d={STAT_ICONS[statKey]} fillOpacity={statKey === "averageRating" || statKey === "totalCities" ? 1 : 0.15} />
+      </svg>
+      <div className="bn-stat-text">
+        <span className="bn-stat-num">
+          {display === "—" ? "—" : `${display}${suffix}`}
+        </span>
+        <span className="bn-stat-label">{label}</span>
+      </div>
     </div>
   );
 }
@@ -139,30 +169,32 @@ export default function Banner() {
 
   return (
     <section className="bn" aria-label="Hero">
-      <div className="bn-bg" aria-hidden="true">
-        <img
-          src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=90&w=1920&auto=format&fit=crop"
-          alt=""
-          className="bn-bg-img"
-          loading="eager"
-          fetchpriority="high"
-        />
-
-        <div className="bn-bg-overlay" />
-        <div className="bn-bg-vignette" />
+      <div className="bn-hero">
+        <img src={HERO_IMG} alt="" className="bn-hero-img" loading="eager" fetchpriority="high" />
+        <div className="bn-hero-fade" aria-hidden="true" />
+        <div className="bn-hero-copy">
+          <h1 className="bn-heading">
+            Find Your
+            <br />
+            <span className="bn-heading-blue">Perfect Ride</span>
+          </h1>
+          <p className="bn-subtext">
+            Trusted used cars. Better prices. Greater choices.
+          </p>
+          <ul className="bn-perks">
+            {PERKS.map((p) => (
+              <li key={p.label}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" aria-hidden="true">
+                  <path d={p.d} />
+                </svg>
+                {p.label}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
-      <div className="bn-content">
-        <h1 className="bn-heading">
-          Find Your Perfect
-          <br />
-          <span className="bn-heading-highlight">Pre-Owned Car</span>
-        </h1>
-
-        <p className="bn-subtext">
-          Thousands of certified cars. Verified sellers. Unbeatable prices.
-        </p>
-
+      <div className="bn-body">
         <div className="bn-tabs" role="tablist" aria-label="Mode">
           <button
             role="tab"
@@ -182,158 +214,55 @@ export default function Banner() {
           </button>
         </div>
 
-        {activeTab === "buy" ? (
-          <form
-            className="bn-search"
-            onSubmit={handleSearch}
-            role="search"
-            aria-label="Search cars"
-          >
-            <div className="bn-search-field bn-search-field--keyword">
-              <label className="bn-search-label" aria-hidden="true">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
+        <div className="bn-card">
+          {activeTab === "buy" ? (
+            <form className="bn-search" onSubmit={handleSearch} role="search" aria-label="Search cars">
+              <div className="bn-field bn-field--keyword">
+                <SearchBox
+                  placeholder="Search cars..."
+                  variant="banner"
+                  onSearch={(q) => setKeyword(q)}
+                />
+              </div>
+
+              <div className="bn-field">
+                <label className="bn-label" htmlFor="bn-brand">Brand</label>
+                <select id="bn-brand" className="bn-select" value={brand} onChange={(e) => setBrand(e.target.value)}>
+                  <option value="">Select Brand</option>
+                  {makes.map((m) => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="bn-field">
+                <label className="bn-label" htmlFor="bn-fuel">Fuel</label>
+                <select id="bn-fuel" className="bn-select" value={fuel} onChange={(e) => setFuel(e.target.value)}>
+                  {FUEL_OPTIONS.map((f) => (
+                    <option key={f.value} value={f.value}>{f.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="bn-field">
+                <label className="bn-label" htmlFor="bn-budget">Budget</label>
+                <select id="bn-budget" className="bn-select" value={budgetIdx} onChange={(e) => setBudgetIdx(Number(e.target.value))}>
+                  {BUDGET_OPTIONS.map((o, i) => (
+                    <option key={i} value={i}>{o.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <button className="bn-search-btn" type="submit" aria-label="Search cars">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                   <circle cx="11" cy="11" r="8" />
                   <path d="m21 21-4.35-4.35" />
                 </svg>
-                What are you looking for?
-              </label>
-              <SearchBox
-                placeholder='e.g. "Honda City 2021"'
-                variant="banner"
-                onSearch={(q) => setKeyword(q)}
-              />
-            </div>
-
-            <div className="bn-search-sep" aria-hidden="true" />
-
-            <div className="bn-search-field">
-              <label className="bn-search-label" htmlFor="bn-brand">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <path d="M5 17H3v-4l2-5h11l3 5v4h-2" />
-                  <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0" />
-                  <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0" />
-                </svg>
-                Brand
-              </label>
-              <select
-                id="bn-brand"
-                className="bn-search-select"
-                value={brand}
-                onChange={(e) => setBrand(e.target.value)}
-              >
-                <option value="">All Brands</option>
-                {makes.map((m) => (
-                  <option key={m} value={m}>
-                    {m}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="bn-search-sep" aria-hidden="true" />
-
-            <div className="bn-search-field">
-              <label className="bn-search-label" htmlFor="bn-fuel">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <path d="M3 22V8l7-6 7 6v14" />
-                  <path d="M17 22V12h3l1 4v2a2 2 0 0 1-2 2h-2" />
-                  <rect x="7" y="14" width="6" height="8" />
-                </svg>
-                Fuel
-              </label>
-              <select
-                id="bn-fuel"
-                className="bn-search-select"
-                value={fuel}
-                onChange={(e) => setFuel(e.target.value)}
-              >
-                {FUEL_OPTIONS.map((f) => (
-                  <option key={f.value} value={f.value}>
-                    {f.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="bn-search-sep" aria-hidden="true" />
-
-            <div className="bn-search-field">
-              <label className="bn-search-label" htmlFor="bn-budget">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <line x1="12" y1="1" x2="12" y2="23" />
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                </svg>
-                Budget
-              </label>
-              <select
-                id="bn-budget"
-                className="bn-search-select"
-                value={budgetIdx}
-                onChange={(e) => setBudgetIdx(Number(e.target.value))}
-              >
-                {BUDGET_OPTIONS.map((o, i) => (
-                  <option key={i} value={i}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              className="bn-search-btn"
-              type="submit"
-              aria-label="Search cars"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                aria-hidden="true"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.35-4.35" />
-              </svg>
-              <span>Search</span>
-            </button>
-          </form>
-        ) : (
-          <div className="bn-sell-cta">
-            <div className="bn-sell-cta-left">
-              <div className="bn-sell-cta-icon" aria-hidden="true">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <rect x="2" y="7" width="20" height="14" rx="2" />
-                  <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-                </svg>
-              </div>
+                <span>Search Cars</span>
+              </button>
+            </form>
+          ) : (
+            <div className="bn-sell">
               <div>
                 <p className="bn-sell-title">Create a Dealer Account</p>
                 <p className="bn-sell-text">
@@ -341,54 +270,48 @@ export default function Banner() {
                   dealership — all from one dashboard.
                 </p>
               </div>
+              <div className="bn-sell-actions">
+                <button className="bn-search-btn" onClick={() => navigate("/signup")} type="button">
+                  Register as Dealer
+                </button>
+                <button className="bn-sell-ghost" onClick={() => navigate("/login")} type="button">
+                  Already have an account? Sign in
+                </button>
+              </div>
             </div>
-            <div className="bn-sell-actions">
-              <button
-                className="bn-sell-btn"
-                onClick={() => navigate("/signup")}
-                type="button"
-              >
-                Register as Dealer
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  aria-hidden="true"
-                >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </button>
-              <button
-                className="bn-sell-btn-ghost"
-                onClick={() => navigate("/login")}
-                type="button"
-              >
-                Already have an account? Sign in
-              </button>
-            </div>
-          </div>
-        )}
-
-        <div className="bn-quick" aria-label="Popular brands">
-          <span className="bn-quick-label">Popular:</span>
-          {QUICK_TAGS.map((tag) => (
-            <button
-              key={tag}
-              type="button"
-              className="bn-quick-tag"
-              onClick={() => navigate(`/used-cars?make=${tag}`)}
-            >
-              {tag}
-            </button>
-          ))}
+          )}
         </div>
 
-        <div className="bn-stats" ref={statsRef} aria-label="Platform stats">
-          {STAT_DEFS.map((def, i) => (
-            <React.Fragment key={def.key}>
-              {i > 0 && <div className="bn-stats-sep" aria-hidden="true" />}
+        <div className="bn-brands" aria-label="Popular brands">
+          <span className="bn-brands-title">Popular Brands</span>
+          <div className="bn-brands-list">
+            {QUICK_TAGS.map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                className="bn-brand"
+                onClick={() => navigate(`/used-cars?make=${tag}`)}
+              >
+                <span className="bn-brand-mark" style={{ background: BRAND_COLORS[tag] }} aria-hidden="true">
+                  {tag.charAt(0)}
+                </span>
+                {tag}
+              </button>
+            ))}
+          </div>
+          <button type="button" className="bn-brands-all" onClick={() => navigate("/used-cars")}>
+            View All Brands
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="bn-bar">
+          <div className="bn-stats" ref={statsRef} aria-label="Platform stats">
+            {STAT_DEFS.map((def) => (
               <StatChip
+                key={def.key}
                 statKey={def.key}
                 label={def.label}
                 suffix={def.suffix}
@@ -396,14 +319,22 @@ export default function Banner() {
                 rawValue={liveStats ? liveStats[def.key] : null}
                 animate={statsVisible && liveStats !== null}
               />
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-
-      <div className="bn-scroll-cue" aria-hidden="true">
-        <div className="bn-scroll-mouse">
-          <div className="bn-scroll-wheel" />
+            ))}
+          </div>
+          <button type="button" className="bn-dealer" onClick={() => navigate("/signup")}>
+            <svg className="bn-dealer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 9l1.5-5h13L20 9M4 9v11h16V9M4 9c0 1.7 1.3 3 2.7 3S9.3 10.7 9.3 9c0 1.7 1.3 3 2.7 3s2.7-1.3 2.7-3c0 1.7 1.3 3 2.7 3S20 10.7 20 9M10 20v-5h4v5" />
+            </svg>
+            <span className="bn-dealer-text">
+              <strong>Register as Dealer</strong>
+              <small>Grow Your Business with VandiMart</small>
+            </span>
+            <span className="bn-dealer-arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </span>
+          </button>
         </div>
       </div>
     </section>
