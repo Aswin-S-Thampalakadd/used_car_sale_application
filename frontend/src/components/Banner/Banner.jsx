@@ -23,15 +23,16 @@ const FUEL_OPTIONS = [
 ];
 
 const STAT_DEFS = [
-  { key: "totalCars", label: "Cars Listed", suffix: "+", icon: "🚗" },
-  { key: "totalDealers", label: "Verified Dealers", suffix: "+", icon: "✅" },
-  { key: "totalCities", label: "Cities", suffix: "+", icon: "📍" },
+  { key: "totalCars", label: "Cars Listed", suffix: "+" },
+  { key: "totalDealers", label: "Verified Dealers", suffix: "+" },
+  { key: "totalCities", label: "Cities", suffix: "+" },
+  { key: "averageRating", label: "Avg. Rating", suffix: "★" },
 ];
 
 const QUICK_TAGS = ["Maruti", "Honda", "Hyundai", "Toyota", "Kia", "Tata"];
 
 const HERO_IMG =
-  "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=90&w=1400&auto=format&fit=crop";
+  "https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?q=90&w=1400&auto=format&fit=crop";
 
 const PERKS = [
   {
